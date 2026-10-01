@@ -1,0 +1,11 @@
+---
+const { dark = false } = Astro.props;
+---
+
+<span class:list={["inline-flex items-center gap-2 text-xl font-extrabold tracking-tight", dark ? "text-white" : "text-ink"]}>
+  <svg viewBox="0 0 32 32" class="h-8 w-8" aria-hidden="true">
+    <rect width="32" height="32" rx="9" fill="#21AEC0"></rect>
+    <path d="M9 12h13l-3-3M23 20H10l3 3" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg>
+  Reventa
+</span>

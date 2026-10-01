@@ -1,0 +1,161 @@
+---
+import Logo from "./Logo.astro";
+
+const features = [
+  { t: "Entradas verificadas", d: "Cada entrada se comprueba antes de publicarse. Sin duplicados.", big: true },
+  { t: "Pago protegido", d: "Tu dinero se libera al vendedor cuando recibes la entrada." },
+  { t: "Transferencia directa", d: "La entrada pasa a tu cuenta y su QR cambia de titular." },
+  { t: "Precio claro", d: "Ves el total antes de pagar. Sin sorpresas al final." },
+  { t: "Alertas", d: "Avisamos cuando aparece una entrada del evento que buscas." },
+  { t: "Soporte humano", d: "Si algo falla, hablas con una persona." },
+];
+
+const steps = [
+  { n: "01", t: "Busca", d: "Encuentra el evento y elige tu entrada." },
+  { n: "02", t: "Paga", d: "Pagas a Reventa, no al vendedor. Tu dinero queda protegido." },
+  { n: "03", t: "Entra", d: "Recibes la entrada en tu cuenta con su QR." },
+];
+
+const sellSteps = [
+  "Sube tu entrada y pon tu precio",
+  "Te avisamos cuando alguien la compre",
+  "Transferimos la entrada y cobras",
+];
+
+const faqs = [
+  { q: "¿Cómo sé que la entrada es real?", a: "Verificamos cada entrada antes de publicarla y la transferimos a tu nombre, así el QR anterior deja de valer." },
+  { q: "¿Qué pasa si el evento se cancela?", a: "Te devolvemos el importe de la compra." },
+  { q: "¿Cuándo cobro si vendo?", a: "Cuando el comprador recibe la entrada, liberamos el pago a tu cuenta." },
+  { q: "¿Cuánto cuesta vender?", a: "Publicar es gratis. Reventa cobra una comisión solo cuando vendes." },
+  { q: "¿Puedo poner el precio que quiera?", a: "Tú eliges el precio dentro de los límites del evento y de la ley." },
+];
+---
+
+<!-- Ventajas -->
+<section id="ventajas" class="px-4 py-24 sm:py-32">
+  <div class="mx-auto max-w-6xl">
+    <div class="reveal mx-auto max-w-2xl text-center">
+      <p class="text-sm font-bold uppercase tracking-[0.18em] text-brand">Ventajas</p>
+      <h2 class="mt-4 text-balance text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">
+        Comprar de segunda mano, sin riesgo
+      </h2>
+      <p class="mt-4 text-lg text-ink/60">Todo lo que necesitas para fiarte de quien te vende.</p>
+    </div>
+
+    <div class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {features.map((f, i) => (
+        <article
+          style={`--d:${i * 70}ms`}
+          class:list={[
+            "reveal group rounded-3xl border p-7 transition duration-300 hover:-translate-y-1",
+            f.big
+              ? "border-transparent bg-brand text-white sm:col-span-2 lg:col-span-1 lg:row-span-2 lg:flex lg:flex-col lg:justify-between lg:p-9"
+              : "border-black/10 bg-white hover:border-brand hover:shadow-[0_20px_50px_-25px_rgba(33,174,192,0.6)]",
+          ]}
+        >
+          <span class:list={["grid h-11 w-11 place-items-center rounded-2xl", f.big ? "bg-white/20" : "bg-brand-soft text-brand"]}>
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"></path></svg>
+          </span>
+          <div class:list={[f.big ? "mt-16" : "mt-6"]}>
+            <h3 class:list={["font-extrabold tracking-tight", f.big ? "text-3xl" : "text-xl"]}>{f.t}</h3>
+            <p class:list={["mt-2 leading-relaxed", f.big ? "text-white/85" : "text-ink/60"]}>{f.d}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Cómo funciona -->
+<section id="como-funciona" class="bg-ink-soft px-4 py-24 text-white sm:py-32">
+  <div class="mx-auto max-w-6xl">
+    <div class="reveal max-w-2xl">
+      <p class="text-sm font-bold uppercase tracking-[0.18em] text-brand">Cómo funciona</p>
+      <h2 class="mt-4 text-balance text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">Tres pasos y a la puerta</h2>
+    </div>
+    <ol class="mt-14 grid gap-4 md:grid-cols-3">
+      {steps.map((s, i) => (
+        <li style={`--d:${i * 120}ms`} class="reveal rounded-3xl border border-white/10 bg-white/[0.04] p-8">
+          <span class="text-5xl font-extrabold tracking-tighter text-brand">{s.n}</span>
+          <h3 class="mt-10 text-2xl font-extrabold tracking-tight">{s.t}</h3>
+          <p class="mt-2 leading-relaxed text-white/60">{s.d}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<!-- Vender -->
+<section id="vender" class="px-4 py-24 sm:py-32">
+  <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+    <div class="reveal">
+      <p class="text-sm font-bold uppercase tracking-[0.18em] text-brand">Vender</p>
+      <h2 class="mt-4 text-balance text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">
+        ¿No puedes ir? Que no se pierda
+      </h2>
+      <p class="mt-4 max-w-md text-lg text-ink/60">Publica tu entrada en minutos y cobra cuando se venda.</p>
+      <a href="#cta" class="mt-8 inline-block rounded-full bg-ink px-7 py-3.5 font-semibold text-white transition hover:bg-brand">
+        Vender mi entrada
+      </a>
+    </div>
+    <ul class="grid gap-3">
+      {sellSteps.map((t, i) => (
+        <li style={`--d:${i * 100}ms`} class="reveal flex items-center gap-4 rounded-2xl border border-black/10 bg-white p-5 font-semibold">
+          <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand text-sm font-bold text-white">{i + 1}</span>
+          {t}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="px-4 pb-24 sm:pb-32">
+  <div class="mx-auto max-w-3xl">
+    <h2 class="reveal text-center text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">Preguntas frecuentes</h2>
+    <div class="mt-12 divide-y divide-black/10 border-y border-black/10">
+      {faqs.map((f) => (
+        <details class="reveal group py-5">
+          <summary class="flex cursor-pointer items-center justify-between gap-6 text-lg font-bold">
+            {f.q}
+            <span class="faq-icon grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-soft text-brand transition-transform">
+              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+            </span>
+          </summary>
+          <p class="mt-3 max-w-2xl leading-relaxed text-ink/60">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" class="px-4 pb-24">
+  <div class="reveal relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] bg-brand px-6 py-20 text-center text-white sm:py-28">
+    <div class="float-slow pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/15 blur-2xl" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-ink/20 blur-3xl" aria-hidden="true"></div>
+    <h2 class="relative mx-auto max-w-2xl text-balance text-4xl font-extrabold tracking-[-0.03em] sm:text-6xl">
+      Tu entrada te está esperando
+    </h2>
+    <p class="relative mx-auto mt-5 max-w-md text-lg text-white/85">Compra o vende en un par de minutos.</p>
+    <div class="relative mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a href="#" class="rounded-full bg-ink px-7 py-3.5 font-semibold text-white transition hover:-translate-y-0.5">Ver entradas</a>
+      <a href="#" class="rounded-full bg-white px-7 py-3.5 font-semibold text-ink transition hover:-translate-y-0.5">Vender la mía</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-black/10 px-4 py-12">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 sm:flex-row">
+    <Logo />
+    <ul class="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm font-medium text-ink/60">
+      <li><a class="hover:text-ink" href="#ventajas">Ventajas</a></li>
+      <li><a class="hover:text-ink" href="#vender">Vender</a></li>
+      <li><a class="hover:text-ink" href="#faq">FAQ</a></li>
+      <li><a class="hover:text-ink" href="#">Privacidad</a></li>
+      <li><a class="hover:text-ink" href="#">Términos</a></li>
+    </ul>
+    <p class="text-sm text-ink/45">© {new Date().getFullYear()} Reventa</p>
+  </div>
+</footer>
