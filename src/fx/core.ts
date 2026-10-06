@@ -17,6 +17,7 @@ export function initScroll() {
   if (lenis || reduceMotion) return;
   const mobile = innerWidth <= 1000;
   lenis = new Lenis({
+    anchors: { offset: -72 },
     duration: mobile ? 0.8 : 1.2,
     lerp: mobile ? 0.075 : 0.1,
     smoothWheel: true,
@@ -95,22 +96,49 @@ export function tilt(container: Element | null, target: Element | null, max = 18
   container.addEventListener("mouseleave", () => { rx(0); ry(0); });
 }
 
-// El menú cambia de color según la sección que tiene debajo (data-nav="dark" = fondo claro).
+// Barra fija: toma el color de la sección que tiene debajo, marca la sección activa, muestra el progreso
+// y convierte "Solicita una demo" en el botón principal cuando el del hero ya no se ve.
 export function initNavTheme() {
   const nav = document.querySelector<HTMLElement>(".fx-nav");
   const sections = [...document.querySelectorAll<HTMLElement>("[data-nav]")];
   if (!nav || !sections.length) return;
+  const spy = [...nav.querySelectorAll<HTMLAnchorElement>("[data-spy]")];
+  let lastBg = "";
+  const parse = (css: string) => {
+    const m = css.match(/rgba?\(([^)]+)\)/);
+    if (!m) return null;
+    const [r, g, b, a = "1"] = m[1].split(/[ ,\/]+/).filter(Boolean);
+    return Number(a) === 0 ? null : `${r}, ${g}, ${b}`;
+  };
   const update = () => {
+    const y = scrollY;
+    nav.classList.toggle("is-scrolled", y > 24);
+    const max = document.documentElement.scrollHeight - innerHeight;
+    nav.style.setProperty("--p", String(max > 0 ? Math.min(1, y / max) : 0));
     const hit = sections.find((el) => {
       const r = el.getBoundingClientRect();
-      return r.top <= 40 && r.bottom > 40;
+      return r.top <= 50 && r.bottom > 50;
     });
-    if (hit) {
-      const light = hit.dataset.nav === "dark";
-      nav.classList.toggle("on-light", light);
-      document.body.classList.toggle("on-light", light);
-    }
+    if (!hit) return;
+    const light = hit.dataset.nav === "dark";
+    nav.classList.toggle("on-light", light);
+    document.body.classList.toggle("on-light", light);
+    const rgb = parse(getComputedStyle(hit).backgroundColor) ?? "10, 10, 10";
+    if (rgb !== lastBg) { lastBg = rgb; nav.style.setProperty("--nav-bg", `rgba(${rgb}, .9)`); }
+    spy.forEach((a) => a.classList.toggle("is-active", !!hit.id && a.dataset.spy === hit.id));
   };
   addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update);
   update();
+
+  // El botón principal del hero deja de verse -> el de la barra pasa a ser el protagonista.
+  const heroCta = document.querySelector("[data-hero-cta]");
+  if (heroCta) {
+    new IntersectionObserver(([e]) => nav.classList.toggle("cta-on", !e.isIntersecting), { rootMargin: "-70px 0px 0px 0px" }).observe(heroCta);
+  } else nav.classList.add("cta-on");
+
+  // En móvil la barra flotante se esconde cuando ya estás viendo el formulario de demo.
+  const dock = document.querySelector<HTMLElement>(".fx-dock");
+  const demo = document.querySelector("#demo");
+  if (dock && demo) new IntersectionObserver(([e]) => dock.classList.toggle("is-hidden", e.isIntersecting)).observe(demo);
 }

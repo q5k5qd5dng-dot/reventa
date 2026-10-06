@@ -12,10 +12,25 @@ const links = [["Inicio", "/"], ["Discotecas", "/discotecas"], ["Promotores", "/
 
 <nav class="fx-nav" aria-label="Principal">
   <a href="/" class="fx-logo"><img src="/favicon.svg" alt="" width="26" height="26" />Wave</a>
+  <ul class="fx-inline">
+    <li><a href="/#servicios" data-spy="servicios">Herramientas</a></li>
+    <li><a href="/#marca-blanca" data-spy="marca-blanca">Marca blanca</a></li>
+    <li class="has-dd">
+      <button type="button" aria-haspopup="true">Sectores <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5l3 3 3-3" stroke="currentColor" fill="none" stroke-width="1.5"/></svg></button>
+      <div class="dd"><div>
+        <a href="/discotecas"><b>Discotecas</b><small>Entradas, mesas y accesos</small></a>
+        <a href="/promotores"><b>Promotores</b><small>RRPP, listas y comisiones</small></a>
+        <a href="/beach-clubs"><b>Beach Clubs</b><small>Reservas de día y de noche</small></a>
+        <a href="/festivales"><b>Festivales</b><small>Abonos, zonas y accesos</small></a>
+      </div></div>
+    </li>
+    <li><a href="/#faq" data-spy="faq">Preguntas</a></li>
+  </ul>
   <div class="fx-nav-right">
-    <a class="fx-nav-cta mono" href="#demo">Solicita una demo</a>
+    <a class="fx-nav-cta" href="#demo">Solicita una demo <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     <button type="button" class="fx-toggler mono" data-menu-toggle aria-expanded="false" aria-controls="fx-menu"><span class="lbl">Menú</span><span class="lbl">Cerrar</span></button>
   </div>
+  <i class="fx-progress" aria-hidden="true"></i>
 </nav>
 
 <div class="fx-dock" role="navigation" aria-label="Acciones rápidas">
