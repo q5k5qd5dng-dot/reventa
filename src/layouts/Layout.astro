@@ -1,12 +1,13 @@
 ---
 import "../styles/global.css";
+import { brand } from "../brand";
 
 interface Props {
   title?: string;
   description?: string;
 }
 const {
-  title = "Reventa · Compra y vende entradas con garantía",
+  title = `${brand.name} · ${brand.tagline}`,
   description = "Compra entradas de eventos agotados y vende las que no puedas usar. Entradas verificadas y pago protegido.",
 } = Astro.props;
 ---
