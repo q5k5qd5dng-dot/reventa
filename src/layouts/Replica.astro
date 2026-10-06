@@ -13,6 +13,7 @@ const { title = `${brand.name} · Reventa de entradas segura y legal`, descripti
     <meta name="description" content={description} />
     <meta name="theme-color" content="#3f7bf0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <slot name="head" />
   </head>
   <body>
     <slot />

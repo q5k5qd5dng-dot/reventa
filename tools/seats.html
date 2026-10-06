@@ -1,0 +1,124 @@
+<!doctype html><meta charset="utf-8">
+<body style="margin:0;background:#888"><canvas id="c"></canvas>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from "three";
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const P = new URLSearchParams(location.search);
+const W = +(P.get("w") || 2400), H = +(P.get("h") || 760);
+const ACC = P.get("acc") || "#e8590c";
+const canvas = document.getElementById("c");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(W, H, false);
+canvas.style.width = "1200px";
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+const pm = new THREE.PMREMGenerator(renderer);
+scene.environment = pm.fromScene(new RoomEnvironment(), 0.03).texture;
+scene.environmentIntensity = +(P.get("env")||0.55);
+
+const cam = new THREE.PerspectiveCamera(+(P.get("fov") || 34), W / H, 0.1, 200);
+cam.position.set(+(P.get("cx") || 0.1), +(P.get("cy") || 2.05), +(P.get("cz") || 4.6));
+cam.lookAt(+(P.get("lx")||0), +(P.get("ly") || 1.55), -4);
+
+// luces
+scene.add(new THREE.HemisphereLight(0xcfe0ff, 0x4b5a8c, +(P.get("hemi")||0.55)));
+const sun = new THREE.DirectionalLight(0xfff4e6, +(P.get("sun")||3.4));
+sun.position.set(-5, 8, 6);
+sun.castShadow = true;
+sun.shadow.mapSize.set(4096, 4096);
+sun.shadow.radius = 5; sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02;
+Object.assign(sun.shadow.camera, { left: -14, right: 14, top: 10, bottom: -10, near: 1, far: 40 });
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0xbcd2ff, 0.7); fill.position.set(6, 3, 5); scene.add(fill);
+
+// materiales
+const white = new THREE.MeshPhysicalMaterial({ color: 0xe9edf9, roughness: 0.3, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, sheen: 0.3 });
+const inner = new THREE.MeshPhysicalMaterial({ color: 0xd5dbef, roughness: 0.4, clearcoat: 0.8, clearcoatRoughness: 0.18 });
+const dark = new THREE.MeshStandardMaterial({ color: 0x3f4b7d, roughness: 0.7 });
+const concrete = new THREE.MeshStandardMaterial({ color: 0x56649a, roughness: 0.95 });
+const accM = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(ACC), roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08 });
+const accIn = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(ACC).multiplyScalar(1.12), roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.1 });
+
+// geometrías
+function backShape(w, h, rt, rb) {
+  const s = new THREE.Shape(), x = -w / 2, y = 0;
+  s.moveTo(x + rb, y); s.lineTo(x + w - rb, y); s.quadraticCurveTo(x + w, y, x + w, y + rb);
+  s.lineTo(x + w, y + h - rt); s.quadraticCurveTo(x + w, y + h, x + w - rt, y + h);
+  s.lineTo(x + rt, y + h); s.quadraticCurveTo(x, y + h, x, y + h - rt);
+  s.lineTo(x, y + rb); s.quadraticCurveTo(x, y, x + rb, y);
+  return s;
+}
+const ex = (shape, depth, bevel) => new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 6, curveSegments: 28 });
+const gBack = ex(backShape(0.40, 0.50, 0.17, 0.06), 0.045, 0.028);
+const gInner = ex(backShape(0.30, 0.38, 0.12, 0.05), 0.01, 0.014);
+const gCush = ex(backShape(0.37, 0.25, 0.11, 0.09), 0.05, 0.026);
+const gMech = new RoundedBoxGeometry(0.30, 0.2, 0.08, 3, 0.02);
+const gSeatPan = ex(backShape(0.37, 0.38, 0.09, 0.09), 0.05, 0.026);
+
+const PITCH = 0.52, ROWDEPTH = 0.86, ROWRISE = 0.42;
+function seat(accent = false) {
+  const g = new THREE.Group();
+  const bM = accent ? accM : white, iM = accent ? accIn : inner;
+  const back = new THREE.Mesh(gBack, bM); back.position.set(0, 0.22, 0); g.add(back);
+  const bi = new THREE.Mesh(gInner, iM); bi.position.set(0, 0.30, 0.092); g.add(bi);
+  const mech = new THREE.Mesh(gMech, dark); mech.position.set(0, 0.2, 0.04); g.add(mech);
+  if (accent) {
+    // asiento bajado (plano)
+    const pan = new THREE.Mesh(gSeatPan, bM); pan.rotation.x = -Math.PI / 2 + 0.04; pan.position.set(0, 0.22, 0.52); g.add(pan);
+    const sup = new THREE.Mesh(gMech, dark); sup.position.set(0, 0.16, 0.12); g.add(sup);
+  } else {
+    const cu = new THREE.Mesh(gCush, bM); cu.position.set(0, 0.0, 0.1); cu.rotation.x = -0.12; g.add(cu);
+  }
+  g.traverse((m) => { if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } });
+  return g;
+}
+
+const ROWS = +(P.get("rows") || 7), COLS = +(P.get("cols") || 25);
+const ACC_ROW = +(P.get("ar") || 2), ACC_COL = +(P.get("ac") || 14);
+for (let r = 0; r < ROWS; r++) {
+  const z = -r * ROWDEPTH, y = r * ROWRISE;
+  // grada
+  const SH = ROWRISE + 0.5;
+  const step = new THREE.Mesh(new THREE.BoxGeometry(120, SH, ROWDEPTH + 0.02), concrete);
+  step.position.set(0, y - SH / 2, z - 0.1); step.receiveShadow = true; step.castShadow = true; scene.add(step);
+  for (let c = 0; c < COLS; c++) {
+    const x = (c - (COLS - 1) / 2) * PITCH;
+    const s = seat(r === ACC_ROW && c === ACC_COL);
+    s.position.set(x, y, z - 0.25);
+    s.rotation.x = -0.05;
+    s.rotation.y = (Math.random() - 0.5) * 0.02;
+    scene.add(s);
+  }
+}
+// render doble (fondo negro / blanco) para recuperar el canal alfa
+function grab(bg) {
+  renderer.setClearColor(bg, 1);
+  renderer.render(scene, cam);
+  const c2 = document.createElement("canvas"); c2.width = W; c2.height = H;
+  const x = c2.getContext("2d", { willReadFrequently: true }); x.drawImage(canvas, 0, 0, W, H);
+  return x.getImageData(0, 0, W, H);
+}
+const a = grab(0x000000), b = grab(0xffffff);
+const out = new ImageData(W, H);
+for (let i = 0; i < a.data.length; i += 4) {
+  const al = 1 - ((b.data[i] - a.data[i]) + (b.data[i + 1] - a.data[i + 1]) + (b.data[i + 2] - a.data[i + 2])) / (3 * 255);
+  const A = Math.max(0, Math.min(1, al));
+  out.data[i + 3] = Math.round(A * 255);
+  if (A > 0.003) { out.data[i] = Math.min(255, a.data[i] / A); out.data[i + 1] = Math.min(255, a.data[i + 1] / A); out.data[i + 2] = Math.min(255, a.data[i + 2] / A); }
+}
+const oc = document.createElement("canvas"); oc.width = W; oc.height = H; oc.getContext("2d").putImageData(out, 0, 0);
+let sx = 0, sy = 0, sn = 0, minY = H;
+for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) { const k = (j * W + i) * 4, r = out.data[k], g = out.data[k + 1], b = out.data[k + 2], a = out.data[k + 3]; if (a > 200 && r > 200 && g > 70 && g < 150 && b < 70) { sx += i; sy += j; sn++; if (j < minY) minY = j; } }
+window.__seat = sn ? { x: +(sx / sn / W).toFixed(4), y: +(sy / sn / H).toFixed(4), top: +(minY / H).toFixed(4) } : null;
+window.__png = oc.toDataURL("image/png");
+window.__done = true;
+</script>

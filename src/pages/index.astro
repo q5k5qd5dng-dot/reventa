@@ -1,9 +1,18 @@
 ---
+import fs from "node:fs";
+import path from "node:path";
 import Replica from "../layouts/Replica.astro";
-import { events, poster, fechaLarga } from "../data/events";
+import Sell from "../views/r/Sell.astro";
+import { events, fechaLarga } from "../data/events";
+import { extra } from "../data/extra";
+import art from "../data/art.json";
 import { brand } from "../brand";
 
 const fecha = fechaLarga;
+const b64 = (f: string) => `url(data:image/webp;base64,${fs.readFileSync(path.join(process.cwd(), "src/assets/art", f + ".webp")).toString("base64")})`;
+const cssVars = events.map((e) => `--art-${e.id}:${b64(e.id)};--tint-${e.id}:${(art as any)[e.id].tint};`).join("") + `--seats-wide:${b64("seats-wide")};--seats-tall:${b64("seats-tall")};`;
+const css = `:root{${cssVars}}`;
+
 const featured = [
   { t: "Copa de Europa 2026/27", s: "Las mejores noches del fútbol europeo, con entradas verificadas y entrega garantizada.", ev: events[6] },
   { t: "Karol Vega · Gira Verano", s: "Su gira llega a los estadios. Encuentra tus entradas antes de que vuelen.", ev: events[0] },
@@ -12,49 +21,57 @@ const featured = [
   { t: "Duro Festival XXI", s: "Dos días, cuatro escenarios y lo mejor del techno y el house europeo.", ev: events[1] },
 ];
 const sedes = [
-  { n: "Estadio Metropolitano", c: "Madrid", ev: events[0] },
-  { n: "Sala Apolo", c: "Barcelona", ev: events[4] },
-  { n: "Can Guitet", c: "Barcelona", ev: events[1] },
-  { n: "Palau Sant Jordi", c: "Barcelona", ev: events[3] },
-  { n: "Teatro Principal", c: "Zaragoza", ev: events[5] },
-  { n: "Estadio Central", c: "Bilbao", ev: events[6] },
+  { n: "Estadio Metropolitano", c: "Madrid", ev: events[0], z: 190, p: "50% 70%" },
+  { n: "Sala Apolo", c: "Barcelona", ev: events[4], z: 170, p: "50% 58%" },
+  { n: "Can Guitet", c: "Barcelona", ev: events[1], z: 180, p: "50% 62%" },
+  { n: "Palau Sant Jordi", c: "Barcelona", ev: events[3], z: 180, p: "50% 70%" },
+  { n: "Teatro Principal", c: "Zaragoza", ev: events[5], z: 170, p: "50% 45%" },
+  { n: "Estadio Central", c: "Bilbao", ev: events[6], z: 170, p: "50% 50%" },
 ];
 const reviews = [
   { n: "Marta", t: "Pensé que sería complicado conseguir entradas para un concierto agotado, pero lo encontré en cinco minutos. La entrada llegó al momento y entré sin ningún problema. Muy recomendable." },
   { n: "Pablo", t: "Vendí dos entradas que no podía usar. Las compraron esa misma tarde y el dinero me llegó automáticamente tras el evento. Me gustó mucho que fuera todo tan transparente." },
   { n: "Lucía", t: "Me escribieron enseguida cuando tuve una duda sobre mi compra. Se agradece que haya gente real detrás. Volveré a usarlo seguro para el próximo festival." },
 ];
-const stripe = [
-  { y: 0, w: 112, step: 118, off: 0.0 },
-  { y: 50, w: 121, step: 128, off: 0.5 },
-  { y: 108, w: 131, step: 138, off: 0.15 },
-  { y: 172, w: 143, step: 152, off: 0.6 },
-];
-const W = 1890, purpleX = 1010;
-const pRow = stripe[2], pX0 = -pRow.step * (1 - pRow.off), pX = pX0 + Math.round((purpleX - pX0 - pRow.w / 2) / pRow.step) * pRow.step - 4;
 const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla", "Málaga", "A Coruña", "Donostia", "Zaragoza", "Tenerife", "Murcia"];
 ---
 
 <Replica>
+  <style slot="head" is:inline set:html={css}></style>
   <!-- HEADER -->
-  <header id="hdr" class="fixed inset-x-0 top-0 z-[100]">
+  <header id="hdr" data-hdr="home" class="fixed inset-x-0 top-0 z-[100]">
     <div class="mx-auto flex max-w-[1650px] items-center justify-between px-6 py-4 sm:py-6 lg:px-0">
-      <a href="#top-page" id="logo" class="hl logo-word text-[2.1rem] text-white sm:text-[3.4rem]" aria-label={`${brand.name}, inicio`}>handticket</a>
-      <nav class="flex items-center gap-2 sm:gap-3" aria-label="Principal">
-        <a href="#como" class="hl hidden px-4 py-3 text-base text-white transition hover:opacity-70 md:block">Cómo funciona</a>
-        <button id="user-chip" class="hl hidden items-center gap-2 rounded-full bg-white/15 py-1.5 pl-1.5 pr-4 text-sm font-medium text-white backdrop-blur" aria-label="Mi cuenta">
-          <span id="user-ini" class="grid h-8 w-8 place-items-center rounded-full bg-white text-sm font-semibold text-violet">?</span><span id="user-name"></span>
-        </button>
-        <button id="login-btn" class="hb whitespace-nowrap rounded-lg border border-white/60 px-4 py-2.5 text-sm text-white transition hover:bg-white/20 sm:px-5 sm:py-3 sm:text-base">Iniciar sesión</button>
-        <button id="sell-btn" class="hl hidden items-center gap-2 rounded-lg bg-white/20 px-5 py-3 text-base text-white backdrop-blur transition hover:bg-white/30 sm:inline-flex"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>Vender entrada</button>
+      <a href="#/" id="logo" class="hl logo-word text-[2.1rem] sm:text-[3.4rem]" aria-label={`${brand.name}, inicio`}>handticket</a>
+      <nav class="relative flex items-center gap-2 sm:gap-3" aria-label="Principal">
+        <div class="hout flex items-center gap-2 sm:gap-3">
+          <a href="#/vender" class="hl hidden px-4 py-3 text-base transition hover:opacity-70 md:block">Cómo funciona</a>
+          <button id="login-btn" class="hb whitespace-nowrap rounded-lg border px-4 py-2.5 text-sm transition sm:px-5 sm:py-3 sm:text-base">Iniciar sesión</button>
+          <button id="sell-btn" class="hs hidden items-center gap-2 rounded-lg px-5 py-3 text-base transition sm:inline-flex"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>Vender entrada</button>
+        </div>
+        <div class="hin hidden items-center gap-1 sm:gap-3">
+          <button id="open-search" class="hl grid h-11 w-11 place-items-center rounded-full transition hover:bg-black/5" aria-label="Buscar"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg></button>
+          <a href="#/mis-entradas" class="hl hidden px-2 py-3 text-base transition hover:opacity-70 md:block">Mis entradas</a>
+          <a href="#/mis-anuncios" class="hl hidden px-2 py-3 text-base transition hover:opacity-70 md:block">Mis anuncios</a>
+          <button id="avatar" class="grid h-11 w-11 place-items-center rounded-full text-lg font-medium text-white" aria-haspopup="menu" aria-expanded="false" aria-label="Mi cuenta">?</button>
+          <button id="menu-btn" class="hl grid h-11 w-11 place-items-center rounded-full transition hover:bg-black/5" aria-haspopup="menu" aria-expanded="false" aria-label="Menú"><svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <button id="sell-btn2" class="hs2 hidden items-center gap-2 rounded-xl bg-ink px-5 py-3.5 text-base font-medium text-white transition hover:bg-black sm:inline-flex"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>Vender entrada</button>
+        </div>
+        <div id="acc-menu" class="absolute right-0 top-full z-[120] mt-3 hidden w-64 overflow-hidden rounded-2xl bg-white p-2 text-ink shadow-[0_24px_60px_-16px_rgba(0,0,0,0.35)] ring-1 ring-black/5" role="menu">
+          <div class="px-3 pb-2 pt-3"><p id="acc-name" class="font-medium"></p><p id="acc-email" class="truncate text-sm text-sub"></p></div>
+          <a role="menuitem" href="#/mis-entradas" class="block rounded-xl px-3 py-2.5 transition hover:bg-soft">Mis entradas</a>
+          <a role="menuitem" href="#/mis-anuncios" class="block rounded-xl px-3 py-2.5 transition hover:bg-soft">Mis anuncios</a>
+          <a role="menuitem" href="#/vender" class="block rounded-xl px-3 py-2.5 transition hover:bg-soft">Cómo funciona</a>
+          <button role="menuitem" id="logout" class="block w-full rounded-xl px-3 py-2.5 text-left text-[#e5484d] transition hover:bg-soft">Cerrar sesión</button>
+        </div>
       </nav>
     </div>
   </header>
 
-  <main id="top-page">
+  <div id="pages">
+  <main id="v-home" class="view" data-view="home">
     <!-- HERO -->
     <section id="hero" class="hero-bg relative overflow-hidden pt-28 text-center text-white sm:pt-36 lg:pt-[11rem]">
-      <div class="pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full bg-violet/35 blur-[100px]" data-blob></div>
+      <div class="pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full bg-accent/35 blur-[100px]" data-blob></div>
       <div class="pointer-events-none absolute -right-24 top-24 h-80 w-80 rounded-full bg-sky-200/50 blur-[100px]" data-blob></div>
       <div class="relative mx-auto max-w-[1650px] px-6 lg:px-0">
         <h1 id="hero-title" class="mx-auto mt-6 max-w-3xl text-[1.9rem] font-normal leading-[1.28] sm:mt-4 sm:text-5xl sm:leading-[1.2] lg:max-w-none">Reventa de entradas segura y legal</h1>
@@ -69,40 +86,10 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
         </form>
       </div>
 
-      <!-- Tira de butacas -->
-      <div id="seats-wrap" class="relative mt-9 h-[17rem] sm:mt-12 sm:h-[16rem] lg:h-[13.4vw] lg:min-h-[14rem]">
-        <svg viewBox={`0 0 ${W} 270`} preserveAspectRatio="xMidYMin slice" class="seat-svg absolute inset-0 h-full w-full" aria-hidden="true">
-          <defs>
-            <linearGradient id="sb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#e9ebf8"/><stop offset="1" stop-color="#c3c8e6"/></linearGradient>
-            <linearGradient id="sbi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f5fd"/><stop offset="1" stop-color="#dde0f2"/></linearGradient>
-            <linearGradient id="sc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d3d7ee"/></linearGradient>
-            <linearGradient id="pb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a84ff"/><stop offset="1" stop-color="#4b2dc7"/></linearGradient>
-            <linearGradient id="pbi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ab97ff"/><stop offset="1" stop-color="#6247ea"/></linearGradient>
-            <linearGradient id="pc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a6dfa"/><stop offset="1" stop-color="#4126b4"/></linearGradient>
-            <symbol id="seat" viewBox="0 0 120 110">
-              <rect x="14" y="62" width="92" height="42" rx="12" fill="#5d6a9c"/>
-              <rect x="4" y="2" width="112" height="84" rx="38" fill="url(#sb)"/>
-              <rect x="14" y="10" width="92" height="64" rx="30" fill="url(#sbi)"/>
-              <path d="M0 76 Q60 58 120 76 L112 100 Q60 110 8 100Z" fill="url(#sc)"/>
-              <path d="M10 80 Q60 66 110 80" stroke="#fff" stroke-opacity=".9" stroke-width="3" fill="none" stroke-linecap="round"/>
-            </symbol>
-            <symbol id="seatp" viewBox="0 0 120 110">
-              <rect x="14" y="62" width="92" height="42" rx="12" fill="#2b1a78"/>
-              <rect x="4" y="2" width="112" height="84" rx="38" fill="url(#pb)"/>
-              <rect x="14" y="10" width="92" height="64" rx="30" fill="url(#pbi)"/>
-              <path d="M0 76 Q60 58 120 76 L112 100 Q60 110 8 100Z" fill="url(#pc)"/>
-              <path d="M10 80 Q60 66 110 80" stroke="#fff" stroke-opacity=".55" stroke-width="3" fill="none" stroke-linecap="round"/>
-            </symbol>
-          </defs>
-          {stripe.map((r, ri) => {
-            const x0 = -r.step * (1 - r.off);
-            const n = Math.ceil((W - x0) / r.step) + 1;
-            const pi = Math.round((purpleX - x0 - r.w / 2) / r.step);
-            return Array.from({ length: n }).map((_, i) => (ri === 2 && i === pi) ? null : (<g class="seat-g" data-row={ri}><use href="#seat" x={x0 + i * r.step} y={r.y} width={r.w} height={r.w * 110 / 120}></use></g>));
-          })}
-          <g class="seat-g seat-purple" data-row="2"><use href="#seatp" x={pX} y={stripe[2].y + 6} width={stripe[2].w * 1.06} height={stripe[2].w * 1.06 * 110 / 120}></use></g>
-        </svg>
-        <div id="seat-tip" class="pointer-events-none absolute z-10 hidden whitespace-nowrap rounded-xl bg-white px-4 py-2.5 text-left text-sm text-ink shadow-xl lg:block"><p class="font-semibold text-violet">Tu entrada</p><p class="text-xs text-sub">Grada 12 · Fila 4</p></div>
+      <!-- Tira de butacas (render 3D) -->
+      <div id="seats-wrap" class="seats-wrap relative mt-4 sm:mt-6">
+        <div id="seats" class="seats-img" role="img" aria-label="Filas de butacas de estadio, una de ellas resaltada en naranja"></div>
+        <div id="seat-tip" class="pointer-events-none absolute z-10 hidden whitespace-nowrap rounded-xl bg-white px-4 py-2.5 text-left text-sm text-ink shadow-xl lg:block"><p class="font-semibold text-accent">Tu entrada</p><p class="text-xs text-sub">Grada 12 · Fila 4</p></div>
       </div>
     </section>
 
@@ -115,12 +102,12 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
       <div id="sug" class="car no-scrollbar mt-6 flex gap-6 overflow-x-auto px-6 pb-2 lg:px-0" tabindex="0" aria-label="Eventos sugeridos">
         {events.map((e, i) => (
           <article class="w-[17.25rem] shrink-0 lg:w-[18.1rem]" data-card>
-            <button type="button" data-open={e.id} class="block w-full text-left" aria-label={`Ver ${e.t}`}>
-              <div class="card-art aspect-square"><div class="art h-full w-full" set:html={poster(e, i)}></div></div>
-              <p class="mt-3.5 text-sm text-violet">{fecha(e.date)}</p>
-              <p class="mt-0.5 truncate text-base font-medium">{e.a} - {e.t}</p>
+            <a href={`#/evento/${e.id}`} class="block w-full text-left" aria-label={`Ver ${e.t}`}>
+              <div class="card-art aspect-square"><div class="art h-full w-full" style={`background-image:var(--art-${e.id})`}></div></div>
+              <p class="mt-3.5 text-sm text-accent">{fecha(e.date)}</p>
+              <p class="mt-0.5 truncate text-base font-medium">{extra[e.id].name}</p>
               <p class="truncate text-sm text-sub">{e.v}, {e.c}</p>
-            </button>
+            </a>
           </article>
         ))}
       </div>
@@ -135,14 +122,14 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
       <div id="top" class="car no-scrollbar mt-6 flex gap-6 overflow-x-auto px-6 pb-2 lg:px-0" tabindex="0" aria-label="Eventos destacados">
         {featured.map((f, i) => (
           <article class="w-[19.3rem] shrink-0 sm:w-[21rem] lg:w-[18.1rem]" data-card>
-            <button type="button" data-open={f.ev.id} class="group relative block h-[27rem] w-full overflow-hidden rounded-3xl text-left text-white sm:h-[27rem] lg:h-[18.1rem]" aria-label={`Ver ${f.t}`} data-tiltcard>
-              <div class="art absolute inset-[-4%] h-[108%] w-[108%] will-change-transform" data-par set:html={poster(f.ev, 40 + i)}></div>
+            <a href={`#/evento/${f.ev.id}`} class="group relative block h-[27rem] w-full overflow-hidden rounded-3xl text-left text-white sm:h-[27rem] lg:h-[18.1rem]" aria-label={`Ver ${f.t}`} data-tiltcard>
+              <div class="art absolute inset-[-4%] h-[108%] w-[108%] will-change-transform" data-par style={`background-image:var(--art-${f.ev.id})`}></div>
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/5"></div>
               <div class="absolute inset-x-0 bottom-0 p-5">
                 <p class="text-xl font-semibold leading-tight lg:text-lg">{f.t}</p>
                 <p class="line-2 mt-1.5 text-sm leading-snug text-white/80 lg:text-xs">{f.s}</p>
               </div>
-            </button>
+            </a>
           </article>
         ))}
       </div>
@@ -157,11 +144,11 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
       <div id="pop" class="car no-scrollbar mt-6 flex gap-6 overflow-x-auto px-6 pb-2 lg:px-0" tabindex="0" aria-label="Sitios populares">
         {sedes.map((s, i) => (
           <article class="w-[17.25rem] shrink-0 lg:w-[18.1rem]" data-card>
-            <button type="button" data-open={s.ev.id} class="block w-full text-left" aria-label={`Ver eventos en ${s.n}`}>
-              <div class="card-art aspect-square"><div class="art h-full w-full" set:html={poster(s.ev, 80 + i)}></div></div>
+            <a href={`#/buscar/${encodeURIComponent(s.c)}`} class="block w-full text-left" aria-label={`Ver eventos en ${s.n}`}>
+              <div class="card-art aspect-square"><div class="art h-full w-full" style={`background-image:var(--art-${s.ev.id});background-size:${s.z}%;background-position:${s.p}`}></div></div>
               <p class="mt-3.5 text-base font-medium">{s.n}</p>
               <p class="text-sm text-sub">{s.c}</p>
-            </button>
+            </a>
           </article>
         ))}
       </div>
@@ -184,7 +171,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
             <p id="lock-date" class="mt-5 text-[11px] font-medium text-white/85">domingo, 10 de marzo</p>
             <p id="lock-time" class="text-[2.6rem] font-semibold leading-none tracking-tight md:text-5xl">1:47</p>
             <div id="notif" class="notif absolute inset-x-2.5 top-[8.6rem] rounded-2xl p-3 text-left text-ink md:top-[10rem]">
-              <div class="flex items-center gap-2 text-[9px] font-medium uppercase tracking-wider text-ink/55"><span class="grid h-4 w-4 place-items-center rounded-[5px] bg-violet text-[8px] text-white">🎟</span>{brand.name}<span class="ml-auto normal-case tracking-normal">ahora</span></div>
+              <div class="flex items-center gap-2 text-[9px] font-medium uppercase tracking-wider text-ink/55"><span class="grid h-4 w-4 place-items-center rounded-[5px] bg-accent text-[8px] text-white">🎟</span>{brand.name}<span class="ml-auto normal-case tracking-normal">ahora</span></div>
               <p id="n-t" class="mt-1.5 text-[12px] font-semibold leading-snug">¡Una nueva entrada para Karol Vega! 🎟️</p>
               <p id="n-b" class="mt-0.5 text-[11px] leading-snug text-ink/80">Alguien está vendiendo su entrada por 120€, consíguela antes de que se agote.</p>
             </div>
@@ -203,8 +190,8 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
           <svg viewBox="0 0 320 240" class="mx-auto mt-3 h-auto w-full max-w-[22rem] overflow-visible" role="img" aria-label="Un candado protege tus entradas">
             <defs>
               <radialGradient id="orb" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#ececf5"/></radialGradient>
-              <linearGradient id="lk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a82ff"/><stop offset="1" stop-color="#7352ea"/></linearGradient>
-              <filter id="sh" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#3b2d8a" flood-opacity=".16"/></filter>
+              <linearGradient id="lk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9d57"/><stop offset="1" stop-color="#e8590c"/></linearGradient>
+              <filter id="sh" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#3a2a1a" flood-opacity=".16"/></filter>
             </defs>
             <g class="rings" fill="none" stroke="#d9d9e4">
               <circle class="ring-c" cx="160" cy="120" r="152" stroke-opacity=".45" stroke-width="1.4"/>
@@ -213,17 +200,17 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
             </g>
             <g class="sheet-g" data-s="a" transform="translate(66 128) rotate(-14)" filter="url(#sh)">
               <rect width="66" height="84" rx="7" fill="#fff"/><rect x="14" y="26" width="38" height="5" rx="2.5" fill="#e7e7ee"/><rect x="14" y="38" width="30" height="5" rx="2.5" fill="#e7e7ee"/><rect x="14" y="50" width="36" height="5" rx="2.5" fill="#e7e7ee"/>
-              <g transform="translate(-9 36) rotate(-8)"><rect width="26" height="13" rx="3.5" fill="#7b5cf0"/><text x="13" y="9.4" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="#fff">PDF</text></g>
+              <g transform="translate(-9 36) rotate(-8)"><rect width="26" height="13" rx="3.5" fill="#e8590c"/><text x="13" y="9.4" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="#fff">PDF</text></g>
             </g>
             <g class="sheet-g" data-s="b" transform="translate(188 52) rotate(14)" filter="url(#sh)">
               <rect width="74" height="94" rx="7" fill="#fff"/><rect x="16" y="16" width="26" height="5" rx="2.5" fill="#e7e7ee"/><rect x="16" y="44" width="44" height="5" rx="2.5" fill="#e7e7ee"/><rect x="16" y="56" width="36" height="5" rx="2.5" fill="#e7e7ee"/><rect x="16" y="68" width="42" height="5" rx="2.5" fill="#e7e7ee"/>
-              <g transform="translate(-10 18) rotate(-8)"><rect width="26" height="13" rx="3.5" fill="#7b5cf0"/><text x="13" y="9.4" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="#fff">PDF</text></g>
+              <g transform="translate(-10 18) rotate(-8)"><rect width="26" height="13" rx="3.5" fill="#e8590c"/><text x="13" y="9.4" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="#fff">PDF</text></g>
             </g>
             <g id="lock-orb" filter="url(#sh)"><circle cx="160" cy="120" r="46" fill="url(#orb)"/><circle cx="160" cy="120" r="46" fill="none" stroke="#fff" stroke-width="2"/></g>
             <g id="lock-g" transform="translate(160 122)">
-              <path id="shackle" d="M-10 -6v-7a10 10 0 0120 0v7" fill="none" stroke="#8a6df5" stroke-width="5.5" stroke-linecap="round"/>
+              <path id="shackle" d="M-10 -6v-7a10 10 0 0120 0v7" fill="none" stroke="#f2762a" stroke-width="5.5" stroke-linecap="round"/>
               <rect x="-17" y="-6" width="34" height="28" rx="8" fill="url(#lk)"/>
-              <rect x="-2.2" y="3" width="4.4" height="10" rx="2.2" fill="#d4c9ff"/>
+              <rect x="-2.2" y="3" width="4.4" height="10" rx="2.2" fill="#ffd9bd"/>
             </g>
           </svg>
           <p class="mt-3 text-[1.02rem] font-light leading-relaxed text-sub md:text-[1.2rem]">En {brand.name} aplicamos un riguroso protocolo antifraude para garantizar que las entradas sean seguras.</p>
@@ -234,7 +221,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
           <h3 class="text-[1.55rem] font-normal md:text-[1.7rem]">Garantía de entrega</h3>
           <svg viewBox="0 0 320 240" class="mx-auto mt-3 h-auto w-full max-w-[22rem] overflow-visible" role="img" aria-label="Un PDF cae en una bandeja">
             <defs>
-              <linearGradient id="pf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a5bf2"/><stop offset="1" stop-color="#9a86ff"/></linearGradient>
+              <linearGradient id="pf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8590c"/><stop offset="1" stop-color="#ffa863"/></linearGradient>
               <linearGradient id="tr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdfdfe"/><stop offset="1" stop-color="#e8e8ee"/></linearGradient>
               <filter id="sh2" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="10" stdDeviation="9" flood-color="#2a2a60" flood-opacity=".13"/></filter>
             </defs>
@@ -243,7 +230,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
             <g id="pdf-wrap" clip-path="url(#tray-clip)">
               <g id="pdf-file">
                 <path d="M62 62 Q62 52 72 52 H196 L252 108 V170 H62Z" fill="url(#pf)"/>
-                <path d="M196 52 L252 108 H206 Q196 108 196 98Z" fill="#6a49e6" opacity=".0"/>
+                <path d="M196 52 L252 108 H206 Q196 108 196 98Z" fill="#c94a08" opacity=".0"/>
                 <text x="82" y="94" font-family="Poppins,sans-serif" font-weight="600" font-size="26" fill="#fff">PDF</text>
                 <rect x="82" y="104" width="52" height="8" rx="4" fill="#fff" opacity=".4"/>
               </g>
@@ -284,14 +271,20 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
           ))}
         </div>
         <div class="mt-5 flex items-center justify-center gap-2 lg:hidden" id="dots" aria-hidden="true">
-          {reviews.map((_, i) => (<i data-dot={i} class="h-2 rounded-full bg-black/20 transition-all" style={i === 0 ? "width:1.75rem;background:#6d4af5" : "width:0.5rem"}></i>))}
+          {reviews.map((_, i) => (<i data-dot={i} class="h-2 rounded-full bg-black/20 transition-all" style={i === 0 ? "width:1.75rem;background:#e8590c" : "width:0.5rem"}></i>))}
         </div>
       </div>
     </section>
   </main>
+  <main id="v-event" class="view hidden" data-view="event"></main>
+  <main id="v-search" class="view hidden" data-view="search"></main>
+  <Sell />
+  <main id="v-tickets" class="view hidden" data-view="tickets"></main>
+  <main id="v-listings" class="view hidden" data-view="listings"></main>
+  </div>
 
   <!-- FOOTER -->
-  <footer class="border-t border-line px-6 pb-8 pt-12 lg:px-0">
+  <footer id="footer" class="border-t border-line px-6 pb-8 pt-12 lg:px-0">
     <div class="mx-auto grid max-w-[1500px] gap-10 md:grid-cols-4">
       <div>
         <p class="text-base">Descarga la App</p>
@@ -300,16 +293,16 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
           <a href="#" data-store class="flex h-14 w-48 items-center whitespace-nowrap gap-2.5 rounded-lg bg-black px-4 text-white ring-1 ring-white/20 transition hover:-translate-y-0.5"><svg viewBox="0 0 24 24" class="h-7 w-7"><path fill="#34a853" d="M3.6 2.3 13.4 12 3.6 21.7a1.5 1.5 0 01-.6-1.2V3.5c0-.5.2-.9.6-1.2z"/><path fill="#fbbc04" d="m17 8.4-3.6 3.6 3.6 3.6 4-2.3c1.2-.7 1.2-1.8 0-2.5L17 8.4z"/><path fill="#ea4335" d="M3.6 21.7 13.4 12 17 15.6 5.7 22c-.8.4-1.6.2-2.1-.3z"/><path fill="#4285f4" d="M3.6 2.3c.5-.5 1.3-.7 2.1-.3L17 8.4 13.4 12 3.6 2.3z"/></svg><span class="text-left"><span class="block text-[10px] leading-none">GET IT ON</span><span class="text-xl font-medium leading-tight">Google Play</span></span></a>
         </div>
       </div>
-      <nav aria-label={brand.name}><p class="text-base">{brand.name}</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-violet" href="#top-page">Inicio</a></li><li><a class="hover:text-violet" href="#" data-sell>Vender entrada</a></li><li><a class="hover:text-violet" href="#como">Cómo funciona</a></li><li><a class="hover:text-violet" href="#" data-soon>Blog</a></li></ul></nav>
-      <nav aria-label="Asistencia"><p class="text-base">Asistencia</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-violet" href="#" data-soon>Centro de ayuda</a></li><li><a class="hover:text-violet" href="#" data-soon>Cómo vender una entrada</a></li><li><a class="hover:text-violet" href="#" data-soon>Seguridad de la plataforma</a></li></ul></nav>
-      <nav aria-label="Legal"><p class="text-base">Legal</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-violet" href="#" data-soon>Política de privacidad</a></li><li><a class="hover:text-violet" href="#" data-soon>Condiciones de uso</a></li><li><a class="hover:text-violet" href="#" data-soon>Política de cookies</a></li><li><a class="hover:text-violet" href="#" data-soon>Aviso legal</a></li></ul></nav>
+      <nav aria-label={brand.name}><p class="text-base">{brand.name}</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-accent" href="#/">Inicio</a></li><li><a class="hover:text-accent" href="#" data-sell>Vender entrada</a></li><li><a class="hover:text-accent" href="#/vender">Cómo funciona</a></li><li><a class="hover:text-accent" href="#" data-soon>Blog</a></li></ul></nav>
+      <nav aria-label="Asistencia"><p class="text-base">Asistencia</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-accent" href="#" data-soon>Centro de ayuda</a></li><li><a class="hover:text-accent" href="#" data-soon>Cómo vender una entrada</a></li><li><a class="hover:text-accent" href="#" data-soon>Seguridad de la plataforma</a></li></ul></nav>
+      <nav aria-label="Legal"><p class="text-base">Legal</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-accent" href="#" data-soon>Política de privacidad</a></li><li><a class="hover:text-accent" href="#" data-soon>Condiciones de uso</a></li><li><a class="hover:text-accent" href="#" data-soon>Política de cookies</a></li><li><a class="hover:text-accent" href="#" data-soon>Aviso legal</a></li></ul></nav>
     </div>
     <div class="mx-auto mt-12 max-w-[1500px] border-t border-line pt-8">
       <ul class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm font-light text-sub md:grid-cols-3">
-        {cities.map((c) => (<li><a class="hover:text-violet" href="#sugerencias">Reventa de entradas {c}</a></li>))}
-        <li><a class="hover:text-violet" href="#sugerencias">Reventa fan to fan de entradas</a></li>
-        <li><a class="hover:text-violet" href="#sugerencias">Entradas de conciertos</a></li>
-        <li><a class="hover:text-violet" href="#sugerencias">Entradas de festivales</a></li>
+        {cities.map((c) => (<li><a class="hover:text-accent" href={`#/buscar/${encodeURIComponent(c)}`}>Reventa de entradas {c}</a></li>))}
+        <li><a class="hover:text-accent" href="#/vender">Reventa fan to fan de entradas</a></li>
+        <li><a class="hover:text-accent" href="#/buscar/musica">Entradas de conciertos</a></li>
+        <li><a class="hover:text-accent" href="#/buscar/festival">Entradas de festivales</a></li>
       </ul>
     </div>
     <div class="mx-auto mt-10 grid max-w-[1500px] items-center gap-4 text-sm text-sub md:grid-cols-3">
@@ -325,6 +318,9 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
     <p class="mt-4 text-[1.02rem] font-light leading-relaxed text-ink/80">{brand.name} utiliza cookies de terceros para ofrecerte la mejor experiencia posible. Puedes leer más en nuestra <a href="#" data-soon class="underline underline-offset-2">política de cookies</a>.</p>
     <div class="mt-5 flex items-center justify-between gap-3"><button id="ck-all" class="rounded-xl bg-black px-6 py-4 text-base text-white transition hover:bg-ink/80">Aceptar</button><button id="ck-min" class="text-base font-light text-sub transition hover:text-ink">Aceptar solo las necesarias</button></div>
   </aside>
+
+  <!-- Buscador (paleta) -->
+  <div id="sp" class="overlay !items-start !pt-[10vh]" aria-hidden="true"><div id="sp-box" class="sheet !max-h-[80svh] !rounded-3xl p-3 sm:!max-w-2xl" role="dialog" aria-modal="true" aria-label="Buscar"><div class="flex items-center gap-3 rounded-2xl bg-soft px-4 py-3"><svg viewBox="0 0 24 24" class="h-6 w-6 shrink-0 text-ink/50" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg><input id="sp-q" type="search" autocomplete="off" placeholder="Busca eventos, recintos, ciudades o artistas" aria-label="Buscar" class="w-full bg-transparent text-lg outline-none" /><kbd class="hidden rounded border border-line px-1.5 text-xs text-sub sm:block">Esc</kbd></div><ul id="sp-list" class="mt-2 space-y-1"></ul></div></div>
 
   <!-- Hoja modal (evento / acceso / vender / entradas) -->
   <div id="ov" class="overlay" aria-hidden="true"><div id="sheet" class="sheet" role="dialog" aria-modal="true" tabindex="-1"></div></div>
