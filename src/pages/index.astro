@@ -1,14 +1,167 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Nav from "../components/Nav.astro";
-import Hero from "../components/Hero.astro";
-import Sections from "../components/Sections.astro";
+import { brand } from "../brand";
+
+const suggestions = [
+  { t: "Concierto de verano", d: "24 de junio de 2027, 20:00", v: "Estadio Metropolitano", g: "from-fuchsia-500 to-orange-400" },
+  { t: "Festival Electrónico XXI", d: "10 de octubre - 11 de octubre", v: "Can Guitet, Barcelona", g: "from-zinc-700 to-zinc-950" },
+  { t: "Noche Indie", d: "17 de octubre, 21:00", v: "Espacio Norte, Madrid", g: "from-yellow-300 to-amber-500" },
+  { t: "Jornada de liga", d: "8 de noviembre, 16:00", v: "Estadio Municipal", g: "from-sky-500 to-indigo-700" },
+];
+const featured = [
+  { t: "Final de Copa", s: "La gran cita del fútbol europeo, con entradas verificadas.", g: "from-sky-400 to-indigo-800" },
+  { t: "Gira de despedida", s: "Su última gira. No te quedes sin tu entrada.", g: "from-emerald-500 to-teal-900" },
+  { t: "Mujeres 2026", s: "La artista vuelve a los escenarios este año.", g: "from-purple-500 to-fuchsia-900" },
+  { t: "Tropical Fest", s: "Encuentra la entrada esperada del verano.", g: "from-rose-500 to-red-900" },
+];
+const places = [
+  { n: "Sala Apolo", c: "Barcelona", g: "from-violet-500 to-zinc-900" },
+  { n: "Palau Sant Jordi", c: "Barcelona", g: "from-sky-500 to-slate-800" },
+  { n: "WiZink Center", c: "Madrid", g: "from-rose-500 to-zinc-900" },
+  { n: "Auditorio de Zaragoza", c: "Zaragoza", g: "from-amber-400 to-orange-700" },
+];
+const whys = [
+  { t: "Reventa segura", d: `En ${brand.name} aplicamos un riguroso protocolo antifraude para garantizar que las entradas sean seguras.`, i: "M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3z" },
+  { t: "Garantía de entrega", d: `Al contrario de otras plataformas, cuando compras entradas en ${brand.name}, la entrega de las entradas está garantizada.`, i: "M4 4h16v16H4zM8 12l3 3 5-6" },
+  { t: "Pago asegurado", d: "Si vendes, recibe tu dinero de forma automática tras el evento. Si compras, tu pago queda protegido.", i: "M3 7h18v10H3zM3 11h18" },
+];
 ---
 
-<Layout>
-  <Nav />
+<Layout title={`${brand.name} · Reventa de entradas segura y legal`}>
+  <header class="absolute inset-x-0 top-0 z-20">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
+      <a href="/" class="text-4xl font-extrabold lowercase tracking-tight text-white">hand<span class="text-white/70">ticket</span></a>
+      <a href="#app" class="rounded-lg border border-white/50 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-white/15">Iniciar sesión</a>
+    </div>
+  </header>
+
   <main>
-    <Hero />
-    <Sections />
+    <!-- Hero -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-blue-500 via-blue-400 to-sky-200 px-5 pb-24 pt-32 text-center text-white">
+      <h1 class="mx-auto max-w-2xl text-balance text-3xl font-medium leading-tight sm:text-5xl">Reventa de entradas segura y legal</h1>
+      <p class="mt-3 text-lg text-white/90">Compra y vende entradas</p>
+      <form class="mx-auto mt-8 flex max-w-2xl items-center gap-3 rounded-xl bg-white px-4 py-3.5 text-ink shadow-xl" role="search" onsubmit="return false">
+        <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-ink/40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input type="search" placeholder="Busca eventos, recintos, ciudades o artistas" class="w-full bg-transparent text-base outline-none placeholder:text-ink/45" aria-label="Buscar eventos" />
+      </form>
+      <!-- gradas -->
+      <div class="mx-auto mt-14 grid max-w-3xl grid-cols-5 gap-3 sm:gap-4" aria-hidden="true">
+        {Array.from({ length: 15 }).map((_, i) => (
+          <div class:list={["h-14 rounded-t-2xl rounded-b-md shadow-md sm:h-20", i === 12 ? "bg-violet-600" : "bg-white/90"]}></div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Sugerencias -->
+    <section class="mx-auto max-w-6xl px-5 pt-14">
+      <h2 class="text-2xl font-medium">Sugerencias para ti</h2>
+      <div class="-mx-5 mt-5 flex snap-x gap-4 overflow-x-auto px-5 pb-2">
+        {suggestions.map((e) => (
+          <a href="#app" class="w-56 shrink-0 snap-start sm:w-64">
+            <div class:list={["aspect-square rounded-2xl bg-gradient-to-br", e.g]}></div>
+            <p class="mt-3 text-sm text-violet-600">{e.d}</p>
+            <p class="mt-1 truncate text-lg font-medium">{e.t}</p>
+            <p class="truncate text-sm text-ink/60">{e.v}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- No te lo puedes perder -->
+    <section class="mx-auto max-w-6xl px-5 pt-12">
+      <h2 class="text-2xl font-medium">No te lo puedes perder</h2>
+      <div class="-mx-5 mt-5 flex snap-x gap-4 overflow-x-auto px-5 pb-2">
+        {featured.map((e) => (
+          <a href="#app" class:list={["relative flex h-80 w-64 shrink-0 snap-start flex-col justify-end overflow-hidden rounded-2xl bg-gradient-to-br p-5 text-white sm:w-72", e.g]}>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <p class="relative text-2xl font-semibold leading-tight">{e.t}</p>
+            <p class="relative mt-1 line-clamp-2 text-sm text-white/80">{e.s}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Sitios populares -->
+    <section class="mx-auto max-w-6xl px-5 pt-12">
+      <h2 class="text-2xl font-medium">Sitios populares</h2>
+      <div class="-mx-5 mt-5 flex snap-x gap-4 overflow-x-auto px-5 pb-2">
+        {places.map((p) => (
+          <a href="#app" class="w-56 shrink-0 snap-start">
+            <div class:list={["aspect-[4/3] rounded-2xl bg-gradient-to-br", p.g]}></div>
+            <p class="mt-3 font-medium">{p.n}</p>
+            <p class="text-sm text-ink/60">{p.c}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- CTA app -->
+    <section class="mx-auto max-w-6xl px-5 pt-14">
+      <div class="rounded-3xl bg-zinc-100 px-6 py-12 text-center">
+        <h2 class="mx-auto max-w-xl text-balance text-3xl font-semibold leading-tight">Sé el primero en conseguir entradas para tus eventos favoritos.</h2>
+        <p class="mx-auto mt-4 max-w-md text-ink/70">Descárgate la app y empieza a comprar y vender entradas desde tu móvil.</p>
+      </div>
+    </section>
+
+    <!-- Por qué -->
+    <section class="mx-auto max-w-6xl px-5 pt-16">
+      <h2 class="text-center text-2xl font-medium">¿Por qué {brand.name}?</h2>
+      <div class="mt-8 grid gap-4 md:grid-cols-3">
+        {whys.map((w) => (
+          <div class="rounded-3xl bg-zinc-100 p-8 text-center">
+            <h3 class="text-lg font-medium">{w.t}</h3>
+            <div class="mx-auto my-8 grid h-24 w-24 place-items-center rounded-3xl bg-violet-600 text-white shadow-lg shadow-violet-600/30">
+              <svg viewBox="0 0 24 24" class="h-10 w-10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d={w.i}></path></svg>
+            </div>
+            <p class="text-ink/65">{w.d}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Opiniones -->
+    <section class="mx-auto max-w-3xl px-5 pt-16">
+      <h2 class="text-center text-2xl font-medium">Lo que dicen nuestros usuarios</h2>
+      <figure class="mt-8 rounded-3xl bg-white p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.2)]">
+        <blockquote class="leading-relaxed text-ink/70">
+          “Tenía miedo de comprar en plataformas de reventa, pero el evento estaba agotado, el proceso fue fácil y pude usar la entrada sin problemas. ¡Gracias!”
+        </blockquote>
+        <figcaption class="mt-6 flex items-center gap-3">
+          <span class="grid h-11 w-11 place-items-center rounded-full bg-zinc-200 text-zinc-500">
+            <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 4-6 8-6s8 2 8 6z"></path></svg>
+          </span>
+          <span class="font-medium">Usuario verificado</span>
+        </figcaption>
+      </figure>
+    </section>
   </main>
+
+  <footer id="app" class="mt-16 border-t border-black/10 px-5 py-12">
+    <div class="mx-auto grid max-w-6xl gap-10 sm:grid-cols-3">
+      <div>
+        <p class="font-medium">Descarga la App</p>
+        <div class="mt-4 flex flex-col items-start gap-3">
+          <a href="#" class="rounded-lg bg-black px-4 py-2 text-white"><span class="block text-[10px] leading-none">Download on the</span><span class="text-lg font-semibold">App Store</span></a>
+          <a href="#" class="rounded-lg bg-black px-4 py-2 text-white"><span class="block text-[10px] leading-none">GET IT ON</span><span class="text-lg font-semibold">Google Play</span></a>
+        </div>
+      </div>
+      <div>
+        <p class="font-medium">{brand.name}</p>
+        <ul class="mt-4 space-y-2 text-ink/65">
+          <li><a href="/">Inicio</a></li>
+          <li><a href="#">Cómo funciona</a></li>
+          <li><a href="#">Ayuda</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-medium">Legal</p>
+        <ul class="mt-4 space-y-2 text-ink/65">
+          <li><a href="#">Términos y condiciones</a></li>
+          <li><a href="#">Privacidad</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="mx-auto mt-10 max-w-6xl text-sm text-ink/45">© {new Date().getFullYear()} {brand.name}</p>
+  </footer>
 </Layout>
