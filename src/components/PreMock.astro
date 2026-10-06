@@ -11,7 +11,7 @@ const s = sets[variant];
 <div class="relative aspect-[1/0.8] w-full overflow-hidden rounded-lg border border-white/10 bg-black text-[10px] text-white/60">
   <div class="absolute left-[14%] top-[10%] w-[56%] rounded-md border border-white/10 bg-[#0c0c12] p-3">
     <p class="text-white/80">{s.a}</p>
-    <div class="mt-3 flex h-24 items-end gap-1.5">{bars.map((h) => <i class="flex-1 rounded-t-sm bg-gradient-to-t from-indigo-700 to-indigo-400" style={`height:${h}%`}></i>)}</div>
+    <div class="mt-3 flex h-24 items-end gap-1.5">{bars.map((h) => <i class="bar flex-1 rounded-t-sm bg-gradient-to-t from-indigo-700 to-indigo-400" style={`height:${h}%`}></i>)}</div>
   </div>
   <div class="absolute left-[4%] top-[58%] w-[30%] rounded-md bg-indigo-600 p-2 text-white shadow-lg"><p class="font-semibold">{s.tag}</p><i class="mt-2 block h-1.5 w-3/4 rounded bg-white/40"></i><i class="mt-1.5 block h-1.5 w-1/2 rounded bg-white/30"></i></div>
   <div class="absolute right-[4%] top-[34%] w-[52%] rounded-md border border-white/10 bg-[#101018] p-2 shadow-xl">
