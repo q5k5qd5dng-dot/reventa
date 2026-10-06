@@ -2,68 +2,164 @@
 // fases fijadas al scroll y marquesinas.
 import { gsap, ScrollTrigger, reduceMotion } from "./core";
 
-export function initServices() {
-  const rows = document.querySelectorAll<HTMLElement>(".svc-row");
+export function initFeatures() {
+  const items = document.querySelectorAll<HTMLElement>(".svc-item");
+  if (!items.length) return;
   const prev = document.querySelector<HTMLElement>(".svc-preview");
-  if (!rows.length || !prev) return;
+  const canHover = matchMedia("(hover: hover) and (min-width: 1001px)").matches && !reduceMotion && !!prev;
+
+  items.forEach((item) => {
+    const btn = item.querySelector<HTMLButtonElement>(".svc-row")!;
+    btn.addEventListener("click", () => {
+      const open = !item.classList.contains("is-open");
+      items.forEach((o) => {
+        o.classList.remove("is-open");
+        o.querySelector(".svc-row")?.setAttribute("aria-expanded", "false");
+      });
+      if (open) {
+        item.classList.add("is-open");
+        btn.setAttribute("aria-expanded", "true");
+        if (prev) gsap.to(prev, { opacity: 0, duration: 0.2, overwrite: true });
+      }
+    });
+    item.querySelector(".svc-more")?.addEventListener("transitionend", () => ScrollTrigger.refresh());
+  });
+
+  if (!canHover || !prev) return;
   const t = prev.querySelector<HTMLElement>("[data-pv-title]")!;
   const d = prev.querySelector<HTMLElement>("[data-pv-desc]")!;
   const k = prev.querySelector<HTMLElement>("[data-pv-kicker]")!;
   const bars = prev.querySelectorAll<HTMLElement>("[data-pv-bar]");
-  if (!matchMedia("(hover: hover) and (min-width: 1001px)").matches || reduceMotion) return;
-
   const x = gsap.quickTo(prev, "x", { duration: 0.5, ease: "power3" });
   const y = gsap.quickTo(prev, "y", { duration: 0.5, ease: "power3" });
-  rows.forEach((row, i) => {
+  gsap.set(prev, { opacity: 0, scale: 0.85, rotation: -6 });
+  items.forEach((item, i) => {
+    const row = item.querySelector<HTMLElement>(".svc-row")!;
     row.addEventListener("mouseenter", () => {
+      if (item.classList.contains("is-open")) return;
       t.textContent = row.dataset.title || "";
       d.textContent = row.dataset.desc || "";
-      k.textContent = String(i + 1).padStart(2, "0") + " / " + String(rows.length).padStart(2, "0");
+      k.textContent = String(i + 1).padStart(2, "0") + " / " + String(items.length).padStart(2, "0");
       bars.forEach((b, j) => gsap.to(b, { scaleX: 0.25 + ((i * 37 + j * 23) % 70) / 100, duration: 0.5, ease: "power3.out" }));
-      gsap.to(prev, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "expo.out" });
+      gsap.to(prev, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "expo.out", overwrite: true });
     });
-    row.addEventListener("mouseleave", () => gsap.to(prev, { opacity: 0, scale: 0.85, rotation: -6, duration: 0.3 }));
+    row.addEventListener("mouseleave", () => gsap.to(prev, { opacity: 0, scale: 0.85, rotation: -6, duration: 0.3, overwrite: true }));
     row.addEventListener("mousemove", (e) => { x(e.clientX + 28); y(e.clientY - 70); });
   });
-  gsap.set(prev, { opacity: 0, scale: 0.85, rotation: -6 });
 }
 
+// Marca blanca: una sola marca alimenta la web, el email y el Wallet.
 export function initWhiteLabel() {
-  const root = document.querySelector<HTMLElement>(".wl");
+  const root = document.querySelector<HTMLElement>("#wl-root");
   if (!root) return;
-  const prev = root.querySelector<HTMLElement>(".wl-widget")!;
-  root.querySelectorAll<HTMLButtonElement>("[data-wl-color]").forEach((b) =>
-    b.addEventListener("click", () => {
-      prev.style.setProperty("--wl-accent", b.dataset.wlColor!);
-      root.querySelectorAll("[data-wl-color]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-    }));
-  root.querySelector<HTMLInputElement>("#wl-radius")?.addEventListener("input", (e) => {
-    const v = (e.target as HTMLInputElement).value;
-    prev.style.setProperty("--wl-radius", v + "px");
-    root.querySelector("[data-wl-radius-out]")!.textContent = v + " px";
-  });
-  root.querySelectorAll<HTMLButtonElement>("[data-wl-theme]").forEach((b) =>
-    b.addEventListener("click", () => {
-      prev.dataset.theme = b.dataset.wlTheme;
-      root.querySelectorAll("[data-wl-theme]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-    }));
-  root.querySelector<HTMLInputElement>("#wl-map")?.addEventListener("change", (e) => {
-    prev.classList.toggle("has-map", (e.target as HTMLInputElement).checked);
-  });
-  // cantidades y total
-  const total = root.querySelector<HTMLElement>("[data-wl-total]")!;
-  const rows = root.querySelectorAll<HTMLElement>(".wl-ticket");
-  const calc = () => {
-    let sum = 0;
-    rows.forEach((r) => (sum += Number(r.dataset.price) * Number(r.querySelector("[data-qty]")!.textContent)));
-    total.textContent = sum + " €";
+  const st = { brand: "Tu Local", accent: "#21aec0", bg: "#0f0f12", radius: 14, map: true, general: 1, copa: 0, tables: new Set<number>() };
+  const PRICE = { general: 12, copa: 18, table: 150 };
+
+  const lum = (hex: string) => {
+    const n = parseInt(hex.slice(1), 16);
+    const f = (v: number) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+    return 0.2126 * f(n >> 16) + 0.7152 * f((n >> 8) & 255) + 0.0722 * f(n & 255);
   };
-  rows.forEach((r) => {
-    const q = r.querySelector<HTMLElement>("[data-qty]")!;
-    r.querySelector("[data-plus]")?.addEventListener("click", () => { q.textContent = String(Math.min(8, Number(q.textContent) + 1)); calc(); });
-    r.querySelector("[data-minus]")?.addEventListener("click", () => { q.textContent = String(Math.max(0, Number(q.textContent) - 1)); calc(); });
+  const euro = (n: number) => n + " €";
+
+  const render = () => {
+    const light = lum(st.bg) > 0.5;
+    const set = (k: string, v: string) => root.style.setProperty(k, v);
+    set("--wl-accent", st.accent);
+    set("--wl-on", lum(st.accent) > 0.35 ? "#0a0a0a" : "#fff");
+    set("--wl-bg", st.bg);
+    set("--wl-fg", light ? "#111" : "#fff");
+    set("--wl-mut", light ? "#666" : "#8d8d95");
+    set("--wl-line", light ? "#e4e4e4" : "#2a2a30");
+    set("--wl-radius", st.radius + "px");
+    root.classList.toggle("has-map", st.map);
+    const name = st.brand.trim() || "Tu Local";
+    root.querySelectorAll("[data-brand]").forEach((el) => (el.textContent = name));
+    root.querySelectorAll("[data-initial]").forEach((el) => (el.textContent = name[0].toUpperCase()));
+    root.querySelectorAll("[data-radius-out]").forEach((el) => (el.textContent = st.radius + " px"));
+
+    const tables = [...st.tables].sort((a, b) => a - b);
+    const total = st.general * PRICE.general + st.copa * PRICE.copa + (st.map ? tables.length * PRICE.table : 0);
+    root.querySelectorAll("[data-total]").forEach((el) => (el.textContent = euro(total)));
+    root.querySelector("[data-q-general]")!.textContent = String(st.general);
+    root.querySelector("[data-q-copa]")!.textContent = String(st.copa);
+    const lines: string[] = [];
+    if (st.general) lines.push(`${st.general} × Entrada general`);
+    if (st.copa) lines.push(`${st.copa} × Entrada + copa`);
+    if (st.map && tables.length) lines.push(`Reservado: mesa ${tables.join(", ")}`);
+    if (!lines.length) lines.push("Aún no has elegido nada");
+    root.querySelectorAll("[data-order]").forEach((el) => (el.innerHTML = lines.map((l) => `<li>${l}</li>`).join("")));
+    root.querySelectorAll<SVGElement>(".wl-table").forEach((t) => t.classList.toggle("is-on", st.tables.has(Number(t.dataset.n))));
+  };
+
+  const press = (sel: string, attr: string, on: (v: string) => void) =>
+    root.querySelectorAll<HTMLButtonElement>(sel).forEach((b) => b.addEventListener("click", () => {
+      root.querySelectorAll(sel).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      on(b.getAttribute(attr)!);
+      render();
+    }));
+  press("[data-accent]", "data-accent", (v) => (st.accent = v));
+  press("[data-bg]", "data-bg", (v) => (st.bg = v));
+  root.querySelector<HTMLInputElement>("#wl-brand")?.addEventListener("input", (e) => { st.brand = (e.target as HTMLInputElement).value; render(); });
+  root.querySelector<HTMLInputElement>("#wl-radius")?.addEventListener("input", (e) => { st.radius = Number((e.target as HTMLInputElement).value); render(); });
+  root.querySelector<HTMLInputElement>("#wl-map")?.addEventListener("change", (e) => { st.map = (e.target as HTMLInputElement).checked; render(); });
+
+  root.querySelectorAll<HTMLElement>("[data-step]").forEach((b) => b.addEventListener("click", () => {
+    const [k, d] = b.dataset.step!.split(":") as ["general" | "copa", string];
+    st[k] = Math.max(0, Math.min(8, st[k] + Number(d)));
+    render();
+  }));
+  root.querySelectorAll<SVGElement>(".wl-table").forEach((t) => {
+    const n = Number(t.dataset.n);
+    const toggle = () => { st.tables.has(n) ? st.tables.delete(n) : st.tables.add(n); render(); };
+    t.addEventListener("click", toggle);
+    t.addEventListener("keydown", (e) => { if ((e as KeyboardEvent).key === "Enter" || (e as KeyboardEvent).key === " ") { e.preventDefault(); toggle(); } });
   });
-  calc();
+  const toast = root.querySelector<HTMLElement>(".wl-toast");
+  root.querySelector("[data-buy]")?.addEventListener("click", () => {
+    toast?.classList.add("is-on");
+    setTimeout(() => toast?.classList.remove("is-on"), 2200);
+  });
+
+  const tabs = root.querySelectorAll<HTMLButtonElement>("[data-wl-tab]");
+  const panes = root.querySelectorAll<HTMLElement>("[data-wl-pane]");
+  tabs.forEach((t) => t.addEventListener("click", () => {
+    tabs.forEach((x) => x.setAttribute("aria-selected", String(x === t)));
+    panes.forEach((p) => (p.hidden = p.dataset.wlPane !== t.dataset.wlTab));
+    ScrollTrigger.refresh();
+  }));
+  render();
+}
+
+// Panel en ordenador y móvil: contadores y barras al entrar en pantalla.
+export function initDevices() {
+  const sec = document.querySelector<HTMLElement>(".dev");
+  if (!sec) return;
+  const run = () => {
+    sec.classList.add("is-in");
+    sec.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
+      const to = Number(el.dataset.count);
+      const suffix = el.dataset.suffix || "";
+      const fmt = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + suffix;
+      if (reduceMotion) { el.textContent = fmt(to); return; }
+      const o = { v: 0 };
+      gsap.to(o, { v: to, duration: 1.8, ease: "power2.out", onUpdate: () => (el.textContent = fmt(o.v)) });
+    });
+  };
+  ScrollTrigger.create({ trigger: sec, start: "top 70%", once: true, onEnter: run });
+}
+
+export function initFaq() {
+  const items = document.querySelectorAll<HTMLElement>(".faq-item");
+  items.forEach((item) => {
+    const q = item.querySelector<HTMLButtonElement>(".faq-q")!;
+    q.addEventListener("click", () => {
+      const open = !item.classList.contains("is-open");
+      items.forEach((o) => { o.classList.remove("is-open"); o.querySelector(".faq-q")?.setAttribute("aria-expanded", "false"); });
+      if (open) { item.classList.add("is-open"); q.setAttribute("aria-expanded", "true"); }
+    });
+    item.querySelector(".faq-a")?.addEventListener("transitionend", () => ScrollTrigger.refresh());
+  });
 }
 
 export function initPhases() {

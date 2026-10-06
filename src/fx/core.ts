@@ -104,7 +104,11 @@ export function initNavTheme() {
       const r = el.getBoundingClientRect();
       return r.top <= 40 && r.bottom > 40;
     });
-    if (hit) nav.classList.toggle("on-light", hit.dataset.nav === "dark");
+    if (hit) {
+      const light = hit.dataset.nav === "dark";
+      nav.classList.toggle("on-light", light);
+      document.body.classList.toggle("on-light", light);
+    }
   };
   addEventListener("scroll", update, { passive: true });
   update();
