@@ -55,6 +55,8 @@ export function renderUser() {
   document.body.classList.toggle("is-logged", !!u);
   const av = $("#avatar");
   if (av && u) { av.textContent = u.name[0].toUpperCase(); av.style.background = initialColor(u.name); }
+  const mav = $("#acc-av");
+  if (mav && u) { mav.textContent = u.name[0].toUpperCase(); mav.style.background = initialColor(u.name); }
   if (u) { $("#acc-name")!.textContent = u.name; $("#acc-email")!.textContent = u.email; }
 }
 

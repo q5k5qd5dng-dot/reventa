@@ -8,15 +8,20 @@ import {
 import { openLogin, openSell } from "./r-sheets";
 import { renderEvent, initEvent, renderSearch, initSearch, renderTickets, initTickets, renderListings, initListings } from "./r-views";
 import { initSell } from "./r-sell";
+import { renderHelp, initHelp, renderProfile, initProfile, renderPick, initPick } from "./r-pages";
+import * as W from "./r-wizard";
+import { renderLegal, initLegal } from "./r-legal";
+import { legalBy } from "../data/legal";
 import { intro, heroSearch, carousels, cards, reveals, why, phone, cookies, placeTooltip } from "./r-home";
 
 gsap.registerPlugin(ScrollTrigger);
 
 /* ═════ Rutas ═════ */
-type Name = "home" | "event" | "search" | "sell" | "tickets" | "listings";
-interface Route { name: Name; arg?: string; ti?: number; li?: number }
-const VIEW: Record<Name, string> = { home: "#v-home", event: "#v-event", search: "#v-search", sell: "#v-sell", tickets: "#v-tickets", listings: "#v-listings" };
+type Name = "home" | "event" | "search" | "sell" | "tickets" | "listings" | "help" | "profile" | "pick" | "wizard" | "legal";
+interface Route { name: Name; arg?: string; ti?: number; li?: number; sub?: string; art?: string }
+const VIEW: Record<Name, string> = { home: "#v-home", event: "#v-event", search: "#v-search", sell: "#v-sell", tickets: "#v-tickets", listings: "#v-listings", help: "#v-help", profile: "#v-profile", pick: "#v-pick", wizard: "#v-wizard", legal: "#v-legal" };
 const MODE = (r: Route) => (r.name === "home" ? "home" : r.name === "event" && r.li == null ? "dark" : "light");
+const needsUser = (r: Route) => ["tickets", "listings", "profile", "pick", "wizard"].includes(r.name);
 
 function parse(): Route {
   const h = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
@@ -25,7 +30,14 @@ function parse(): Route {
   switch (a) {
     case "evento": { const [i, t, l] = arg.split("/"); return byId(i) ? { name: "event", arg: i, ti: t != null && t !== "" ? +t : undefined, li: l != null && l !== "" ? +l : undefined } : { name: "home" }; }
     case "buscar": return { name: "search", arg };
-    case "vender": return { name: "sell" };
+    case "vender": {
+      if (arg === "evento") return { name: "pick" };
+      if (["anuncio", "entradas", "precio", "informacion", "pago"].includes(arg)) return { name: "wizard", sub: arg };
+      return { name: "sell" };
+    }
+    case "ayuda": { const [c, ar] = arg.split("/"); return { name: "help", arg: c || undefined, art: ar || undefined }; }
+    case "legal": return { name: "legal", arg: arg || "terminos" };
+    case "perfil": return { name: "profile", sub: arg === "pagos" ? "pagos" : "perfil" };
     case "mis-entradas": return { name: "tickets" };
     case "mis-anuncios": return { name: "listings" };
     default: return { name: "home" };
@@ -40,7 +52,7 @@ let homeTriggers: ScrollTrigger[] = [];
 
 function title(r: Route) {
   const ev = r.name === "event" && r.arg ? byId(r.arg) : undefined;
-  const t: Record<Name, string> = { home: "Reventa de entradas segura y legal", event: ev ? nameOf(ev) : "Evento", search: r.arg ? `Resultados para ${r.arg}` : "Eventos", sell: "Vender entradas online de forma rápida y segura", tickets: "Entradas compradas", listings: "Tus anuncios" };
+  const t: Record<Name, string> = { home: "Reventa de entradas segura y legal", event: ev ? nameOf(ev) : "Evento", search: r.arg ? `Resultados para ${r.arg}` : "Eventos", sell: "Vender entradas online de forma rápida y segura", tickets: "Entradas compradas", listings: "Tus anuncios", help: "Centro de ayuda", profile: "Perfil", pick: "Selecciona el evento", wizard: "Completa tu anuncio", legal: legalBy(r.arg)?.n ?? "Legal" };
   document.title = `${t[r.name]} · Handticket`;
 }
 
@@ -55,6 +67,9 @@ function ensureHome() {
 function show(r: Route, first: boolean) {
   const hdr = $("#hdr")!;
   hdr.dataset.hdr = MODE(r);
+  const minimal = r.name === "pick" || r.name === "wizard";
+  document.body.classList.toggle("hdr-min", minimal);
+  if (minimal) { const a = $("#hmin-a")!; if (r.name === "pick") { a.textContent = "Ver todo"; a.setAttribute("href", "#/vender/anuncio"); } else if (r.sub === "anuncio") { a.textContent = "Volver"; a.setAttribute("href", "#/vender/evento"); } else { a.textContent = "Ver todo"; a.setAttribute("href", "#/vender/anuncio"); } }
   $$(".view").forEach((v) => v.classList.add("hidden"));
   const el = $(VIEW[r.name])!;
   el.classList.remove("hidden");
@@ -90,6 +105,28 @@ function show(r: Route, first: boolean) {
       el.innerHTML = renderListings();
       ctx = gsap.context(() => initListings(el, sig, rerender));
       break;
+    case "help":
+      el.innerHTML = renderHelp(r.arg, r.art);
+      ctx = gsap.context(() => initHelp(el, r.arg, r.art, sig));
+      break;
+    case "profile":
+      el.innerHTML = renderProfile(r.sub as "perfil" | "pagos");
+      ctx = gsap.context(() => initProfile(el, r.sub as "perfil" | "pagos", sig));
+      break;
+    case "legal":
+      el.innerHTML = renderLegal(r.arg);
+      ctx = gsap.context(() => initLegal(el, sig));
+      break;
+    case "pick":
+      el.innerHTML = renderPick();
+      ctx = gsap.context(() => initPick(el, sig));
+      break;
+    case "wizard": {
+      const s2 = r.sub!;
+      el.innerHTML = s2 === "anuncio" ? W.renderHub() : s2 === "entradas" ? W.renderTickets() : s2 === "precio" ? W.renderPrice() : s2 === "informacion" ? W.renderInfo() : W.renderPay();
+      ctx = gsap.context(() => (s2 === "anuncio" ? W.initHub(el, sig) : s2 === "entradas" ? W.initTickets(el, sig, rerender) : s2 === "precio" ? W.initPrice(el, sig) : s2 === "informacion" ? W.initInfo(el, sig) : W.initPay(el, sig)));
+      break;
+    }
   }
   if (!first && !reduced) gsap.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power2.out", clearProps: "opacity,visibility" });
   current = r;
@@ -101,15 +138,18 @@ function show(r: Route, first: boolean) {
 
 function route(first = false) {
   const r = parse();
-  if (!first && current && current.name === r.name && current.arg === r.arg && current.ti === r.ti && current.li === r.li) return;
-  if ((r.name === "tickets" || r.name === "listings") && !getUser()) {
+  if (!first && current && current.name === r.name && current.arg === r.arg && current.ti === r.ti && current.li === r.li && current.sub === r.sub && current.art === r.art) return;
+  if (needsUser(r) && !getUser()) {
     store.set("next", location.hash);
-    toast("Inicia sesión para ver tus " + (r.name === "tickets" ? "entradas" : "anuncios"), "i");
+    toast(r.name === "tickets" || r.name === "listings" ? "Inicia sesión para ver tus " + (r.name === "tickets" ? "entradas" : "anuncios") : "Inicia sesión para continuar", "i");
     if (!current) show({ name: "home" }, first);
     else history.replaceState(null, "", current.name === "home" ? "#/" : location.hash);
     openLogin("login");
     return;
   }
+  // el asistente necesita un evento elegido
+  if (r.name === "wizard" && !W.getDraft().ev) { location.hash = "#/vender/evento"; return; }
+  if (r.name === "wizard" && r.sub !== "anuncio" && r.sub !== "entradas" && !(W.getDraft().files.some((f) => f.pages.some((p) => p.ok && p.sel)))) { location.hash = "#/vender/entradas"; return; }
   show(r, first);
 }
 
@@ -157,6 +197,8 @@ function menu() {
   $("#menu-btn")!.addEventListener("click", (e) => { e.stopPropagation(); toggle(); });
   document.addEventListener("click", (e) => { const t = e.target as HTMLElement; if (!t.closest("#acc-menu") || t.closest("#acc-menu a")) closeMenu(); });
   addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
+  $("#m-profile")!.addEventListener("click", () => { closeMenu(); location.hash = "#/perfil"; });
+  $("#m-help")!.addEventListener("click", () => { closeMenu(); location.hash = "#/ayuda"; });
   $("#logout")!.addEventListener("click", () => {
     store.set("user", null); renderUser(); closeMenu(); toast("Sesión cerrada", "👋");
     if (current && (current.name === "tickets" || current.name === "listings")) location.hash = "#/";

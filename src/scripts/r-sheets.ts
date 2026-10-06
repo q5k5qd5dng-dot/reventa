@@ -30,6 +30,7 @@ export function openBuy(id: string, typeIdx = 0, qty = 2, pick?: Pick) {
       <div class="mt-5 space-y-1.5 text-sm text-sub"><div class="flex justify-between"><span>Entradas</span><span id="b-base"></span></div><div class="flex justify-between"><span>Gastos de gestión</span><span id="b-fee"></span></div></div>
       <div class="mt-3 flex items-end justify-between border-t border-line pt-4"><span class="font-medium">Total</span><span class="text-3xl font-semibold"><span id="b-total">0</span> €</span></div>
       <button id="b-buy" class="btn btn-accent mt-5 w-full !py-4">Comprar entradas</button>
+      <p class="mt-3 text-center text-xs text-sub">Al comprar aceptas los <a href="#/legal/terminos" data-close class="underline">Términos y condiciones</a> y la <a href="#/ayuda/comprar/autentica" data-close class="underline">Garantía Handticket</a>.</p>
       <p class="mt-3 text-center text-xs text-sub">🔒 Pago protegido hasta que entras · Demostración, no se realiza ningún cobro</p>
     </div></div>`;
   openSheet(html, (s) => {
@@ -130,7 +131,9 @@ export function openLogin(mode: "login" | "register" = "login", after?: () => vo
 }
 
 /* ═════ Vender ═════ */
-export function openSell(presetId?: string, presetQty = 2) {
+import { startSell } from "./r-wizard";
+export function openSell(presetId?: string, _qty = 2) { startSell(presetId); }
+export function openSellSheet(presetId?: string, presetQty = 2) {
   const html = `<div class="relative p-6 pt-8 sm:p-8">${closeBtn}
     <h3 class="text-2xl font-semibold">Vender entrada</h3><p class="mt-1 text-sub">Publica gratis. Cobras automáticamente tras el evento.</p>
     <form id="sf" class="mt-6 space-y-4" novalidate>
@@ -159,7 +162,7 @@ export function openSell(presetId?: string, presetQty = 2) {
     $("#sf", s)!.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!(+price.value > 0)) { err(price, "Indica un precio"); return; }
-      if (!getUser()) { toast("Inicia sesión para publicar", "i"); openLogin("login", () => openSell(sel.value, q)); return; }
+      if (!getUser()) { toast("Inicia sesión para publicar", "i"); openLogin("login", () => openSellSheet(sel.value, q)); return; }
       const b = $("#s-go", s) as HTMLButtonElement; b.disabled = true; b.innerHTML = `${spinner} Publicando…`;
       await sleep(1000);
       const list = store.get<Listing[]>("selling", []);
@@ -228,4 +231,28 @@ export function downloadTicket(t: Ticket) {
     const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `entrada-${t.code}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     toast("Entrada descargada", "⬇");
   });
+}
+
+/* ═════ Perfil y centro de ayuda (menú de cuenta) ═════ */
+export function openProfile() { if (!getUser()) return openLogin(); location.hash = "#/perfil"; }
+export function openProfileOld() {
+  const u = getUser();
+  if (!u) return openLogin();
+  openSheet(`<div class="relative p-6 pt-8 sm:p-8">${closeBtn}<h3 class="text-2xl font-semibold">Perfil</h3><p class="mt-1 text-sub">Tus datos se guardan solo en este navegador.</p>
+    <form id="pf" class="mt-6 space-y-3" novalidate>${field("pf-n", "Nombre", "text", `value="${u.name.replace(/"/g, "&quot;")}"`)}${field("pf-e", "Email", "email", `value="${u.email.replace(/"/g, "&quot;")}"`)}<button class="btn btn-accent w-full !py-4">Guardar cambios</button></form></div>`, (s) => {
+    $("#pf", s)!.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const n = $<HTMLInputElement>("#pf-n", s)!, em = $<HTMLInputElement>("#pf-e", s)!;
+      if (![err(n, n.value.trim().length >= 2 ? "" : "Dinos tu nombre"), err(em, emailOk(em.value) ? "" : "Introduce un email válido")].every(Boolean)) return;
+      store.set("user", { name: n.value.trim(), email: em.value.trim() });
+      renderUser(); await closeSheet(); toast("Perfil actualizado", "✓");
+    });
+  });
+}
+export function openHelp() { location.hash = "#/ayuda"; }
+export function openHelpOld() {
+  const faq = [["¿Cuándo recibo mi entrada?", "Al instante: aparece en «Mis entradas» con su QR en cuanto se confirma la compra."], ["¿Cuándo cobro si vendo?", "Automáticamente tras el evento, por transferencia a tu cuenta."], ["¿Qué pasa si algo falla?", "Te devolvemos el importe o te conseguimos una entrada equivalente."], ["¿Cuánto cuesta vender?", "Publicar es gratis. Cobramos una comisión del 10 % cuando se vende."]];
+  openSheet(`<div class="relative p-6 pt-8 sm:p-8">${closeBtn}<h3 class="text-2xl font-semibold">Centro de ayuda</h3><p class="mt-1 text-sub">Respuestas rápidas a las dudas más habituales.</p>
+    <div class="mt-5 divide-y divide-line">${faq.map(([q, a], i) => `<details class="py-4" ${i === 0 ? "open" : ""}><summary class="cursor-pointer font-medium">${q}</summary><p class="mt-2 text-sm leading-relaxed text-sub">${a}</p></details>`).join("")}</div>
+    <p class="mt-5 rounded-xl bg-soft p-4 text-sm text-sub">¿Sigues con dudas? Escríbenos a <b class="text-ink">ayuda@handticket.es</b> (demo).</p></div>`);
 }

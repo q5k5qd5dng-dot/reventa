@@ -48,6 +48,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
           <button id="login-btn" class="hb whitespace-nowrap rounded-lg border px-4 py-2.5 text-sm transition sm:px-5 sm:py-3 sm:text-base">Iniciar sesión</button>
           <button id="sell-btn" class="hs hidden items-center gap-2 rounded-lg px-5 py-3 text-base transition sm:inline-flex"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>Vender entrada</button>
         </div>
+        <div class="hmin hidden"><a id="hmin-a" href="#/vender/anuncio" class="pill">Ver todo</a><a href="#/ayuda">Ayuda</a></div>
         <div class="hin hidden items-center gap-1 sm:gap-3">
           <button id="open-search" class="hl grid h-11 w-11 place-items-center rounded-full transition hover:bg-black/5" aria-label="Buscar"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg></button>
           <a href="#/mis-entradas" class="hl hidden px-2 py-3 text-base transition hover:opacity-70 md:block">Mis entradas</a>
@@ -56,12 +57,13 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
           <button id="menu-btn" class="hl grid h-11 w-11 place-items-center rounded-full transition hover:bg-black/5" aria-haspopup="menu" aria-expanded="false" aria-label="Menú"><svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
           <button id="sell-btn2" class="hs2 hidden items-center gap-2 rounded-xl bg-ink px-5 py-3.5 text-base font-medium text-white transition hover:bg-black sm:inline-flex"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>Vender entrada</button>
         </div>
-        <div id="acc-menu" class="absolute right-0 top-full z-[120] mt-3 hidden w-64 overflow-hidden rounded-2xl bg-white p-2 text-ink shadow-[0_24px_60px_-16px_rgba(0,0,0,0.35)] ring-1 ring-black/5" role="menu">
-          <div class="px-3 pb-2 pt-3"><p id="acc-name" class="font-medium"></p><p id="acc-email" class="truncate text-sm text-sub"></p></div>
-          <a role="menuitem" href="#/mis-entradas" class="block rounded-xl px-3 py-2.5 transition hover:bg-soft">Mis entradas</a>
-          <a role="menuitem" href="#/mis-anuncios" class="block rounded-xl px-3 py-2.5 transition hover:bg-soft">Mis anuncios</a>
-          <a role="menuitem" href="#/vender" class="block rounded-xl px-3 py-2.5 transition hover:bg-soft">Cómo funciona</a>
-          <button role="menuitem" id="logout" class="block w-full rounded-xl px-3 py-2.5 text-left text-[#e5484d] transition hover:bg-soft">Cerrar sesión</button>
+        <div id="acc-menu" class="absolute right-0 top-full z-[120] mt-3 hidden w-[19rem] overflow-hidden rounded-3xl bg-white p-3 text-ink shadow-[0_24px_60px_-16px_rgba(0,0,0,0.35)] ring-1 ring-black/5" role="menu">
+          <div class="flex items-center gap-4 px-2 pb-4 pt-2"><span id="acc-av" class="grid h-14 w-14 shrink-0 place-items-center rounded-full text-2xl text-white">?</span><div class="min-w-0"><p id="acc-name" class="truncate text-lg font-semibold"></p><p id="acc-email" class="truncate text-sm text-sub"></p></div></div>
+          <div class="border-t border-line pt-2">
+            <button role="menuitem" id="m-profile" class="flex w-full items-center gap-4 rounded-xl px-3 py-3.5 text-left text-[1.02rem] transition hover:bg-soft"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Perfil</button>
+            <button role="menuitem" id="m-help" class="flex w-full items-center gap-4 rounded-xl px-3 py-3.5 text-left text-[1.02rem] transition hover:bg-soft"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0116 0v2M4 14a2 2 0 012-2h1v6H6a2 2 0 01-2-2v-2zM20 14a2 2 0 00-2-2h-1v6h1a2 2 0 002-2v-2zM18 18c0 2-2 3-5 3"/></svg>Centro de ayuda</button>
+          </div>
+          <div class="mt-1 border-t border-line pt-2"><button role="menuitem" id="logout" class="flex w-full items-center gap-4 rounded-xl px-3 py-3.5 text-left text-[1.02rem] text-[#d92d20] transition hover:bg-[#d92d20]/5"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 00-2 2v12a2 2 0 002 2h3M16 8l4 4-4 4M20 12H9"/></svg>Cerrar sesión</button></div>
         </div>
       </nav>
     </div>
@@ -281,6 +283,11 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
   <Sell />
   <main id="v-tickets" class="view hidden" data-view="tickets"></main>
   <main id="v-listings" class="view hidden" data-view="listings"></main>
+  <main id="v-legal" class="view hidden" data-view="legal"></main>
+  <main id="v-help" class="view hidden" data-view="help"></main>
+  <main id="v-profile" class="view hidden" data-view="profile"></main>
+  <main id="v-pick" class="view hidden" data-view="pick"></main>
+  <main id="v-wizard" class="view hidden" data-view="wizard"></main>
   </div>
 
   <!-- FOOTER -->
@@ -294,8 +301,8 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
         </div>
       </div>
       <nav aria-label={brand.name}><p class="text-base">{brand.name}</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-accent" href="#/">Inicio</a></li><li><a class="hover:text-accent" href="#" data-sell>Vender entrada</a></li><li><a class="hover:text-accent" href="#/vender">Cómo funciona</a></li><li><a class="hover:text-accent" href="#" data-soon>Blog</a></li></ul></nav>
-      <nav aria-label="Asistencia"><p class="text-base">Asistencia</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-accent" href="#" data-soon>Centro de ayuda</a></li><li><a class="hover:text-accent" href="#" data-soon>Cómo vender una entrada</a></li><li><a class="hover:text-accent" href="#" data-soon>Seguridad de la plataforma</a></li></ul></nav>
-      <nav aria-label="Legal"><p class="text-base">Legal</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-accent" href="#" data-soon>Política de privacidad</a></li><li><a class="hover:text-accent" href="#" data-soon>Condiciones de uso</a></li><li><a class="hover:text-accent" href="#" data-soon>Política de cookies</a></li><li><a class="hover:text-accent" href="#" data-soon>Aviso legal</a></li></ul></nav>
+      <nav aria-label="Asistencia"><p class="text-base">Asistencia</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-accent" href="#/ayuda">Centro de ayuda</a></li><li><a class="hover:text-accent" href="#/ayuda/vender">Cómo vender una entrada</a></li><li><a class="hover:text-accent" href="#/ayuda/seguridad">Seguridad de la plataforma</a></li></ul></nav>
+      <nav aria-label="Legal"><p class="text-base">Legal</p><ul class="mt-4 space-y-3 text-base font-light text-sub"><li><a class="hover:text-accent" href="#/legal/privacidad">Política de privacidad</a></li><li><a class="hover:text-accent" href="#/legal/terminos">Condiciones de uso</a></li><li><a class="hover:text-accent" href="#/legal/cookies">Política de cookies</a></li><li><a class="hover:text-accent" href="#/legal/aviso-legal">Aviso legal</a></li></ul></nav>
     </div>
     <div class="mx-auto mt-12 max-w-[1500px] border-t border-line pt-8">
       <ul class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm font-light text-sub md:grid-cols-3">
@@ -315,7 +322,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
   <!-- Cookies -->
   <aside id="cookies" class="fixed bottom-4 left-4 z-[150] hidden w-[calc(100vw-2rem)] max-w-[37.5rem] rounded-xl bg-white p-5 shadow-[0_20px_60px_-14px_rgba(0,0,0,0.35)] sm:bottom-10 sm:left-10" role="dialog" aria-label="Cookies">
     <p class="text-base">Cookies</p>
-    <p class="mt-4 text-[1.02rem] font-light leading-relaxed text-ink/80">{brand.name} utiliza cookies de terceros para ofrecerte la mejor experiencia posible. Puedes leer más en nuestra <a href="#" data-soon class="underline underline-offset-2">política de cookies</a>.</p>
+    <p class="mt-4 text-[1.02rem] font-light leading-relaxed text-ink/80">{brand.name} utiliza cookies de terceros para ofrecerte la mejor experiencia posible. Puedes leer más en nuestra <a href="#/legal/cookies" class="underline underline-offset-2">política de cookies</a>.</p>
     <div class="mt-5 flex items-center justify-between gap-3"><button id="ck-all" class="rounded-xl bg-black px-6 py-4 text-base text-white transition hover:bg-ink/80">Aceptar</button><button id="ck-min" class="text-base font-light text-sub transition hover:text-ink">Aceptar solo las necesarias</button></div>
   </aside>
 

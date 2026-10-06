@@ -177,3 +177,35 @@ html { overflow-x: clip; }
 
 .lrow { display: flex; align-items: flex-start; gap: 1rem; border-radius: 0.9rem; background: #f6f6f7; padding: 1rem 1.2rem; transition: background 0.2s; }
 .lrow:hover { background: #efeff1; }
+
+/* ═════ Cabecera mínima del asistente de venta ═════ */
+.hmin { display: none; align-items: center; gap: 0.5rem; }
+body.hdr-min .hout, body.hdr-min .hin { display: none !important; }
+body.hdr-min .hmin { display: flex; }
+.hmin a { border-radius: 999px; padding: 0.85rem 1.5rem; font-size: 1.02rem; transition: background 0.2s; }
+.hmin a.pill { background: #ececee; }
+.hmin a:hover { background: #e2e2e5; }
+
+/* ═════ Perfil ═════ */
+.ptab { display: inline-flex; align-items: center; gap: 0.6rem; border-radius: 999px; padding: 0.7rem 1.1rem; font-weight: 500; transition: background 0.2s, color 0.2s; }
+.ptab:hover { background: #f3f3f5; }
+.ptab.on { background: color-mix(in srgb, var(--color-accent) 12%, white); color: var(--color-accent); }
+
+/* ═════ Seleccionar evento ═════ */
+.krow { display: flex; width: 100%; align-items: center; gap: 1.1rem; border-radius: 0.8rem; background: #efeff0; padding: 0.7rem; transition: background 0.2s; }
+.krow:hover { background: #e8e8ea; }
+
+/* ═════ Asistente de venta ═════ */
+.wbtn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 0.85rem; background: var(--color-ink); color: #fff; padding: 1.05rem 1.6rem; font-weight: 500; font-size: 1.02rem; transition: background 0.2s, opacity 0.2s; }
+.wbtn:hover:not(:disabled) { background: #000; }
+.wbtn:disabled { background: #ececee; color: #a9a9b1; cursor: not-allowed; }
+.infocard { display: flex; gap: 1rem; align-items: center; border: 1px solid #ececf0; border-radius: 1rem; padding: 1.1rem; background: #fff; }
+#w-drop.over { background: color-mix(in srgb, var(--color-accent) 16%, white); border-color: var(--color-accent); }
+.vrow { display: flex; gap: 1.4rem; border-radius: 1rem; background: #f6f6f7; padding: 1.3rem 1.5rem; }
+.vthumb { position: relative; display: flex; flex-direction: column; gap: 0.3rem; overflow: hidden; width: 5.5rem; height: 7rem; border-radius: 0.3rem; background: #fff; padding: 0.6rem 0.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12); }
+.vthumb i { display: block; height: 0.28rem; border-radius: 2px; background: #dcdce2; }
+.vchip { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 999px; padding: 0.2rem 0.7rem 0.2rem 0.55rem; font-size: 0.9rem; }
+.vchip i { display: block; width: 0.5rem; height: 0.5rem; border-radius: 50%; }
+.vchip.ok { background: #e6f6ec; color: #17803d; } .vchip.ok i { background: #17a34a; }
+.vchip.bad { background: #fde8e8; color: #c81e1e; } .vchip.bad i { background: #e02424; }
+.hrow .hcheck { flex-shrink: 0; }
