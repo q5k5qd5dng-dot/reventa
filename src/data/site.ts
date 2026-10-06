@@ -10,6 +10,7 @@ export const menus: [string, [string, string, string][]][] = [
     ["Control de accesos", "Aforo en directo", "/#solucion"],
   ]],
   ["Servicios", [
+    ["Wave para empresas", "Todo en un panel", "/empresas"],
     ["Marca blanca y API", "Tu marca, tu dominio", "/#diferencia"],
     ["Integraciones", "Conecta tus canales", "/#integraciones"],
     ["Soporte 24/7", "Backstage del éxito", "/#soporte"],
