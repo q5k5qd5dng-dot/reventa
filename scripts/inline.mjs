@@ -5,6 +5,7 @@ import fs from "node:fs";
 const pages = [
   ["dist/index.html", "src/scripts/replica.ts"],
   ["dist/pro/index.html", "src/scripts/main.ts"],
+  ["dist/admin/index.html", "src/scripts/admin/main.ts"],
 ];
 for (const [html, entry] of pages) {
   if (!fs.existsSync(html)) continue;

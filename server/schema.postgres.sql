@@ -24,3 +24,11 @@ CREATE TABLE tickets (id text PRIMARY KEY, order_id text NOT NULL REFERENCES ord
 CREATE TABLE seller_payouts (id text PRIMARY KEY, seller_id text NOT NULL REFERENCES users, order_id text NOT NULL REFERENCES orders, amount_cents int NOT NULL, status text NOT NULL DEFAULT 'held', release_at timestamptz NOT NULL);
 CREATE TABLE audit_log (id bigserial PRIMARY KEY, user_id text, action text NOT NULL, meta jsonb, ip inet, at timestamptz NOT NULL DEFAULT now());
 -- Supabase: activa Row Level Security y políticas por user_id si accedes desde el cliente.
+
+-- Administración, facturación y soporte
+CREATE TABLE settings (key text PRIMARY KEY, value jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE invoices (id text PRIMARY KEY, number text NOT NULL UNIQUE, year int NOT NULL, seq int NOT NULL, series text NOT NULL DEFAULT 'HT', kind text NOT NULL, order_id text REFERENCES orders, party_id text, party_name text NOT NULL, party_email text, concept text NOT NULL, base_cents int NOT NULL, vat_rate numeric NOT NULL, vat_cents int NOT NULL, total_cents int NOT NULL, rectifies text, issued_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE support_tickets (id text PRIMARY KEY, user_id text REFERENCES users, email text, subject text NOT NULL, category text NOT NULL DEFAULT 'general', priority text NOT NULL DEFAULT 'normal', status text NOT NULL DEFAULT 'open', order_code text, created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE support_messages (id bigserial PRIMARY KEY, ticket_id text NOT NULL REFERENCES support_tickets ON DELETE CASCADE, author text NOT NULL, author_name text, body text NOT NULL, at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE risk_resolutions (key text PRIMARY KEY, action text NOT NULL, note text, admin_id text, at timestamptz NOT NULL DEFAULT now());
+ALTER TABLE users ADD COLUMN banned_at timestamptz, ADD COLUMN last_login_at timestamptz;

@@ -31,9 +31,10 @@ export const clearCookie = () => `${COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Ma
 export function sessionUser(req) {
   const t = /(?:^|;\s*)ht_session=([^;]+)/.exec(req.headers.cookie ?? "")?.[1];
   if (!t) return null;
-  const s = q.get("SELECT s.id sid, s.expires_at, u.id, u.name, u.email, u.role FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.id = ?", sha(t));
+  const s = q.get("SELECT s.id sid, s.expires_at, u.id, u.name, u.email, u.role, u.banned_at FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.id = ?", sha(t));
   if (!s) return null;
   if (s.expires_at < now()) { q.run("DELETE FROM sessions WHERE id = ?", s.sid); return null; }
+  if (s.banned_at) return null;
   return { id: s.id, name: s.name, email: s.email, role: s.role, sid: s.sid };
 }
 export const destroySession = (req) => { const u = sessionUser(req); if (u) q.run("DELETE FROM sessions WHERE id = ?", u.sid); };
@@ -66,9 +67,11 @@ export async function register({ name, email, password }, req) {
 export async function login({ email, password }, req) {
   email = String(email ?? "").trim().toLowerCase(); password = String(password ?? "");
   if (limited(`login:${req.ip}`, 20, 15 * 60e3) || limited(`login:${email}`, 8, 15 * 60e3)) throw new HttpError(429, "Demasiados intentos. Espera unos minutos.");
-  const u = q.get("SELECT id, name, email, role, pass_hash FROM users WHERE email = ?", email);
+  const u = q.get("SELECT id, name, email, role, pass_hash, banned_at FROM users WHERE email = ?", email);
   const ok = await verifyPassword(password, u?.pass_hash ?? DUMMY);
   if (!u || !ok) { audit(u?.id, "login_failed", { email }, req.ip); throw new HttpError(401, "Email o contraseña incorrectos"); }
+  if (u.banned_at) throw new HttpError(403, "Tu cuenta está suspendida. Contacta con soporte.");
+  q.run("UPDATE users SET last_login_at = ? WHERE id = ?", now(), u.id);
   audit(u.id, "login", null, req.ip);
   return { user: { id: u.id, name: u.name, email: u.email, role: u.role }, session: createSession(u.id, req) };
 }

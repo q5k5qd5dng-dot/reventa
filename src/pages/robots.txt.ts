@@ -1,3 +1,3 @@
 import { SITE } from "../seo";
 const bots = ["GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-User", "Claude-SearchBot", "anthropic-ai", "PerplexityBot", "Perplexity-User", "Google-Extended", "Applebot-Extended", "Bingbot", "CCBot", "Meta-ExternalAgent", "Amazonbot", "cohere-ai", "MistralAI-User", "DuckAssistBot"];
-export const GET = () => new Response(`User-agent: *\nAllow: /\nDisallow: /pro/\nDisallow: /landing/\nDisallow: /api/\n\n${bots.map((b) => `User-agent: ${b}\nAllow: /\n`).join("\n")}\nSitemap: ${SITE}/sitemap.xml\n`, { headers: { "content-type": "text/plain; charset=utf-8" } });
+export const GET = () => new Response(`User-agent: *\nAllow: /\nDisallow: /pro/\nDisallow: /landing/\nDisallow: /api/\nDisallow: /admin/\n\n${bots.map((b) => `User-agent: ${b}\nAllow: /\n`).join("\n")}\nSitemap: ${SITE}/sitemap.xml\n`, { headers: { "content-type": "text/plain; charset=utf-8" } });

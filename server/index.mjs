@@ -4,8 +4,12 @@ import path from "node:path";
 import { config } from "./config.mjs";
 import { seedEvents, q, now } from "./db.mjs";
 import { sessionUser, HttpError } from "./auth.mjs";
-import { match, allowed } from "./routes.mjs";
+import "./routes.mjs";
+import "./admin.mjs";
+import { match, allowed } from "./router.mjs";
+import { loadSettings } from "./settings.mjs";
 
+loadSettings();
 seedEvents();
 setInterval(() => { q.run("DELETE FROM sessions WHERE expires_at < ?", now()); q.run("DELETE FROM tokens WHERE expires_at < ?", now()); }, 3600e3).unref();
 
@@ -38,6 +42,7 @@ async function api(req, res, url) {
     let body = {};
     if (raw && !isHook) { try { body = JSON.parse(raw); } catch { throw new HttpError(400, "JSON no válido"); } }
     const out = await m.h({ req, res, params: m.params, body, raw, headers, user: sessionUser(req), query: url.searchParams });
+    if (out?.__raw) return send(res, 200, out.body, { "content-type": out.type, "cache-control": "no-store", ...(out.type.startsWith("text/csv") ? { "content-disposition": `attachment; filename="handticket-${url.pathname.split("/").pop()}"` } : {}), ...headers });
     json(res, 200, out, headers);
   } catch (e) {
     if (e instanceof HttpError) return json(res, e.status, { error: e.message, field: e.field }, headers);

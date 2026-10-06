@@ -2,7 +2,7 @@ import * as API from "./api";
 import { gsap } from "gsap";
 import { animate, hover, stagger } from "motion";
 import { $, $$, toast, reduced, fine } from "./util";
-import { esc, norm, matchEvents, nameOf, artBg, fechaLarga, SPRING, store, getUser, renderUser, err, emailOk, events, extra } from "./r-core";
+import { esc, norm, matchEvents, nameOf, artBg, fechaLarga, SPRING, store, getUser, renderUser, err, emailOk, events, extra, openSheet, closeSheet, closeBtn, field } from "./r-core";
 import { openLogin } from "./r-sheets";
 import { startSell, getDraft, resetDraft } from "./r-wizard";
 import { help, allArticles, count, type Collection } from "../data/help";
@@ -61,7 +61,23 @@ export function initHelp(root: HTMLElement, cat: string | undefined, art: string
     gsap.fromTo(".hicon", { scale: 0.5, rotation: -20 }, { scale: 1, rotation: 0, duration: 0.9, stagger: 0.09, ease: "back.out(2)", delay: 0.4 });
   }
   if (fine && !reduced) hover(".hcol", (el) => { animate(el, { y: -4 }, SPRING); const i = el.querySelector(".hicon")!; animate(i, { rotate: [0, -8, 8, 0] }, { duration: 0.5 }); return () => animate(el, { y: 0 }, SPRING); });
-  $("#h-contact", root)?.addEventListener("click", () => toast("Escríbenos a ayuda@handticket.es (demo)", "✉"), { signal: sig });
+  $("#h-contact", root)?.addEventListener("click", () => {
+    if (!API.serverMode) { toast("Escríbenos a ayuda@handticket.es (demo)", "✉"); return; }
+    const u = getUser();
+    openSheet(`<div class="relative p-6 pt-8 sm:p-8">${closeBtn}<h3 class="text-2xl font-semibold">Contactar con soporte</h3><p class="mt-1 text-sub">Te respondemos por email en menos de 24 horas.</p>
+      <form id="cf" class="mt-6 space-y-3" novalidate>${field("c-e", "Email", "email", `value="${u?.email ?? ""}"`)}${field("c-s", "Asunto")}
+      <div class="fld"><textarea id="c-m" placeholder=" " rows="5" class="w-full rounded-xl border border-line px-4 pb-3 pt-6 outline-none focus:border-accent" style="resize:vertical"></textarea><label for="c-m">Cuéntanos qué ha pasado (incluye el código del pedido si lo tienes)</label><p class="msg" aria-live="polite"></p></div>
+      <button class="btn btn-accent w-full !py-4">Enviar mensaje</button></form></div>`, (sh) => {
+      $("#cf", sh)!.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const em = $<HTMLInputElement>("#c-e", sh)!, su = $<HTMLInputElement>("#c-s", sh)!, ms = $<HTMLTextAreaElement>("#c-m", sh)!;
+        if (![err(em, emailOk(em.value) ? "" : "Introduce un email válido"), err(su, su.value.trim().length >= 3 ? "" : "Cuéntanos el asunto")].every(Boolean)) return;
+        if (ms.value.trim().length < 10) { toast("Describe un poco más tu problema", "!"); return; }
+        try { await API.post("/api/support", { email: em.value, subject: su.value, message: ms.value }); await closeSheet(); toast("Mensaje enviado. Te responderemos por email", "✉"); }
+        catch (er) { toast((er as Error).message, "!"); }
+      });
+    });
+  }, { signal: sig });
   $$("#h-fb button", root).forEach((b) => b.addEventListener("click", () => { $$("#h-fb button", root).forEach((x) => x.classList.toggle("ring-2", x === b)); b.classList.add("ring-accent"); toast("¡Gracias por tu opinión!", "💛"); animate(b, { scale: [1, 1.35, 1] }, { duration: 0.4 }); }, { signal: sig }));
   // buscador de artículos
   const q = $<HTMLInputElement>("#h-q", root)!, res = $("#h-res", root), cols = $("#h-cols", root);

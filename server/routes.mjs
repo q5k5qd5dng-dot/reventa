@@ -5,6 +5,8 @@ import { HttpError, EMAIL_RE } from "./auth.mjs";
 import * as pay from "./payments.mjs";
 import { sendMail } from "./mail.mjs";
 import crypto from "node:crypto";
+import { on } from "./router.mjs";
+import { issueInvoice } from "./invoices.mjs";
 
 const eur = (c) => Math.round(c) / 100;
 const cents = (e) => Math.round(Number(e) * 100);
@@ -25,15 +27,19 @@ export function fulfill(orderId, ref) {
     if (o.listing_id) {
       const l = q.get("SELECT seller_id FROM listings WHERE id = ?", o.listing_id);
       const ev = getEvent(o.event_id);
-      q.run("INSERT INTO seller_payouts (id, seller_id, order_id, amount_cents, release_at) VALUES (?,?,?,?,?)", id(12), l.seller_id, orderId, Math.round(o.subtotal_cents * (1 - config.feeSeller)), new Date(ev.date).getTime() + 2 * 864e5);
+      q.run("INSERT INTO seller_payouts (id, seller_id, order_id, amount_cents, release_at) VALUES (?,?,?,?,?)", id(12), l.seller_id, orderId, Math.round(o.subtotal_cents * (1 - config.feeSeller)), new Date(ev.date).getTime() + config.payoutDelayDays * 864e5);
+    }
+    const buyer = q.get("SELECT name, email FROM users WHERE id = ?", o.buyer_id);
+    if (o.fee_cents > 0) issueInvoice({ kind: "service", orderId, party: buyer, partyId: o.buyer_id, grossCents: o.fee_cents, concept: `Gastos de gestión · pedido ${o.code}` });
+    if (o.listing_id) {
+      const sl = q.get("SELECT u.id, u.name, u.email FROM listings l JOIN users u ON u.id = l.seller_id WHERE l.id = ?", o.listing_id);
+      issueInvoice({ kind: "commission", orderId, party: sl, partyId: sl.id, grossCents: o.subtotal_cents - Math.round(o.subtotal_cents * (1 - config.feeSeller)), concept: `Comisión de venta · pedido ${o.code}` });
     }
     audit(o.buyer_id, "order_paid", { orderId });
     return q.get("SELECT * FROM orders WHERE id = ?", orderId);
   });
 }
 
-const routes = [];
-const on = (method, path, h) => routes.push({ method, re: new RegExp(`^${path.replace(/:(\w+)/g, "(?<$1>[^/]+)")}$`), h });
 
 /* ═══ Estado ═══ */
 on("GET", "/api/health", () => ({ ok: true, payments: pay.mode(), time: now() }));
@@ -203,9 +209,3 @@ on("POST", "/api/webhooks/stripe", (c) => {
   if (oid && ev.type === "checkout.session.expired") cancelOrder(oid);
   return { received: true };
 });
-
-export function match(method, pathname) {
-  for (const r of routes) { if (r.method !== method) continue; const m = r.re.exec(pathname); if (m) return { h: r.h, params: m.groups ?? {} }; }
-  return null;
-}
-export const allowed = (pathname) => routes.some((r) => r.re.test(pathname));

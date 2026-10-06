@@ -4,6 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ht-"));
 const port = 8900 + Math.floor(Math.random() * 90), base = `http://localhost:${port}`;
@@ -40,6 +41,26 @@ try {
   assert.equal((await call("a", "GET", "/api/me/payouts")).payouts[0].amount, 108); ok("cobro retenido (120 − 10 % = 108 €)");
   assert.equal((await call("x", "GET", "/api/me/tickets")).status, 401); ok("rutas privadas protegidas");
   await call("a", "POST", "/api/auth/logout"); assert.equal((await call("a", "GET", "/api/auth/me")).user, null); ok("logout");
+  // ── Panel de administración ──
+  assert.equal((await call("c", "GET", "/api/admin/overview")).status, 403); ok("el panel rechaza a usuarios normales");
+  assert.equal((await call("x", "GET", "/api/admin/overview")).status, 401); ok("el panel exige sesión");
+  execFileSync("node", ["server/admin-cli.mjs", "root@test.es", "administrador-1"], { env: { ...process.env, DATA_DIR: dir }, stdio: "ignore" });
+  assert.equal((await call("r", "POST", "/api/auth/login", { email: "root@test.es", password: "administrador-1" })).user.role, "admin"); ok("login de administrador");
+  const ov = await call("r", "GET", "/api/admin/overview?days=30"); assert.equal(ov.cur.orders, 1); assert.equal(ov.cur.gmv, 120); assert.equal(ov.cur.revenue, 21.6 + 0); ok(`overview: GMV 120 €, ingresos ${ov.cur.revenue} € (8 % + 10 %)`);
+  const inv = await call("r", "GET", "/api/admin/invoices"); assert.equal(inv.total, 2); assert.equal(inv.totals.total, 21.6); assert.match(inv.rows[0].number, /^HT-\d{4}-000002$/); ok("2 facturas emitidas y numeradas (gestión + comisión)");
+  const ord = (await call("r", "GET", "/api/admin/orders")).rows[0];
+  assert.equal((await call("r", "POST", `/api/admin/orders/${ord.id}/refund`, { reason: "prueba" })).ok, true); ok("reembolso desde el panel");
+  assert.equal((await call("r", "GET", "/api/admin/invoices")).total, 4); ok("facturas de abono generadas");
+  assert.equal((await call("c", "GET", "/api/me/tickets")).tickets.every((t) => t.status === "void"), true); ok("entradas anuladas tras el reembolso");
+  assert.equal((await call("r", "GET", "/api/admin/payouts?status=cancelled")).rows.length, 1); ok("cobro del vendedor cancelado");
+  const ps = (await call("r", "PUT", "/api/admin/settings", { feeBuyer: 0.05 })).values; assert.equal(ps.feeBuyer, 0.05); ok("ajustes editables en caliente");
+  const tk = await call("c", "POST", "/api/support", { subject: "Mi entrada no funciona", message: "Me han rechazado el QR en la puerta" }); assert.ok(tk.id); ok("ticket de soporte creado por el usuario");
+  assert.equal((await call("r", "GET", "/api/admin/support")).rows[0].priority, "high"); ok("ticket marcado como prioritario");
+  assert.equal((await call("r", "POST", `/api/admin/support/${tk.id}/reply`, { body: "Lo revisamos ahora mismo", solve: true })).ok, true); ok("respuesta de soporte");
+  const cu = (await call("c", "GET", "/api/auth/me")).user;
+  assert.equal((await call("r", "POST", `/api/admin/users/${cu.id}/ban`, { ban: true })).ok, true); assert.equal((await call("c", "GET", "/api/auth/me")).user, null); ok("suspensión cierra sesiones");
+  assert.equal((await call("c", "POST", "/api/auth/login", { email: "carlos@test.es", password: "otra-contraseña-1" })).status, 403); ok("cuenta suspendida no puede entrar");
+  assert.ok((await call("r", "GET", "/api/admin/audit")).total > 5); ok("auditoría registra las acciones");
   console.log(`\n${n} pruebas OK`);
 } catch (e) { console.error("\n✗ FALLO:", e.message, e.actual ?? "", e.expected ?? ""); process.exitCode = 1; }
 finally { srv.kill(); fs.rmSync(dir, { recursive: true, force: true }); }

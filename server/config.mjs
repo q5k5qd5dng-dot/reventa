@@ -31,6 +31,8 @@ export const config = {
   allowedOrigins: (env.ALLOWED_ORIGINS ?? "").split(",").map((s) => s.trim()).filter(Boolean),
   feeBuyer: 0.08,        // gastos de gestión del comprador
   feeSeller: 0.10,       // comisión del vendedor
+  vat: 0.21,             // IVA aplicado a gastos de gestión y comisiones
+  payoutDelayDays: 2,    // días tras el evento para liberar el cobro
   maxMarkup: 1.3,        // precio máximo = 130 % del original
   stripeKey: env.STRIPE_SECRET_KEY ?? "",
   stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET ?? "",

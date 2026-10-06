@@ -5,6 +5,8 @@ import { config } from "./config.mjs";
 
 export const db = new DatabaseSync(config.dbFile);
 db.exec(fs.readFileSync(new URL("./schema.sql", import.meta.url), "utf8"));
+// migraciones ligeras (SQLite no admite ADD COLUMN IF NOT EXISTS)
+for (const sql of ["ALTER TABLE users ADD COLUMN banned_at INTEGER", "ALTER TABLE users ADD COLUMN last_login_at INTEGER"]) { try { db.exec(sql); } catch {} }
 
 export const id = (n = 12) => crypto.randomBytes(n).toString("base64url").slice(0, n);
 export const now = () => Date.now();
