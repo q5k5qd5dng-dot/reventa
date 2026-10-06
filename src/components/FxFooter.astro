@@ -1,0 +1,18 @@
+---
+const appWords = ["Get the app", "Descarga Wave"];
+---
+<footer class="fx-footer" data-nav="light">
+  <a class="strip dark" href="#" aria-label="Descarga la app">
+    <div class="mq-track">{[...Array(8)].map(() => <>{appWords.map((w) => <><span>{w}</span><span class="dot" aria-hidden="true">✦</span></>)}</>)}</div>
+  </a>
+  <div class="wrap">
+    <div class="fx-foot-cols mono">
+      <div><p>Wave</p><a href="/">Inicio</a><a href="/#servicios">Herramientas</a><a href="#demo">Demo</a></div>
+      <div><p>Sectores</p><a href="/discotecas">Discotecas</a><a href="/promotores">Promotores</a><a href="/beach-clubs">Beach Clubs</a><a href="/festivales">Festivales</a></div>
+      <div><p>Síguenos</p><a href="#">Instagram</a><a href="#">TikTok</a></div>
+      <div><p>Legal</p><a href="#">Términos y condiciones</a><a href="#">Privacidad</a><a href="#">Cookies</a></div>
+    </div>
+    <p class="fx-foot-word display" aria-hidden="true">Wave</p>
+    <div class="fx-foot-bottom mono"><span>© {new Date().getFullYear()} Wave</span><span>Hecho en Zaragoza · <a href="/antigua">Versión anterior</a></span></div>
+  </div>
+</footer>

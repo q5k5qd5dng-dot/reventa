@@ -1,5 +1,9 @@
 ---
 import Fx from "../layouts/Fx.astro";
+import FxChrome from "../components/FxChrome.astro";
+import FxFooter from "../components/FxFooter.astro";
+import FxDemo from "../components/FxDemo.astro";
+import HeroUI from "../components/HeroUI.astro";
 import FeatureMock from "../components/FeatureMock.astro";
 
 const services = [
@@ -24,56 +28,40 @@ const swA = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "Naran
 const swB = [["#0f0f12", "Noche"], ["#ffffff", "Blanco"], ["#1b1030", "Violeta oscuro"], ["#0e1c1a", "Verde noche"]];
 const qr = (n: number) => Array.from({ length: 49 }, (_, i) => ((i * 7 + n * 13) % 5 < 2) || [0, 1, 7, 6, 8, 42, 48, 41, 43, 14, 35].includes(i));
 const tablePos = [[40, 54], [100, 54], [160, 54], [220, 54], [70, 94], [130, 94], [190, 94]];
-const appWords = ["Get the app", "Descarga Wave"];
 const phases = [
   ["Antes", "Vende antes de abrir puertas", [["Entradas por fases", "3 tipos"], ["Listas de RRPP", "activas"], ["Tienda online", "publicada"], ["Reservados", "con plano"]]],
   ["Durante", "Controla con la sala llena", [["Accesos escaneados", "en directo"], ["Aforo", "por zona"], ["Taquilla", "sincronizada"], ["Incidencias", "en el móvil"]]],
   ["Después", "Aprende de cada noche", [["Informe de ventas", "al cerrar"], ["Rendimiento RRPP", "por persona"], ["Clientes nuevos", "a tu CRM"], ["Siguiente fiesta", "con tu público"]]],
 ];
 const words = ["Discotecas", "Promotoras", "Beach Clubs", "Festivales", "Lounges", "Pubs"];
-const links = [["Inicio", "/"], ["Discotecas", "/discotecas"], ["Promotores", "/promotores"], ["Beach Clubs", "/beach-clubs"], ["Festivales", "/festivales"], ["Pide tu demo", "#demo"]];
 const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "Naranja"], ["#a3e635", "Lima"], ["#f43f5e", "Coral"]];
 ---
 <Fx title="Wave · Software para locales de ocio nocturno" description="Entradas, listas, reservados, RRPP, CRM y check-in con tu marca. Wave para discotecas, promotoras, beach clubs y festivales.">
-  <!-- Preloader -->
-  <div class="fx-preloader" aria-hidden="true"><div class="fx-pre-title"><h1>Wave</h1></div></div>
-  <div class="fx-split" aria-hidden="true"><div class="fx-pre-title"><h1>Wave</h1></div></div>
-  <div class="fx-tags" aria-hidden="true">
-    <div class="fx-tag fx-tag-1 mono"><p>Entradas</p></div>
-    <div class="fx-tag fx-tag-2 mono"><p>RRPP</p></div>
-    <div class="fx-tag fx-tag-3 mono"><p>Check-in</p></div>
-  </div>
-
-  <!-- Nav -->
-  <nav class="fx-nav" aria-label="Principal">
-    <a href="/" class="fx-logo"><img src="/favicon.svg" alt="" />Wave</a>
-    <div class="fx-nav-right">
-      <a class="fx-nav-cta mono" href="#demo">Solicita una demo</a>
-      <button type="button" class="fx-toggler mono" aria-expanded="false" aria-controls="fx-menu"><span class="lbl">Menú</span><span class="lbl">Cerrar</span></button>
-    </div>
-  </nav>
-  <div class="fx-menu" id="fx-menu">
-    <div class="fx-menu-info">
-      <div><p class="mono">Wave</p><p class="mono">Ticketing + comunidad</p><p class="mono">Zaragoza</p></div>
-      <div><p class="mono">Habla con nosotros</p><p class="mono">hola@siemprewave.es</p></div>
-      <div><p class="mono">Para locales</p><p class="mono">Discotecas · Promotoras · Beach Clubs · Festivales</p></div>
-    </div>
-    <div class="fx-links">
-      <div class="fx-hi"></div>
-      {links.map(([t, h]) => <div class="fx-menu-link"><a href={h}><span>{t}</span></a></div>)}
-    </div>
-  </div>
+  <FxChrome />
 
   <main>
     <!-- Hero -->
-    <section class="fx-hero" data-nav="dark">
-      <h1 class="fx-hero-title" data-split="words" data-delay="0.6">Wave</h1>
-      <div class="fx-hero-foot mono">
+    <section class="hx" data-nav="dark">
+      <div class="wrap hx-grid">
         <div>
-          <p data-split="lines" data-delay="0.9">Software para locales de ocio nocturno</p>
-          <p data-split="lines" data-delay="1">Entradas · RRPP · CRM</p>
+          <span class="hx-eyebrow mono" data-hero-in><u></u>Software para ocio nocturno · Zaragoza</span>
+          <h1 class="display" data-split="lines" data-delay="0.05">Llena tu sala.<br />Controla toda la noche.</h1>
+          <p class="hx-lead" data-hero-in>Wave es la ticketera con comunidad para discotecas, promotoras y beach clubs. Entradas, listas, mesas, RRPP y accesos en un único panel.</p>
+          <div class="hx-cta" data-hero-in>
+            <a href="#demo" class="btn btn-dark" data-magnetic><span>Solicita una demo</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></a>
+            <a href="#servicios" class="hx-link">Ver cómo funciona <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></a>
+          </div>
+          <p class="hx-trust mono" data-hero-in><span>Tu marca, no la nuestra</span><span>Sin papel ni colas</span><span>Soporte 24/7</span></p>
         </div>
-        <div><p data-split="lines" data-delay="1.1">© Wave · Zaragoza</p></div>
+        <HeroUI />
+      </div>
+    </section>
+
+    <!-- Frase -->
+    <section class="stmt" data-nav="light">
+      <div class="wrap">
+        <span class="mono" data-reveal>Qué es Wave</span>
+        <p class="big" data-reading>Wave une la venta de entradas, la gestión de tu local y la comunidad que llena tu sala. Todo en un mismo sitio, con tu marca.</p>
       </div>
     </section>
 
@@ -81,22 +69,21 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
     <section class="fx-particles" data-nav="light">
       <canvas id="fx-particle-canvas" aria-label="Logotipo de Wave hecho de partículas"></canvas>
       <div class="fx-particles-copy">
-        <h2 class="fx-particles-title" data-split="lines" data-scroll="true">Más que un software de gestión</h2>
+        <h2 class="fx-particles-title" data-split="lines" data-scroll="true">Más que un software de <em>gestión</em></h2>
         <p class="fx-particles-lead mono" data-split="lines" data-scroll="true" data-delay="0.2">Una ticketera con comunidad: tu público descubre, compra y vuelve.</p>
       </div>
-      <p class="fx-scroll-hint mono">Mueve el cursor</p>
     </section>
 
     <!-- Servicios -->
     <section class="svc" id="servicios" data-nav="dark">
       <div class="wrap">
         <div class="sec-head">
-          <h2 data-split="lines" data-scroll="true">Todo lo que necesita tu local</h2>
+          <h2 data-split="lines" data-scroll="true">Todo lo que necesita tu local, <em>en un panel</em></h2>
           <p data-split="lines" data-scroll="true" data-delay="0.15">Nueve herramientas en un único panel. Abre cada una para ver cómo funciona.</p>
         </div>
         <ul class="svc-list">
           {services.map(([t, h, d, pts, kind], i) => (
-            <li class="svc-item">
+            <li class="svc-item" data-reveal>
               <button type="button" class="svc-row" aria-expanded="false" aria-controls={`svc-${i}`} data-title={t} data-desc={d} data-cursor>
                 <span class="mono">{String(i + 1).padStart(2, "0")}</span>
                 <h3>{t}</h3>
@@ -129,9 +116,9 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
         <div class="wl-head">
           <div>
             <p class="mono" style="color:var(--l)">Marca blanca</p>
-            <h2 data-split="lines" data-scroll="true">Tu marca. De verdad.</h2>
+            <h2 data-split="lines" data-scroll="true">Tu marca, <em>de verdad</em></h2>
           </div>
-          <p class="wl-lead">Tu web, tus correos y la entrada en el Wallet salen con tu nombre, tus colores y tus formas. Cambia algo a la izquierda y míralo en los tres sitios.</p>
+          <p class="wl-lead" data-reveal>Tu web, tus correos y la entrada en el Wallet salen con tu nombre, tus colores y tus formas. Cambia algo a la izquierda y míralo en los tres sitios.</p>
         </div>
         <div class="wl-stage" id="wl-root">
           <div class="wl-panel">
@@ -142,16 +129,20 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
             <div class="wl-switch"><label class="mono" for="wl-map">Mapa de tu sala</label><input id="wl-map" type="checkbox" checked /></div>
           </div>
           <div class="wl-view">
-            <div class="wl-tabs mono" role="tablist">
-              <button type="button" role="tab" data-wl-tab="web" aria-selected="true">Tu web</button>
-              <button type="button" role="tab" data-wl-tab="mail" aria-selected="false">Tus correos</button>
-              <button type="button" role="tab" data-wl-tab="wallet" aria-selected="false">Tu Wallet</button>
+            <div class="wl-tabs mono" role="tablist" aria-label="Dónde se ve tu marca">
+              <button type="button" role="tab" data-wl-tab="web" aria-selected="true" tabindex="0">Tu web</button>
+              <button type="button" role="tab" data-wl-tab="mail" aria-selected="false" tabindex="-1">Tus correos</button>
+              <button type="button" role="tab" data-wl-tab="wallet" aria-selected="false" tabindex="-1">Tu Wallet</button>
             </div>
 
             <div class="wl-pane" data-wl-pane="web">
               <div class="wl-browser">
                 <div class="wl-bar mono"><i></i><i></i><i></i><span>tulocal.com/entradas</span></div>
                 <div class="wl-site">
+                  <div class="callout c-radius" data-callout="radius"><span>Radio</span><i></i></div>
+                  <div class="callout c-bg" data-callout="bg"><span>Fondo</span><i></i></div>
+                  <div class="callout c-map" data-callout="map"><span>Mapa de tu sala</span><i></i></div>
+                  <div class="callout c-accent" data-callout="accent"><span>Color de resalte</span><i></i></div>
                   <div>
                     <div class="wl-brand"><span class="wl-logo" data-initial>T</span><b data-brand>Tu Local</b></div>
                     <div class="wl-links mono"><span>Agenda</span><span>Reservas</span><span>Contacto</span></div>
@@ -228,7 +219,7 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
       <div class="wrap dev-grid">
         <div>
           <p class="mono">Una herramienta en constante evolución</p>
-          <h2 data-split="lines" data-scroll="true" style="margin-top:.8rem">Tu panel. En el ordenador y en el móvil.</h2>
+          <h2 data-split="lines" data-scroll="true" style="margin-top:.8rem">Tu panel, <em>en el ordenador</em> y en el móvil</h2>
           <p class="sm">Maneja eventos, ventas y accesos desde donde estés. Lo que haces en el ordenador lo ve tu equipo de puerta en el móvil, al instante.</p>
           <p class="ex mono">Datos de ejemplo</p>
         </div>
@@ -282,16 +273,16 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
     <!-- Soporte -->
     <section class="sup" id="soporte" data-nav="dark">
       <div class="wrap sup-grid">
-        <h2 data-split="lines" data-scroll="true">Trato humano y cercano</h2>
+        <h2 data-split="lines" data-scroll="true">Trato <em>humano</em> y cercano</h2>
         <div>
-          <p class="big" data-split="lines" data-scroll="true">Estamos contigo <em>cuando lo necesites</em>: en el montaje, en la formación de tu equipo y la noche del evento.</p>
-          <p class="sm">Wave no es solo un software de gestión. Detrás hay un equipo de la noche que te acompaña, resuelve dudas y te ayuda a sacar partido a cada herramienta.</p>
+          <p class="big" data-reading>Estamos contigo cuando lo necesites: en el montaje, en la formación de tu equipo y la noche del evento.</p>
+          <p class="sm" data-reveal>Wave no es solo un software de gestión. Detrás hay un equipo de la noche que te acompaña, resuelve dudas y te ayuda a sacar partido a cada herramienta.</p>
         </div>
-        <h2 data-split="lines" data-scroll="true">Una app y una comunidad</h2>
+        <h2 data-split="lines" data-scroll="true">Una app y una <em>comunidad</em></h2>
         <div>
-          <p class="big" data-split="lines" data-scroll="true">Tu público ve <em>qué planes hay</em>, quién va y compra la entrada sin salir de la app.</p>
-          <p class="sm">Zona Fiesta, Match, música y fotos de cada noche: la comunidad de Wave ayuda a promocionar tus eventos y a vender antes.</p>
-          <div class="links"><a href="/discotecas">Discotecas</a><a href="/promotores">Promotores</a><a href="/beach-clubs">Beach Clubs</a><a href="/festivales">Festivales</a></div>
+          <p class="big" data-reading>Tu público ve qué planes hay, quién va y compra la entrada sin salir de la app.</p>
+          <p class="sm" data-reveal>Zona Fiesta, Match, música y fotos de cada noche: la comunidad de Wave ayuda a promocionar tus eventos y a vender antes.</p>
+          <div class="links" data-reveal><a href="/discotecas">Discotecas</a><a href="/promotores">Promotores</a><a href="/beach-clubs">Beach Clubs</a><a href="/festivales">Festivales</a></div>
         </div>
       </div>
     </section>
@@ -302,7 +293,7 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
     </a>
     <section class="faq" id="faq" data-nav="light">
       <div class="wrap faq-grid">
-        <h2 data-split="lines" data-scroll="true">Preguntas</h2>
+        <h2 data-split="lines" data-scroll="true">Preguntas <em>frecuentes</em></h2>
         <div class="faq-list">
           {faqs.map(([q, a], i) => (
             <div class={`faq-item${i === 0 ? " is-open" : ""}`}>
@@ -314,43 +305,8 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
       </div>
     </section>
 
-    <!-- Demo -->
-    <section class="demo" id="demo" data-nav="dark">
-      <div class="wrap demo-grid">
-        <h2 data-split="lines" data-scroll="true">Solicita ya tu demo</h2>
-        <form id="demo-form">
-          <label><span class="mono">Email</span><input id="demo-email" type="email" required autocomplete="email" placeholder="tu@local.com" /></label>
-          <label><span class="mono">Teléfono</span><input id="demo-tel" type="tel" required autocomplete="tel" placeholder="600 000 000" /></label>
-          <button class="btn" type="submit"><span>Solicitar</span><span aria-hidden="true">→</span></button>
-          <p class="note">Al enviar se abre tu correo con los datos listos para mandarnos.</p>
-        </form>
-      </div>
-    </section>
+    <FxDemo />
   </main>
 
-  <footer class="fx-footer" data-nav="light">
-    <a class="strip dark" href="#" aria-label="Descarga la app" style="margin-bottom:clamp(2rem,5vw,4rem)">
-      <div class="mq-track">{[...Array(8)].map(() => <>{appWords.map((w) => <><span>{w}</span><span class="dot">✦</span></>)}</>)}</div>
-    </a>
-    <div class="wrap">
-      <div class="fx-foot-cols mono">
-        <div><p>Wave</p><a href="/">Inicio</a><a href="#servicios">Herramientas</a><a href="#demo">Demo</a></div>
-        <div><p>Sectores</p><a href="/discotecas">Discotecas</a><a href="/promotores">Promotores</a><a href="/beach-clubs">Beach Clubs</a><a href="/festivales">Festivales</a></div>
-        <div><p>Síguenos</p><a href="#">Instagram</a><a href="#">TikTok</a></div>
-        <div><p>Legal</p><a href="#">Términos y condiciones</a><a href="#">Privacidad</a><a href="#">Cookies</a></div>
-      </div>
-      <p class="fx-foot-word" aria-hidden="true">Wave</p>
-      <div class="fx-foot-bottom mono"><span>© {new Date().getFullYear()} Wave</span><span>Hecho en Zaragoza · <a href="/antigua">Versión anterior</a></span></div>
-    </div>
-  </footer>
-
-  <script>
-    document.getElementById("demo-form")?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const mail = (document.getElementById("demo-email") as HTMLInputElement).value;
-      const tel = (document.getElementById("demo-tel") as HTMLInputElement).value;
-      const body = encodeURIComponent(`Hola, quiero una demo de Wave.\n\nEmail: ${mail}\nTeléfono: ${tel}`);
-      location.href = `mailto:hola@siemprewave.es?subject=${encodeURIComponent("Solicitud de demo")}&body=${body}`;
-    });
-  </script>
+  <FxFooter />
 </Fx>

@@ -11,9 +11,19 @@ const { title, description } = Astro.props;
     <meta name="description" content={description} />
     <meta name="theme-color" content="#21aec0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Marca la página como "con JS" y respeta reducir movimiento ANTES de pintar: evita parpadeos al animar. -->
+    <script is:inline>
+      (function () {
+        var r = document.documentElement;
+        r.classList.add("js");
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) r.classList.add("rm");
+        // Si el JS no arranca, se muestra todo igualmente.
+        setTimeout(function () { if (!r.classList.contains("fx-ready")) r.classList.remove("js"); }, 6000);
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   </head>
   <body>
     <slot />

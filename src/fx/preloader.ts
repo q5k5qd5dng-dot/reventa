@@ -10,12 +10,12 @@ function hide() {
   });
 }
 
-export function initPreloader(): boolean {
+export function initPreloader(): number {
   const pre = document.querySelector(".fx-preloader");
-  if (!pre) return false;
+  if (!pre) return 0.1;
   let seen = false;
   try { seen = sessionStorage.getItem(KEY) === "true"; } catch { /* sin storage */ }
-  if (seen || reduceMotion) { hide(); return false; }
+  if (seen || reduceMotion) { hide(); return 0.1; }
 
   document.documentElement.style.overflow = "hidden";
   lenis?.stop();
@@ -31,7 +31,7 @@ export function initPreloader(): boolean {
 
   const tl = gsap.timeline({
     defaults: { ease: "hop" },
-    delay: 1,
+    delay: 0.2,
     onComplete: () => {
       try { sessionStorage.setItem(KEY, "true"); } catch { /* sin storage */ }
       document.documentElement.style.overflow = "";
@@ -39,15 +39,16 @@ export function initPreloader(): boolean {
       hide();
     },
   });
-  const reveal = () => gsap.delayedCall(1, () => gsap.set(titles, { opacity: 1 }));
+  const reveal = () => gsap.set(titles, { opacity: 1 });
   (document.fonts?.ready ?? Promise.resolve()).then(reveal, reveal);
 
   const tags = gsap.utils.toArray<HTMLElement>(".fx-tag");
-  tags.forEach((t, i) => tl.to(t.querySelectorAll(".fx-tword"), { y: "0%", duration: 0.75 }, 0.5 + i * 0.1));
-  tl.to(".fx-preloader .fx-char span", { y: "0%", duration: 0.75, stagger: 0.05 }, 0.5)
-    .to(".fx-split .fx-char span", { y: "0%", duration: 0.75, stagger: 0.05 }, 0.5);
-  tags.forEach((t, i) => tl.to(t.querySelectorAll(".fx-tword"), { y: "110%", duration: 0.75 }, 2 + i * 0.1));
-  tl.set([".fx-preloader", ".fx-split"], { clipPath: (i: number) => (i === 0 ? "polygon(0 0,100% 0,100% 50%,0 50%)" : "polygon(0 50%,100% 50%,100% 100%,0 100%)") }, 2.5)
-    .to([".fx-preloader", ".fx-split"], { y: (i: number) => (i === 0 ? "-50%" : "50%"), duration: 1 }, 2.5);
-  return true;
+  tags.forEach((t, i) => tl.to(t.querySelectorAll(".fx-tword"), { y: "0%", duration: 0.55 }, 0.2 + i * 0.08));
+  tl.to(".fx-preloader .fx-char span", { y: "0%", duration: 0.6, stagger: 0.04 }, 0.2)
+    .to(".fx-split .fx-char span", { y: "0%", duration: 0.6, stagger: 0.04 }, 0.2);
+  tags.forEach((t, i) => tl.to(t.querySelectorAll(".fx-tword"), { y: "110%", duration: 0.5 }, 1.2 + i * 0.07));
+  tl.set([".fx-preloader", ".fx-split"], { clipPath: (i: number) => (i === 0 ? "polygon(0 0,100% 0,100% 50%,0 50%)" : "polygon(0 50%,100% 50%,100% 100%,0 100%)") }, 1.5)
+    .to([".fx-preloader", ".fx-split"], { y: (i: number) => (i === 0 ? "-50%" : "50%"), duration: 0.85 }, 1.5);
+  // El hero empieza a entrar cuando las dos mitades ya se abren.
+  return 1.9;
 }

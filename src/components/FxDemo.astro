@@ -1,0 +1,26 @@
+---
+---
+<section class="demo" id="demo" data-nav="dark">
+  <div class="wrap demo-grid">
+    <div>
+      <p class="mono" data-reveal>Demo</p>
+      <h2 class="display" data-split="lines" data-scroll="true" style="margin-top:.8rem">Solicita ya tu demo</h2>
+      <p class="demo-lead" data-reveal>Te enseñamos Wave con tu caso real: tu sala, tus entradas y tu equipo. Sin compromiso.</p>
+    </div>
+    <form id="demo-form" data-reveal>
+      <label><span class="mono">Email</span><input id="demo-email" type="email" required autocomplete="email" placeholder="tu@local.com" /></label>
+      <label><span class="mono">Teléfono</span><input id="demo-tel" type="tel" required autocomplete="tel" placeholder="600 000 000" /></label>
+      <button class="btn btn-dark" type="submit" data-magnetic><span>Solicitar demo</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
+      <p class="note">Al enviar se abre tu correo con los datos listos para mandarnos.</p>
+    </form>
+  </div>
+</section>
+<script>
+  document.getElementById("demo-form")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const mail = (document.getElementById("demo-email") as HTMLInputElement).value;
+    const tel = (document.getElementById("demo-tel") as HTMLInputElement).value;
+    const body = encodeURIComponent(`Hola, quiero una demo de Wave.\n\nEmail: ${mail}\nTeléfono: ${tel}`);
+    location.href = `mailto:hola@siemprewave.es?subject=${encodeURIComponent("Solicitud de demo")}&body=${body}`;
+  });
+</script>

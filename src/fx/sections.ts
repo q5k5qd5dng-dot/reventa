@@ -1,6 +1,7 @@
 // Servicios con vista previa que sigue al cursor, marca blanca interactiva,
 // fases fijadas al scroll y marquesinas.
 import { gsap, ScrollTrigger, reduceMotion } from "./core";
+import { confetti } from "./motion";
 
 export function initFeatures() {
   const items = document.querySelectorAll<HTMLElement>(".svc-item");
@@ -61,6 +62,11 @@ export function initWhiteLabel() {
     return 0.2126 * f(n >> 16) + 0.7152 * f((n >> 8) & 255) + 0.0722 * f(n & 255);
   };
   const euro = (n: number) => n + " €";
+  const pulse = (name: string) => root.querySelectorAll<HTMLElement>(`[data-callout="${name}"]`).forEach((el) => {
+    el.classList.remove("pulse");
+    void el.offsetWidth;
+    el.classList.add("pulse");
+  });
 
   const render = () => {
     const light = lum(st.bg) > 0.5;
@@ -98,11 +104,11 @@ export function initWhiteLabel() {
       on(b.getAttribute(attr)!);
       render();
     }));
-  press("[data-accent]", "data-accent", (v) => (st.accent = v));
-  press("[data-bg]", "data-bg", (v) => (st.bg = v));
+  press("[data-accent]", "data-accent", (v) => { st.accent = v; pulse("accent"); });
+  press("[data-bg]", "data-bg", (v) => { st.bg = v; pulse("bg"); });
   root.querySelector<HTMLInputElement>("#wl-brand")?.addEventListener("input", (e) => { st.brand = (e.target as HTMLInputElement).value; render(); });
-  root.querySelector<HTMLInputElement>("#wl-radius")?.addEventListener("input", (e) => { st.radius = Number((e.target as HTMLInputElement).value); render(); });
-  root.querySelector<HTMLInputElement>("#wl-map")?.addEventListener("change", (e) => { st.map = (e.target as HTMLInputElement).checked; render(); });
+  root.querySelector<HTMLInputElement>("#wl-radius")?.addEventListener("input", (e) => { st.radius = Number((e.target as HTMLInputElement).value); pulse("radius"); render(); });
+  root.querySelector<HTMLInputElement>("#wl-map")?.addEventListener("change", (e) => { st.map = (e.target as HTMLInputElement).checked; pulse("map"); render(); });
 
   root.querySelectorAll<HTMLElement>("[data-step]").forEach((b) => b.addEventListener("click", () => {
     const [k, d] = b.dataset.step!.split(":") as ["general" | "copa", string];
@@ -116,19 +122,51 @@ export function initWhiteLabel() {
     t.addEventListener("keydown", (e) => { if ((e as KeyboardEvent).key === "Enter" || (e as KeyboardEvent).key === " ") { e.preventDefault(); toggle(); } });
   });
   const toast = root.querySelector<HTMLElement>(".wl-toast");
-  root.querySelector("[data-buy]")?.addEventListener("click", () => {
+  root.querySelector("[data-buy]")?.addEventListener("click", (e) => {
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    confetti({ x: r.left + r.width / 2, y: r.top }, [st.accent, "#ffffff", "#facc15", "#6366f1"]);
     toast?.classList.add("is-on");
     setTimeout(() => toast?.classList.remove("is-on"), 2200);
   });
 
   const tabs = root.querySelectorAll<HTMLButtonElement>("[data-wl-tab]");
   const panes = root.querySelectorAll<HTMLElement>("[data-wl-pane]");
-  tabs.forEach((t) => t.addEventListener("click", () => {
-    tabs.forEach((x) => x.setAttribute("aria-selected", String(x === t)));
+  const select = (t: HTMLButtonElement) => {
+    tabs.forEach((x) => { x.setAttribute("aria-selected", String(x === t)); x.tabIndex = x === t ? 0 : -1; });
     panes.forEach((p) => (p.hidden = p.dataset.wlPane !== t.dataset.wlTab));
+    root.dispatchEvent(new CustomEvent("tabchange", { detail: t }));
     ScrollTrigger.refresh();
-  }));
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => select(t));
+    t.addEventListener("keydown", (e) => {
+      const k = (e as KeyboardEvent).key;
+      if (k !== "ArrowRight" && k !== "ArrowLeft") return;
+      e.preventDefault();
+      const n = tabs[(i + (k === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      n.focus(); select(n);
+    });
+  });
   render();
+}
+
+// Indicador deslizante bajo la pestaña activa.
+export function initTabs() {
+  document.querySelectorAll<HTMLElement>(".wl-tabs").forEach((list) => {
+    const ind = document.createElement("i");
+    ind.className = "tab-ind";
+    list.appendChild(ind);
+    const move = (animate = true) => {
+      const on = list.querySelector<HTMLElement>('[aria-selected="true"]');
+      if (!on) return;
+      const vars = { x: on.offsetLeft, width: on.offsetWidth, duration: animate && !reduceMotion ? 0.5 : 0, ease: "power3.out" };
+      gsap.to(ind, vars);
+    };
+    move(false);
+    document.querySelector("#wl-root")?.addEventListener("tabchange", () => move());
+    addEventListener("resize", () => move(false));
+    document.fonts?.ready.then(() => move(false));
+  });
 }
 
 // Panel en ordenador y móvil: contadores y barras al entrar en pantalla.
@@ -184,7 +222,7 @@ export function initPhases() {
   ScrollTrigger.create({
     trigger: sec,
     start: "top top",
-    end: () => "+=" + innerHeight * (mobile ? 2.2 : 3),
+    end: () => "+=" + innerHeight * (mobile ? 1.6 : 2),
     pin: true,
     scrub: true,
     onUpdate: (self) => {

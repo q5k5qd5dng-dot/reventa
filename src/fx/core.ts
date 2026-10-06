@@ -47,13 +47,13 @@ export function initCursor() {
 }
 
 // Texto que sube enmascarado (palabras o líneas). data-split="words|lines", data-delay, data-scroll.
-export function initSplitCopy(preloaderShowing: boolean) {
+export function initSplitCopy(heroDelay: number) {
   const run = () => {
     document.querySelectorAll<HTMLElement>("[data-split]").forEach((el) => {
       const type = el.dataset.split === "words" ? "words" : "lines";
       const onScroll = el.dataset.scroll === "true";
       let delay = parseFloat(el.dataset.delay || "0");
-      if (preloaderShowing && !onScroll && el.closest(".fx-hero")) delay += 3.25;
+      if (!onScroll && el.closest(".fx-hero, .hx")) delay += heroDelay;
       SplitText.create(el, {
         type,
         mask: type,
@@ -62,8 +62,9 @@ export function initSplitCopy(preloaderShowing: boolean) {
         wordsClass: "fx-word",
         onSplit(self) {
           const targets = type === "words" ? self.words : self.lines;
-          if (reduceMotion) return;
+          if (reduceMotion) { el.style.visibility = "visible"; return; }
           gsap.set(targets, { yPercent: 105 });
+          el.style.visibility = "visible";
           const tween = gsap.to(targets, { yPercent: 0, duration: 0.8, ease: "power3.out", delay, stagger: 0.09, paused: onScroll });
           if (onScroll) ScrollTrigger.create({ trigger: el, start: "top 80%", animation: tween, toggleActions: "play none none none" });
         },

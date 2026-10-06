@@ -1,0 +1,38 @@
+---
+// Preloader, barra superior, barra flotante móvil y menú a pantalla completa. Se usa en todas las páginas animadas.
+const links = [["Inicio", "/"], ["Discotecas", "/discotecas"], ["Promotores", "/promotores"], ["Beach Clubs", "/beach-clubs"], ["Festivales", "/festivales"], ["Pide tu demo", "#demo"]];
+---
+<div class="fx-preloader" aria-hidden="true"><div class="fx-pre-title"><h1 class="display">Wave</h1></div></div>
+<div class="fx-split" aria-hidden="true"><div class="fx-pre-title"><h1 class="display">Wave</h1></div></div>
+<div class="fx-tags" aria-hidden="true">
+  <div class="fx-tag fx-tag-1 mono"><p>Entradas</p></div>
+  <div class="fx-tag fx-tag-2 mono"><p>RRPP</p></div>
+  <div class="fx-tag fx-tag-3 mono"><p>Check-in</p></div>
+</div>
+
+<nav class="fx-nav" aria-label="Principal">
+  <a href="/" class="fx-logo"><img src="/favicon.svg" alt="" width="26" height="26" />Wave</a>
+  <div class="fx-nav-right">
+    <a class="fx-nav-cta mono" href="#demo">Solicita una demo</a>
+    <button type="button" class="fx-toggler mono" data-menu-toggle aria-expanded="false" aria-controls="fx-menu"><span class="lbl">Menú</span><span class="lbl">Cerrar</span></button>
+  </div>
+</nav>
+
+<div class="fx-dock" role="navigation" aria-label="Acciones rápidas">
+  <a href="#demo" class="fx-dock-cta">Solicita una demo</a>
+  <button type="button" class="fx-dock-menu" data-menu-toggle aria-expanded="false" aria-controls="fx-menu" aria-label="Menú">
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path class="l1" d="M2 5h14" /><path class="l2" d="M2 13h14" /></svg>
+  </button>
+</div>
+
+<div class="fx-menu" id="fx-menu">
+  <div class="fx-menu-info">
+    <div><p class="mono">Wave</p><p class="mono">Ticketing + comunidad</p><p class="mono">Zaragoza</p></div>
+    <div><p class="mono">Habla con nosotros</p><p class="mono">hola@siemprewave.es</p></div>
+    <div><p class="mono">Para locales</p><p class="mono">Discotecas · Promotoras · Beach Clubs · Festivales</p></div>
+  </div>
+  <div class="fx-links">
+    <div class="fx-hi"></div>
+    {links.map(([t, h]) => <div class="fx-menu-link"><a href={h}><span>{t}</span></a></div>)}
+  </div>
+</div>
