@@ -1,0 +1,20 @@
+---
+// Marco de iPhone realista. Todo el contenido escala con el ancho gracias a unidades de contenedor.
+const { time = "9:41", class: cls = "" } = Astro.props;
+---
+<div class={`pf ${cls}`}>
+  <div class="pf-body">
+    <div class="pf-island"></div>
+    <div class="pf-screen">
+      <div class="pf-status"><b>{time}</b>
+        <span class="ico">
+          <svg viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg>
+          <svg viewBox="0 0 16 12" aria-hidden="true"><path d="M8 11.2L5.7 8.7a3.3 3.3 0 014.6 0L8 11.2zM3.3 6.4a6.6 6.6 0 019.4 0l-1.3 1.4a4.700 4.700 0 00-6.800 0L3.300 6.400zM1 4.100a9.900 9.900 0 0114 0l-1.300 1.400a8 8 0 00-11.400 0L1 4.100z"/></svg>
+          <svg viewBox="0 0 27 12" aria-hidden="true"><rect x=".5" y=".5" width="22" height="11" rx="3.2" fill="none" stroke="currentColor" opacity=".5"/><rect x="2" y="2" width="17" height="8" rx="2"/><rect x="24" y="4" width="2" height="4" rx="1" opacity=".5"/></svg>
+        </span>
+      </div>
+      <slot />
+      <div class="pf-home"></div>
+    </div>
+  </div>
+</div>

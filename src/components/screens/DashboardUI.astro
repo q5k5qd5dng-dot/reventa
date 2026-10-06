@@ -1,0 +1,56 @@
+---
+import EventArt from "./EventArt.astro";
+const { id = "db" } = Astro.props;
+// Panel "Resumen del evento": datos con aspecto de producto real.
+const rrpp = [["Marta Ruiz", 112, "1.344 €"], ["Pablo Serrano", 96, "1.152 €"], ["Irene Lahoz", 71, "852 €"], ["Dani Pérez", 54, "648 €"], ["Laura Gil", 31, "372 €"]];
+const age = [8, 18, 38, 62, 100, 74, 52, 34, 22, 12, 6];
+const icons = ["M3 10l7-6 7 6v7H3z", "M4 4h12v12H4zM4 8h12", "M3 16V8M8 16V4M13 16v-6M18 16V7", "M4 6a3 3 0 106 0 3 3 0 00-6 0zM2 17c0-3 2-5 5-5s5 2 5 5M13 7a2.500 2.500 0 110 5", "M10 3l2 4 4 .6-3 3 .8 4.200L10 12.600 6.200 14.800 7 10.600 4 7.600 8 7z"];
+---
+<div class="db-wrap">
+  <div class="dbui">
+    <aside class="db-side">
+      <span class="db-logo"></span>
+      {icons.map((d, i) => <svg viewBox="0 0 20 20" class={i === 0 ? "on" : ""} aria-hidden="true"><path d={d} /></svg>)}
+    </aside>
+    <div class="db-main">
+      <header class="db-head">
+        <div class="db-back"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" /></svg><h4>Resumen del evento</h4></div>
+        <div class="db-user"><span><b>Pablo C.</b><small>Manager</small></span><i></i></div>
+      </header>
+      <div class="db-sub"><span>Estado: <b>Publicado</b></span><span class="db-btn">Editar</span></div>
+      <div class="db-ev">
+        <div class="db-thumb"><EventArt id={id} /></div>
+        <div class="db-evi"><small>17/06/2024 · 23:30 – 6:00 h</small><b>Noche de sábado en Sala Neón</b><span><svg viewBox="0 0 12 14" aria-hidden="true"><path d="M6 13s4.500-4 4.500-7.500a4.500 4.500 0 10-9 0C1.500 9 6 13 6 13z"/></svg>Zaragoza</span></div>
+        <div class="db-kpis">
+          <div><small>Entradas</small><b>238<i>/400</i></b></div>
+          <div><small>Listas</small><b>64<i>/80</i></b></div>
+          <div><small>Reservas</small><b>12<i>/20</i></b></div>
+          <div><small>Season pass</small><b>18</b></div>
+        </div>
+      </div>
+      <div class="db-g4">
+        <div class="db-card"><h5>Género</h5><div class="db-seg"><span style="flex:41" class="a">H<br /><em>41 %</em></span><span style="flex:6" class="n">·</span><span style="flex:53" class="b">M<br /><em>53 %</em></span></div></div>
+        <div class="db-card"><h5>Edad <small>23 años</small></h5><div class="db-age">{age.map((h, i) => <i style={`height:${h}%`} class={i === 4 ? "hot" : ""}></i>)}</div></div>
+        <div class="db-card"><h5>Ingresos <b>8.746,45 €</b></h5><div class="db-seg"><span style="flex:36" class="a">Transferido<br /><em>3.148 €</em></span><span style="flex:64" class="b">Restante<br /><em>5.598 €</em></span></div></div>
+        <div class="db-card"><h5>Visitas <small>Media 1.040</small></h5><p class="db-big">1.234 <small>visitas</small></p><p class="db-up">↑ 15 %</p></div>
+      </div>
+      <div class="db-g3">
+        <div class="db-col">
+          <div class="db-card"><h5>Validaciones <b>325/400</b></h5><div class="db-prog"><i style="width:81%"></i></div></div>
+          <div class="db-card db-row"><h5>Reembolsos<small>Por usuario: 2</small></h5><b>3</b></div>
+          <div class="db-card db-row"><h5>Anulaciones<small>Con reembolso: 1</small></h5><b>2</b></div>
+        </div>
+        <div class="db-card db-tbl">
+          <h5>RRPP <small>Total: 5</small></h5>
+          <table><thead><tr><th>Nombre</th><th>Ventas</th><th>Ingresos</th></tr></thead>
+            <tbody>{rrpp.map(([n, v, i]) => <tr><td>{n}</td><td>{v}</td><td>{i}</td></tr>)}</tbody>
+            <tfoot><tr><td>Total</td><td>364</td><td>4.368 €</td></tr></tfoot></table>
+        </div>
+        <div class="db-col">
+          <div class="db-card"><h5>Códigos promo <small>Coste: 218 €</small></h5><p class="db-big">87 <small>usados</small></p></div>
+          <div class="db-card"><h5>Top códigos</h5><ol class="db-top"><li>#SALANEON10</li><li>#AMIGOS2</li><li>#ZGZNIGHT</li></ol></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

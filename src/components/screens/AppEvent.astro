@@ -1,0 +1,25 @@
+---
+import EventArt from "./EventArt.astro";
+// Pantalla "Evento" de la app, con cartel, info, DJs y entradas.
+const { id = "app" } = Astro.props;
+const tickets = [["Entrada normal", "Hora límite de acceso: 2:00", "8,00 €", 0], ["Entrada + copa", "Hora límite de acceso: 2:00", "12,00 €", 1], ["Mesa VIP · 4 personas", "Incluye 2 botellas", "150,00 €", 0]];
+---
+<div class="ae">
+  <div class="ae-top"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" /></svg><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 8v5h10V8" /></svg></div>
+  <div class="ae-cover">
+    <EventArt id={id} />
+    <div class="ae-date"><b>17</b><span>JUN</span></div>
+    <div class="ae-ttl"><b>Noche de sábado</b><span>23:30 – 06:00 · Sala Neón</span></div>
+  </div>
+  <h4>Info</h4>
+  <p class="ae-venue">Sala Neón, Zaragoza <i>›</i></p>
+  <p class="ae-desc">Ambiente envolvente y DJs de primer nivel. Ven a bailar y disfrutar de una noche que te hará volver.</p>
+  <div class="ae-chips"><span>+ 24</span><span>Arreglada</span></div>
+  <p class="ae-gen">Comercial · Reguetón · Pop · Techno</p>
+  <div class="ae-djs"><span><i>CL</i>Cassino Live</span><span><i>SB</i>Santi B.</span></div>
+  <h4>Entradas</h4>
+  {tickets.map(([n, d, p, q]) => (
+    <div class="ae-t"><div><b>{n}</b><small>{d}</small><small>Precio: {p}</small></div><div class="ae-q"><i class="m">−</i><em>{q}</em><i class="p">+</i></div></div>
+  ))}
+  <div class="ae-pay"><span>1</span><b>Ir a pagar</b><span>12 €</span></div>
+</div>

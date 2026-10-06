@@ -54,7 +54,7 @@ export function initWhiteLabel() {
   const root = document.querySelector<HTMLElement>("#wl-root");
   if (!root) return;
   const st = { brand: "Tu Local", accent: "#21aec0", bg: "#0f0f12", radius: 14, map: true, general: 1, copa: 0, tables: new Set<number>() };
-  const PRICE = { general: 12, copa: 18, table: 150 };
+  const PRICE = { general: 8, copa: 12, table: 150 };
 
   const lum = (hex: string) => {
     const n = parseInt(hex.slice(1), 16);
@@ -90,11 +90,16 @@ export function initWhiteLabel() {
     root.querySelector("[data-q-general]")!.textContent = String(st.general);
     root.querySelector("[data-q-copa]")!.textContent = String(st.copa);
     const lines: string[] = [];
-    if (st.general) lines.push(`${st.general} × Entrada general`);
-    if (st.copa) lines.push(`${st.copa} × Entrada + copa`);
-    if (st.map && tables.length) lines.push(`Reservado: mesa ${tables.join(", ")}`);
-    if (!lines.length) lines.push("Aún no has elegido nada");
-    root.querySelectorAll("[data-order]").forEach((el) => (el.innerHTML = lines.map((l) => `<li>${l}</li>`).join("")));
+    if (st.general) lines.push(`<li><span>${st.general}× Entrada normal</span><b>${st.general * PRICE.general} €</b></li>`);
+    if (st.copa) lines.push(`<li><span>${st.copa}× Entrada + copa</span><b>${st.copa * PRICE.copa} €</b></li>`);
+    if (st.map && tables.length) lines.push(`<li><span>Mesa ${tables.join(", ")} · 4 pers.</span><b>${tables.length * PRICE.table} €</b></li>`);
+    if (!lines.length) lines.push("<li><span>Aún no has elegido nada</span></li>");
+    root.querySelectorAll("[data-order]").forEach((el) => (el.innerHTML = lines.join("")));
+    const units = st.general + st.copa + (st.map ? tables.length : 0);
+    root.querySelectorAll("[data-count]").forEach((el) => (el.textContent = String(units)));
+    root.querySelectorAll("[data-order-count]").forEach((el) => (el.textContent = "x" + units));
+    root.querySelectorAll("[data-ticket-type]").forEach((el) => (el.textContent = st.copa ? "Entrada + copa" : st.general ? "Entrada normal" : tables.length ? "Mesa VIP" : "—"));
+    root.querySelectorAll("[data-people]").forEach((el) => (el.textContent = String(st.general + st.copa + (st.map ? tables.length * 4 : 0))));
     root.querySelectorAll<SVGElement>(".wl-table").forEach((t) => t.classList.toggle("is-on", st.tables.has(Number(t.dataset.n))));
   };
 

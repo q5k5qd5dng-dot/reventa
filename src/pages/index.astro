@@ -6,6 +6,12 @@ import FxDemo from "../components/FxDemo.astro";
 import HeroUI from "../components/HeroUI.astro";
 import FeatureMock from "../components/FeatureMock.astro";
 import Qr from "../components/Qr.astro";
+import EventArt from "../components/screens/EventArt.astro";
+import FloorPlan from "../components/screens/FloorPlan.astro";
+import EmailMock from "../components/screens/EmailMock.astro";
+import WalletPass from "../components/screens/WalletPass.astro";
+import DashboardUI from "../components/screens/DashboardUI.astro";
+import PhoneFrame from "../components/screens/PhoneFrame.astro";
 
 const services = [
   ["Entradas", "Vende antes, vende más", "Tipos de entrada, precios por fases y códigos promocionales.", ["Tipos de entrada con precios por fases", "Hora límite de acceso y códigos de desbloqueo", "Cuenta atrás y avisos de pocas entradas"], "tickets"],
@@ -138,28 +144,44 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
             <div class="wl-pane" data-wl-pane="web">
               <div class="wl-browser">
                 <div class="wl-bar mono"><i></i><i></i><i></i><span>tulocal.com/entradas</span></div>
-                <div class="wl-site">
-                  <div class="callout c-radius" data-callout="radius"><span>Radio</span><i></i></div>
-                  <div class="callout c-bg" data-callout="bg"><span>Fondo</span><i></i></div>
-                  <div class="callout c-map" data-callout="map"><span>Mapa de tu sala</span><i></i></div>
-                  <div class="callout c-accent" data-callout="accent"><span>Color de resalte</span><i></i></div>
-                  <div>
+                <div class="wl-site2">
+                  <div class="wl-nav2">
                     <div class="wl-brand"><span class="wl-logo" data-initial>T</span><b data-brand>Tu Local</b></div>
                     <div class="wl-links mono"><span>Agenda</span><span>Reservas</span><span>Contacto</span></div>
-                    <div class="wl-hero"><h3>La noche es <span>de <em style="font-style:normal" data-brand>Tu Local</em></span></h3><p>Compra aquí tu entrada o elige tu mesa. Sin salir de nuestra web.</p></div>
                   </div>
-                  <div class="wl-widget" aria-label="Tienda de entradas integrada en la web del local">
-                    <div class="ev"><i></i><div><b>Sábado de <span data-brand>Tu Local</span></b><small>Sáb 23:30 · Tu sala</small></div></div>
-                    <div class="wl-map" aria-label="Plano de la sala">
-                      <svg viewBox="0 0 260 120" role="group">
-                        <rect class="stage" x="88" y="6" width="84" height="16" rx="4"></rect>
-                        {tablePos.map(([x, y], i) => (<><circle class="wl-table" data-n={i + 1} cx={x} cy={y} r="14" tabindex="0" role="button" aria-label={`Mesa ${i + 1}`}></circle><text x={x} y={y + 3}>{i + 1}</text></>))}
-                      </svg>
-                      <small>Toca una mesa para reservarla · 150 €</small>
+                  <div class="wls" aria-label="Tienda de entradas integrada en la web del local">
+                    <span class="wls-back">‹ Volver a eventos</span>
+                    <h3>Evento</h3>
+                    <div class="wls-grid">
+                      <div class="wls-left">
+                        <div class="wls-cover">
+                          <EventArt id="wl" />
+                          <div class="ae-date"><b>17</b><span>JUN</span></div>
+                          <div class="ae-ttl"><b>Noche de sábado</b><span>23:30 – 06:00 · <span data-brand>Tu Local</span></span></div>
+                          <div class="callout c-radius" data-callout="radius"><span>Radio</span></div>
+                        </div>
+                        <h5>Detalles del evento</h5>
+                        <p><span data-brand>Tu Local</span>, Zaragoza <i class="wls-acc">›</i></p>
+                        <p class="wls-mut">Ambiente envolvente y DJs de primer nivel. ¡Ven a bailar!</p>
+                        <p class="wls-acc wls-more">Leer más</p>
+                        <h5>Normas del evento</h5>
+                        <div class="wls-chips"><span>+ 24</span><span>Arreglada</span></div>
+                        <div class="callout c-bg" data-callout="bg"><span>Color de fondo</span></div>
+                      </div>
+                      <div class="wls-right">
+                        <div class="wls-map">
+                          <FloorPlan />
+                          <div class="callout c-map" data-callout="map"><span>Mapa de tu sala</span></div>
+                        </div>
+                        <div class="wls-th"><h5>Entradas</h5><span class="wls-acc">Ver mapa</span></div>
+                        <div class="wls-t"><div><b>Entrada normal</b><small>Entrada válida hasta las 2:00</small><small class="wls-acc">Precio: 8,00 €</small></div><div class="qty"><button type="button" data-step="general:-1" aria-label="Quitar una">−</button><span data-q-general>1</span><button type="button" data-step="general:1" aria-label="Añadir una">+</button></div></div>
+                        <div class="wls-t"><div><b>Entrada + copa</b><small>Entrada válida hasta las 2:00</small><small class="wls-acc">Precio: 12,00 €</small><span class="wls-badge">¡Últimas entradas!</span></div><div class="qty"><button type="button" data-step="copa:-1" aria-label="Quitar una">−</button><span data-q-copa>0</span><button type="button" data-step="copa:1" aria-label="Añadir una">+</button></div></div>
+                        <div class="wls-payw">
+                          <div class="callout c-accent" data-callout="accent"><span>Color de resalte</span></div>
+                          <button type="button" class="wls-pay" data-buy><span data-count>1</span><b>Ir a pagar</b><span data-total>8 €</span></button>
+                        </div>
+                      </div>
                     </div>
-                    <div class="wl-ticket"><div><b>Entrada general</b><br /><small>12 €</small></div><div class="qty"><button type="button" data-step="general:-1" aria-label="Quitar una">−</button><span data-q-general>1</span><button type="button" data-step="general:1" aria-label="Añadir una">+</button></div></div>
-                    <div class="wl-ticket"><div><b>Entrada + copa</b><br /><small>18 €</small></div><div class="qty"><button type="button" data-step="copa:-1" aria-label="Quitar una">−</button><span data-q-copa>0</span><button type="button" data-step="copa:1" aria-label="Añadir una">+</button></div></div>
-                    <div class="wl-buy"><div><small>Total</small><br /><b data-total>12 €</b></div><button type="button" data-buy>Comprar</button></div>
                     <div class="wl-toast" role="status">Es una demo: aquí se abriría el pago</div>
                   </div>
                 </div>
@@ -168,44 +190,14 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
             </div>
 
             <div class="wl-pane" data-wl-pane="mail" hidden>
-              <div class="wl-mail">
-                <div class="wl-mailhead"><b><span data-brand>Tu Local</span> · tus entradas ✓</b><small>De: entradas@tulocal.com</small></div>
-                <div class="wl-mailbody">
-                  <div class="wl-mailcard">
-                    <div class="top"><span class="wl-logo" data-initial>T</span><b style="font-weight:800;font-size:1.25rem;letter-spacing:-.03em" data-brand>Tu Local</b></div>
-                    <div class="in">
-                      <h4>¡Nos vemos el sábado!</h4>
-                      <ul data-order></ul>
-                      <div class="qrbox"><Qr class="qr" /><div><small>Total</small><br /><b data-total>12 €</b></div></div>
-                      <span class="btn2">Ver mis entradas</span>
-                      <p class="foot">Enviado por <span data-brand>Tu Local</span> con tecnología Wave</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <EmailMock />
               <p class="wl-note mono">Los correos de compra salen con tu nombre, tus colores y tus formas.</p>
             </div>
 
             <div class="wl-pane" data-wl-pane="wallet" hidden>
-              <div class="wl-wallet">
-                <div class="wl-phone">
-                  <p class="mono">Apple Wallet</p>
-                  <div class="pass apple">
-                    <div class="row"><b style="font-weight:800;font-size:1.1rem;letter-spacing:-.03em" data-brand>Tu Local</b><small>Sáb 23:30</small></div>
-                    <h4>Entrada<br />Sábado</h4>
-                    <div class="qrw"><Qr class="qr" /></div>
-                    <small>Acceso válido para 1 persona</small>
-                  </div>
-                </div>
-                <div class="wl-phone">
-                  <p class="mono">Google Wallet</p>
-                  <div class="pass google">
-                    <div class="row"><div class="wl-brand"><span class="wl-logo" data-initial>T</span><b data-brand>Tu Local</b></div><small>Sáb 23:30</small></div>
-                    <h4>Entrada<br />Sábado</h4>
-                    <div class="qrw"><Qr class="qr" /></div>
-                    <small>Acceso válido para 1 persona</small>
-                  </div>
-                </div>
+              <div class="wl-wallet2">
+                <WalletPass kind="apple" id="wa" />
+                <WalletPass kind="google" id="wg" />
               </div>
               <p class="wl-note mono">La entrada siempre en su móvil, en Apple Wallet y Google Wallet.</p>
             </div>
@@ -224,24 +216,16 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
           <p class="ex mono">Datos de ejemplo</p>
         </div>
         <div class="dev-devices" aria-hidden="true">
-          <div class="laptop">
-            <div class="scr">
-              <div class="tiles">
-                <div><small class="mono">Entradas</small><b data-count="1248">0</b></div>
-                <div><small class="mono">Aforo</small><b data-count="86" data-suffix=" %">0</b></div>
-                <div><small class="mono">Ingresos</small><b data-count="18400" data-suffix=" €">0</b></div>
+          <div class="dev-laptop"><div class="dev-screen"><DashboardUI id="dd" /></div><div class="laptop-base"></div></div>
+          <div class="dev-phone">
+            <PhoneFrame>
+              <div class="ck">
+                <div class="ck-head"><b>Check-in</b><span>238 / 400 dentro</span></div>
+                <div class="ck-cam"><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i><i class="line"></i></div>
+                <div class="ck-ok">✓ Acceso correcto<small>Entrada normal · 1 persona</small></div>
+                <div class="ck-log">{[["Entrada + copa", "23:41"], ["Lista RRPP · Marta", "23:40"], ["Mesa VIP 4 · 4 pers.", "23:38"], ["Entrada normal", "23:37"]].map(([a, b]) => <div><span>{a}</span><span>{b}</span></div>)}</div>
               </div>
-              <div class="bars">{[28, 40, 34, 52, 46, 68, 60, 82, 70, 92, 80, 100].map((h) => <i style={`height:${h}%`}></i>)}</div>
-            </div>
-          </div>
-          <div class="laptop-base"></div>
-          <div class="phone">
-            <div class="scr">
-              <p class="mono">Check-in</p>
-              <div class="fm-frame"><i class="line"></i></div>
-              <span class="okc mono">Acceso correcto</span>
-              <div class="log">{[["Entrada general", "23:41"], ["Lista RRPP", "23:40"], ["Reservado · mesa 4", "23:38"]].map(([a, b]) => <div><span>{a}</span><span>{b}</span></div>)}</div>
-            </div>
+            </PhoneFrame>
           </div>
         </div>
       </div>

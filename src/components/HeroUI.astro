@@ -1,30 +1,12 @@
 ---
-import Qr from "./Qr.astro";
-// Composición de producto del hero: panel + móvil + avisos vivos. Capas con profundidad (data-depth).
-const bars = [34, 46, 40, 58, 52, 70, 64, 84, 76, 96];
-const feed = [["Entrada vendida", "Marta · 2 × General", "ahora"], ["Acceso correcto", "Puerta 1 · Lista RRPP", "hace 1 min"], ["Mesa reservada", "Mesa 4 · 150 €", "hace 3 min"]];
+import DashboardUI from "./screens/DashboardUI.astro";
+import PhoneFrame from "./screens/PhoneFrame.astro";
+import AppEvent from "./screens/AppEvent.astro";
+const feed = [["Entrada vendida", "Marta · 2 × Normal", "ahora"], ["Acceso correcto", "Puerta 1 · Lista RRPP", "hace 1 min"], ["Mesa reservada", "Mesa 4 · 150 €", "hace 3 min"]];
 ---
 <div class="hui" aria-hidden="true">
-  <div class="hui-panel" data-hero-in data-depth="6">
-    <div class="hui-top"><i></i><i></i><i></i><span class="mono">Sábado · Tu sala</span><b class="live mono"><u></u>En directo</b></div>
-    <div class="hui-tiles">
-      <div><small class="mono">Entradas</small><b>1.248</b></div>
-      <div><small class="mono">Aforo</small><b>86 %</b></div>
-      <div><small class="mono">Ingresos</small><b>18.400 €</b></div>
-    </div>
-    <div class="hui-bars">{bars.map((h) => <i style={`height:${h}%`}></i>)}</div>
-    <div class="hui-rows">
-      {[["Marta R.", "212"], ["Pablo S.", "174"], ["Irene L.", "139"]].map(([n, v]) => <div><span class="av"></span><span>{n}</span><b>{v}</b></div>)}
-    </div>
-  </div>
-  <div class="hui-phone" data-hero-in data-depth="16">
-    <div class="hui-notch"></div>
-    <p class="mono">Tu entrada</p>
-    <Qr class="hui-qr" />
-    <b>Sábado 23:30</b>
-    <small>Entrada general · 1 persona</small>
-    <span class="hui-ok mono">Acceso correcto</span>
-  </div>
+  <div class="hui-dash" data-hero-in data-depth="6"><DashboardUI id="hd" /></div>
+  <div class="hui-ph" data-hero-in data-depth="16"><PhoneFrame><AppEvent id="hp" /></PhoneFrame></div>
   <div class="hui-feed" data-hero-in data-depth="24">
     {feed.map(([a, b, c], i) => (
       <div class="hui-toast" style={`--i:${i}`}><span class="ic"></span><div><b>{a}</b><small>{b}</small></div><em class="mono">{c}</em></div>
