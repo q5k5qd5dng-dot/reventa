@@ -25,7 +25,7 @@ export const legal: LegalDoc[] = [
   },
   {
     slug: "privacidad", n: "Política de privacidad", upd,
-    intro: "Te explicamos qué datos personales tratamos, para qué, durante cuánto tiempo y qué derechos tienes, conforme al Reglamento General de Protección de Datos (RGPD) y la LOPDGDD.",
+    intro: "Qué datos personales tratamos, para qué, cuánto tiempo y qué derechos tienes, conforme al RGPD y la LOPDGDD.",
     secs: [
       { h: "1. Responsable del tratamiento", p: ["El responsable es el titular de Handticket identificado en el Aviso legal. Para cualquier cuestión sobre privacidad puedes contactarnos desde el Centro de ayuda."] },
       { h: "2. Datos que tratamos", p: ["Datos de cuenta: nombre, email y contraseña (guardada de forma cifrada).", "Datos de operaciones: entradas compradas y vendidas, precios, pedidos e historial.", "Datos de cobro del vendedor: titular y IBAN, solo para ingresarte el dinero de tus ventas.", "Archivos de entradas que subes para su venta, que solo se entregan al comprador cuando completa el pago.", "Datos técnicos: dirección IP, dispositivo, navegador y uso de la web, según tus preferencias de cookies."] },

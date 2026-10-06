@@ -14,7 +14,7 @@ const url = `${SITE}${canonical}`, img = image.startsWith("http") ? image : `${S
     <meta name="description" content={description} />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
     <meta name="theme-color" content="#e8590c" />
-    <link rel="canonical" href={url} /><link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={url} /><slot name="head" /><link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" hreflang="es" href={url} /><link rel="alternate" hreflang="x-default" href={url} />
     <meta property="og:site_name" content={brand.name} /><meta property="og:locale" content="es_ES" /><meta property="og:type" content={type} />
     <meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={url} /><meta property="og:image" content={img} />

@@ -4,8 +4,9 @@ import { slugify, events, extra, fechaLarga, abs, eventLd, graph, crumbs, organi
 export const getStaticPaths = () => events.map((e) => ({ params: { id: e.id }, props: { e } }));
 const { e } = Astro.props; const x = extra[e.id];
 const from = Math.min(...x.tickets.filter((t) => t.list).map((t) => t.from));
-const title = `Entradas ${x.name} · ${e.v}, ${e.c} | Handticket`;
-const description = `Compra entradas para ${x.name} en ${e.v} (${e.c}) el ${fechaLarga(e.date)}. Desde ${from} €, pago protegido, entrega al instante y vendedores verificados.`;
+const short = (t: string, n: number) => (t.length <= n ? t : t.slice(0, n - 1).replace(/\s\S*$/, "") + "…");
+const title = `Entradas ${short(x.name, 34)} en ${e.c} | Handticket`;
+const description = short(`Entradas para ${x.name} en ${e.v} (${e.c}), ${fechaLarga(e.date)}. Desde ${from} €, pago protegido y entrega al instante.`, 158);
 const faq = [
   { q: `¿Cuándo y dónde es ${x.name}?`, a: `${x.name} se celebra el ${fechaLarga(e.date)} en ${e.v}, ${x.address}.` },
   { q: `¿Cuánto cuestan las entradas de ${x.name}?`, a: `Las entradas están desde ${from} € en Handticket. El precio final incluye gastos de gestión y se muestra antes de pagar.` },
