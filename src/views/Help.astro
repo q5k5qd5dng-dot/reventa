@@ -1,0 +1,45 @@
+---
+const topics = [
+  ["🎟️", "Comprar entradas", "Cómo comprar, pagar y recibir tu entrada."],
+  ["💸", "Vender entradas", "Publicar, fijar precio y cobrar."],
+  ["🔒", "Seguridad y garantías", "Cómo protegemos tu dinero y tus entradas."],
+  ["↩️", "Devoluciones", "Qué hacer si el evento se cancela o algo falla."],
+  ["👤", "Mi cuenta", "Acceso, datos y notificaciones."],
+  ["📱", "La app", "Descarga, QR sin conexión y avisos."],
+];
+const faq = [
+  ["¿Qué es Handticket?", "Un marketplace de reventa de entradas seguro y legal: pagas a la plataforma y el vendedor cobra cuando entras."],
+  ["¿Cómo sé que la entrada es real?", "Cada entrada pasa por nuestro protocolo antifraude antes de publicarse, y el QR es único e intransferible."],
+  ["¿Cuándo recibo mi entrada?", "Normalmente al instante en tu cuenta. En eventos con transferencia oficial te guiamos paso a paso."],
+  ["¿Qué pasa si se cancela el evento?", "Te devolvemos el importe completo, incluidos los gastos de gestión."],
+  ["¿Cuánto cuesta vender?", "Publicar es gratis. Cobramos un 10 % solo cuando se vende."],
+  ["¿Puedo cancelar una compra?", "Puedes revender tu entrada desde tu cuenta si no puedes asistir."],
+];
+---
+
+<section id="v-ayuda" class="view" data-view="ayuda">
+  <div class="relative isolate overflow-hidden px-5 pb-12 pt-36 text-center">
+    <div class="aurora left-1/2 top-0 h-96 w-[36rem] -translate-x-1/2 bg-violet/60"></div>
+    <p class="text-sm font-bold uppercase tracking-[0.3em] text-lime">Centro de ayuda</p>
+    <h1 class="mx-auto mt-3 max-w-4xl text-[clamp(2.6rem,8vw,7rem)] font-bold uppercase leading-[0.95]" data-split>¿En qué te <span class="text-outline-lime">ayudamos?</span></h1>
+    <div class="glass mx-auto mt-10 flex max-w-xl items-center gap-3 rounded-full p-2 pl-5"><svg viewBox="0 0 24 24" class="h-5 w-5 text-mute" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input id="helpq" type="search" placeholder="Busca una duda…" aria-label="Buscar en la ayuda" class="min-w-0 flex-1 bg-transparent py-2.5 outline-none" /></div>
+  </div>
+  <div class="mx-auto max-w-7xl px-5">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {topics.map(([i, t, d]) => (<a href="#/ayuda" class="spot glass block rounded-3xl p-7 transition hover:-translate-y-1" data-help-topic><p class="text-4xl">{i}</p><h3 class="mt-4 text-xl font-semibold">{t}</h3><p class="mt-1 text-sm text-mute">{d}</p></a>))}
+    </div>
+    <div class="mx-auto mt-24 max-w-3xl">
+      <h2 class="text-center text-3xl font-bold uppercase">Preguntas <span class="text-outline">frecuentes</span></h2>
+      <div id="helplist" class="mt-8 divide-y divide-line overflow-hidden rounded-3xl border border-line">
+        {faq.map(([q, a]) => (<details class="px-6 py-5" data-q={`${q} ${a}`.toLowerCase()}><summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">{q}<svg viewBox="0 0 24 24" class="faq-icon h-5 w-5 shrink-0 text-lime transition" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></summary><p class="mt-3 leading-relaxed text-mute">{a}</p></details>))}
+      </div>
+      <p id="helpempty" class="hidden py-10 text-center text-mute">No encontramos nada. Escríbenos y te respondemos.</p>
+    </div>
+    <form id="contact" class="glass mx-auto mt-20 max-w-xl space-y-4 rounded-[2rem] p-6 sm:p-10" novalidate>
+      <h2 class="text-2xl font-semibold">¿Sigues con dudas?</h2>
+      <div class="field"><input id="h-email" type="email" placeholder=" " required /><label for="h-email">Tu email</label><p class="msg"></p></div>
+      <div class="field"><input id="h-msg" placeholder=" " required /><label for="h-msg">Cuéntanos qué pasa</label><p class="msg"></p></div>
+      <button class="btn btn-lime w-full">Enviar mensaje</button>
+    </form>
+  </div>
+</section>

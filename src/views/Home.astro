@@ -1,0 +1,298 @@
+---
+import { events, poster, places, cats } from "../data/events";
+const featured = events.filter((e) => e.hot).concat(events.filter((e) => !e.hot).slice(0, 2));
+const stats = [
+  { n: 120000, pre: "+", l: "entradas entregadas" },
+  { n: 4.8, suf: "/5", dec: 1, l: "valoración media" },
+  { n: 38, l: "ciudades" },
+  { n: 100, suf: "%", l: "pago protegido" },
+];
+const steps = [
+  { t: "Encuentra", d: "Busca tu evento, aunque esté agotado. Filtra por ciudad, fecha y precio.", n: "01" },
+  { t: "Compra protegido", d: "Pagas a Handticket, no al vendedor. Tu dinero no se mueve hasta que tienes tu entrada.", n: "02" },
+  { t: "Recibe al instante", d: "Tu entrada verificada llega a tu cuenta con un QR único e intransferible.", n: "03" },
+  { t: "Entra y disfruta", d: "Enseña el QR en la puerta. Si algo falla, te devolvemos el dinero.", n: "04" },
+];
+const reviews = [
+  ["Iván", "Concierto · Madrid", "Tenía miedo de comprar en plataformas de reventa, pero el evento estaba agotado, el proceso fue fácil y la entrada funcionó a la primera."],
+  ["Lucía", "Festival · Barcelona", "Vendí dos entradas que no podía usar en menos de un día. El dinero llegó solo, sin perseguir a nadie."],
+  ["Marcos", "Fútbol · Sevilla", "Me flipó saber que pagaba a la plataforma y no a un desconocido. Entrada en el móvil al momento."],
+  ["Sara", "Teatro · Zaragoza", "Conseguí butacas de primera fila a un precio justo. Soporte rapidísimo cuando tuve una duda."],
+  ["Dani", "Club · Barcelona", "La app es una pasada. Compré, entré y ya. Cero estrés, cero estafas."],
+  ["Noa", "Festival · Madrid", "Lo mejor es la garantía de entrega. Por fin una reventa de la que te puedes fiar."],
+];
+const bento = [
+  { t: "Antifraude", d: "Cada entrada se verifica antes de salir a la venta.", c: "md:col-span-2 md:row-span-2", k: "shield" },
+  { t: "Pago protegido", d: "El dinero espera hasta que entras.", c: "", k: "lock" },
+  { t: "Entrega garantizada", d: "O te devolvemos hasta el último euro.", c: "", k: "check" },
+  { t: "Soporte 24/7", d: "Personas reales, a cualquier hora.", c: "", k: "chat" },
+  { t: "100% legal", d: "Precios y vendedores dentro de la normativa.", c: "md:col-span-2", k: "scale" },
+];
+---
+
+<section id="v-home" class="view" data-view="home">
+  <!-- HERO -->
+  <div id="hero" class="relative isolate flex min-h-[100svh] flex-col justify-center overflow-hidden px-5 pb-10 pt-28">
+    <canvas id="gl" class="absolute inset-0 -z-20 h-full w-full" aria-hidden="true"></canvas>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-bg/20 via-transparent to-bg"></div>
+    <div class="dotgrid absolute inset-0 -z-10 opacity-40 [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]"></div>
+
+    <div class="mx-auto grid w-full max-w-7xl items-center gap-10 lg:grid-cols-[1.25fr_1fr]">
+      <div class="min-w-0">
+        <p data-h="in" class="glass inline-flex max-w-full items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold sm:px-4 sm:text-sm">
+          <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime opacity-75"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-lime"></span></span>
+          <span id="live-count">1.284</span> personas buscando entradas ahora
+        </p>
+        <h1 id="hero-title" class="mt-6 text-[clamp(2.6rem,8.2vw,7.2rem)] font-bold uppercase leading-[0.95]">
+          <span class="line-mask"><span class="block">Reventa</span></span>
+          <span class="line-mask"><span class="block text-outline-lime">sin miedo</span></span>
+          <span class="line-mask"><span class="block text-grad">sin colas</span></span>
+        </h1>
+        <p data-h="in" class="mt-6 max-w-xl text-lg text-white/75 sm:text-xl">Compra y vende entradas con pago protegido y entrega garantizada. Aunque el evento esté agotado.</p>
+
+        <form id="hsearch" data-h="in" class="relative mt-8 max-w-xl" role="search" onsubmit="return false">
+          <div class="glass flex items-center gap-3 rounded-full p-2 pl-5">
+            <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-mute" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+            <input id="hq" type="search" autocomplete="off" placeholder="Artista, evento o ciudad…" aria-label="Buscar eventos" class="min-w-0 flex-1 bg-transparent py-2.5 outline-none" />
+            <button class="btn btn-lime !px-6 !py-3 !text-sm" data-magnetic>Buscar</button>
+          </div>
+          <ul id="hsug" class="glass absolute inset-x-0 top-full z-30 mt-2 hidden overflow-hidden rounded-3xl p-2 text-sm"></ul>
+        </form>
+        <div data-h="in" class="mt-5 flex flex-wrap gap-2 text-sm">
+          {["Madrid", "Barcelona", "Festivales", "Fútbol", "Techno"].map((s) => (<button type="button" data-q={s} class="quick rounded-full border border-line bg-white/5 px-4 py-1.5 text-white/80 transition hover:border-lime hover:text-lime">{s}</button>))}
+        </div>
+      </div>
+
+      <!-- Ticket 3D -->
+      <div class="ticket3d relative mx-auto grid place-items-center" id="hero-ticket" data-h="ticket">
+        <div class="aurora left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-violet"></div>
+        <div class="card" id="tcard">
+          <div class="holo"></div>
+          <div class="absolute inset-0" style="transform: translateZ(0)">
+            <div class="poster h-[46%] w-full" set:html={poster(events[0], 99)}></div>
+            <div class="px-6 pt-5" style="transform: translateZ(40px)">
+              <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-lime">Entrada verificada</p>
+              <p class="mt-2 font-display text-2xl font-semibold leading-tight">Gira Verano 2027</p>
+              <p class="mt-1 text-sm text-white/60">Karol Vega · Madrid</p>
+              <div class="mt-4 flex justify-between text-xs"><div><p class="text-white/45">Fecha</p><p class="font-semibold">24 JUN · 20:00</p></div><div class="text-right"><p class="text-white/45">Zona</p><p class="font-semibold">Grada 12 · F4</p></div></div>
+            </div>
+            <div class="absolute inset-x-6 bottom-6 flex items-end justify-between" style="transform: translateZ(60px)">
+              <div class="qr w-24 rounded-lg bg-white/95 p-1.5" data-qr="hero"></div>
+              <p class="font-display text-3xl font-bold">68<span class="text-lime">€</span></p>
+            </div>
+          </div>
+        </div>
+        <div class="glass absolute -left-2 top-10 hidden items-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold sm:flex" data-float><span class="grid h-8 w-8 place-items-center rounded-full bg-lime text-black">✓</span>Pago protegido</div>
+        <div class="glass absolute -right-4 top-[34%] hidden items-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold sm:flex" data-float><span class="text-xl">⚡</span>Entrega al instante</div>
+      </div>
+    </div>
+
+    <a href="#sec-marquee" data-h="in" class="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-xs uppercase tracking-[0.3em] text-mute md:flex" aria-label="Bajar">
+      Scroll<span class="block h-10 w-px overflow-hidden bg-white/20"><i class="block h-4 w-px bg-lime" id="scroll-hint"></i></span>
+    </a>
+  </div>
+
+  <!-- MARQUEE GIGANTE -->
+  <section id="sec-marquee" class="relative overflow-hidden border-y border-line py-8" aria-hidden="true">
+    <div class="marquee-row font-display text-[clamp(3rem,9vw,8rem)] font-bold uppercase leading-none" data-mq="-1">
+      {[0, 1].map(() => ["Conciertos", "Festivales", "Fútbol", "Teatro", "Techno", "Gira 2027"].map((w, i) => (<span class="flex items-center gap-12"><span class={i % 2 ? "text-outline" : ""}>{w}</span><span class="text-lime">✦</span></span>)))}
+    </div>
+    <div class="marquee-row mt-4 font-display text-[clamp(3rem,9vw,8rem)] font-bold uppercase leading-none" data-mq="1">
+      {[0, 1].map(() => ["Entradas verificadas", "Pago protegido", "Entrega garantizada", "100% legal"].map((w, i) => (<span class="flex items-center gap-12"><span class={i % 2 ? "" : "text-outline-lime"}>{w}</span><span class="text-violet">●</span></span>)))}
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="mx-auto max-w-7xl px-5 py-24">
+    <dl class="grid grid-cols-2 gap-px overflow-hidden rounded-[2rem] border border-line bg-line md:grid-cols-4">
+      {stats.map((s) => (
+        <div data-stat class="spot bg-bg p-8 text-center sm:p-12">
+          <dt class="font-display text-4xl font-bold sm:text-6xl" data-count={s.n} data-pre={s.pre ?? ""} data-suf={s.suf ?? ""} data-dec={s.dec ?? 0}>0</dt>
+          <dd class="mt-3 text-sm text-mute">{s.l}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <!-- DESTACADOS · scroll horizontal fijado -->
+  <section id="hpin" class="relative overflow-hidden">
+    <div class="mx-auto max-w-7xl px-5">
+      <p class="text-sm font-bold uppercase tracking-[0.3em] text-lime" data-split>No te lo pierdas</p>
+      <h2 class="mt-3 max-w-3xl text-[clamp(2rem,5.5vw,4.5rem)] font-bold uppercase leading-[1]" data-split>Los eventos que están <span class="text-grad">rompiendo la app</span></h2>
+    </div>
+    <div class="mt-12 overflow-hidden">
+      <div id="htrack" class="flex w-max gap-6 px-5 sm:gap-10 sm:px-[8vw]">
+        {featured.map((e, i) => (
+          <a href={`#/evento/${e.id}`} class="hcard group relative block w-[78vw] shrink-0 sm:w-[34vw] lg:w-[26vw]" data-view-cursor>
+            <div class="poster-wrap aspect-[4/5] tilt" data-tilt>
+              <div class="poster absolute -inset-[8%] transition duration-700 group-hover:scale-110" data-parallax set:html={poster(e, i)}></div>
+              <div class="glare"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+              {e.hot && <span class="absolute left-4 top-4 rounded-full bg-lime px-3 py-1 text-xs font-extrabold text-black">🔥 ÚLTIMAS {e.left}</span>}
+              <span class="absolute right-4 top-4 font-display text-6xl font-bold text-white/25">{String(i + 1).padStart(2, "0")}</span>
+              <div class="absolute inset-x-0 bottom-0 p-6" style="transform: translateZ(40px)">
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-white/70">{e.a}</p>
+                <p class="mt-1 font-display text-2xl font-semibold leading-tight sm:text-3xl">{e.t}</p>
+                <div class="mt-4 flex items-center justify-between text-sm"><span class="text-white/70">{e.d} · {e.c}</span><span class="rounded-full bg-white px-3 py-1 font-bold text-black">{e.p} €</span></div>
+              </div>
+            </div>
+          </a>
+        ))}
+        <div class="grid w-[60vw] shrink-0 place-items-center sm:w-[28vw]">
+          <a href="#/eventos" class="btn btn-lime !px-10 !py-5 !text-lg" data-magnetic>Ver todos →</a>
+        </div>
+      </div>
+    </div>
+    <div class="mx-auto mt-10 hidden h-[3px] max-w-7xl overflow-hidden rounded bg-white/10 px-5 md:block"><i id="hprog" class="block h-full w-full origin-left scale-x-0 bg-lime"></i></div>
+  </section>
+
+  <!-- EXPLORAR -->
+  <section id="explore" class="mx-auto max-w-7xl px-5 pt-32">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h2 class="text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-none" data-split>Sugerencias <span class="text-outline">para ti</span></h2>
+      <p id="count" class="text-sm text-mute"></p>
+    </div>
+    <div class="no-scrollbar -mx-5 mt-8 flex gap-2 overflow-x-auto px-5" role="tablist" aria-label="Categorías">
+      {cats.map((c, i) => (<button type="button" role="tab" data-cat={c.id} aria-selected={i === 0} class="cat shrink-0 rounded-full border border-line bg-white/5 px-5 py-2.5 text-sm font-semibold transition hover:border-white/40 aria-selected:border-lime aria-selected:bg-lime aria-selected:text-black">{c.n}</button>))}
+    </div>
+    <div id="grid" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {events.map((e, i) => (
+        <a href={`#/evento/${e.id}`} data-cat={e.cat} data-s={`${e.t} ${e.a} ${e.v} ${e.c} ${e.cat}`.toLowerCase()} class="ev group block" data-view-cursor>
+          <div class="poster-wrap aspect-[4/5] tilt" data-tilt>
+            <div class="poster absolute -inset-[4%] transition duration-700 group-hover:scale-110" set:html={poster(e, 20 + i)}></div>
+            <div class="glare"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+            <div class="absolute left-4 top-4 rounded-2xl bg-white/95 px-3 py-1.5 text-center leading-none text-black"><p class="font-display text-xl font-bold">{e.day}</p><p class="text-[10px] font-bold tracking-widest">{e.mon}</p></div>
+            <button type="button" data-like={e.id} aria-label="Favorito" class="like absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/35 backdrop-blur transition hover:bg-white hover:text-pink"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 21s-8-5-8-11a4.5 4.5 0 018-2.7A4.5 4.5 0 0120 10c0 6-8 11-8 11z"></path></svg></button>
+            <div class="absolute inset-x-0 bottom-0 p-5" style="transform: translateZ(30px)"><p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/70">{e.a}</p><p class="font-display text-xl font-semibold leading-tight">{e.t}</p></div>
+          </div>
+          <div class="mt-3 flex items-center justify-between"><p class="truncate text-sm text-mute">{e.v} · {e.c}</p><p class="shrink-0 text-sm"><span class="text-mute">desde</span> <b>{e.p}€</b></p></div>
+        </a>
+      ))}
+    </div>
+    <p id="empty" class="hidden py-20 text-center text-mute">Nada por aquí. Prueba con otra ciudad o artista.</p>
+  </section>
+
+  <!-- CÓMO FUNCIONA · sticky -->
+  <section id="steps" class="relative mx-auto mt-40 max-w-7xl px-5">
+    <div class="grid gap-10 lg:grid-cols-2">
+      <div class="lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:justify-center">
+        <p class="text-sm font-bold uppercase tracking-[0.3em] text-lime">Cómo funciona</p>
+        <h2 class="mt-3 text-[clamp(2.2rem,5.5vw,4.6rem)] font-bold uppercase leading-[1]" data-split>Cuatro pasos. <span class="text-outline">Cero riesgo.</span></h2>
+        <div class="ticket3d relative mt-10 hidden lg:block"><div class="card !mx-0 !w-[260px]" id="steps-card" style="--hx:0"><div class="holo"></div>
+          <div class="absolute inset-0 p-6"><p class="text-[10px] font-bold uppercase tracking-[0.3em] text-lime" id="sc-n">Paso 01</p><p class="mt-3 font-display text-3xl font-semibold leading-tight" id="sc-t">Encuentra</p><div class="absolute inset-x-6 bottom-6"><div class="qr rounded-lg bg-white/95 p-1.5" data-qr="steps"></div></div></div></div></div>
+      </div>
+      <ol class="space-y-6 lg:py-[20vh]">
+        {steps.map((s) => (
+          <li class="step spot glass min-h-[22rem] rounded-[2rem] p-8 sm:p-10 lg:min-h-[60vh]" data-n={s.n} data-t={s.t}>
+            <p class="font-display text-8xl font-bold text-outline sm:text-9xl">{s.n}</p>
+            <h3 class="mt-4 text-3xl font-semibold">{s.t}</h3>
+            <p class="mt-3 max-w-md text-lg text-white/70">{s.d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- BENTO GARANTÍAS -->
+  <section class="mx-auto mt-40 max-w-7xl px-5">
+    <p class="text-sm font-bold uppercase tracking-[0.3em] text-lime">Garantías</p>
+    <h2 class="mt-3 text-[clamp(2.2rem,5.5vw,4.6rem)] font-bold uppercase leading-[1]" data-split>¿Por qué <span class="text-grad">Handticket?</span></h2>
+    <div class="mt-12 grid auto-rows-[15rem] gap-4 md:grid-cols-4">
+      {bento.map((b) => (
+        <div data-bento class:list={["spot glass relative flex flex-col justify-between rounded-[2rem] p-7", b.c]}>
+          <div class="text-lime">
+            {b.k === "shield" && (<svg viewBox="0 0 120 140" class="h-40 w-40 md:h-52 md:w-52" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="path-draw" data-draw d="M60 8l48 18v34c0 36-22 62-48 74C34 122 12 96 12 60V26L60 8z"></path><path class="path-draw" data-draw d="M38 66l16 16 30-34"></path></svg>)}
+            {b.k === "lock" && (<svg viewBox="0 0 64 64" class="h-14 w-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><rect class="path-draw" data-draw x="12" y="28" width="40" height="28" rx="6"></rect><path class="path-draw" data-draw d="M20 28v-8a12 12 0 0124 0v8"></path></svg>)}
+            {b.k === "check" && (<svg viewBox="0 0 64 64" class="h-14 w-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle class="path-draw" data-draw cx="32" cy="32" r="24"></circle><path class="path-draw" data-draw d="M21 33l8 8 15-17"></path></svg>)}
+            {b.k === "chat" && (<svg viewBox="0 0 64 64" class="h-14 w-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="path-draw" data-draw d="M10 14h44v28H30l-12 10V42H10z"></path></svg>)}
+            {b.k === "scale" && (<svg viewBox="0 0 64 64" class="h-14 w-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="path-draw" data-draw d="M32 8v48M16 56h32M10 18h44M10 18l-6 16a8 8 0 0012 0l-6-16M54 18l-6 16a8 8 0 0012 0l-6-16"></path></svg>)}
+          </div>
+          <div><h3 class="text-xl font-semibold">{b.t}</h3><p class="mt-1 text-sm text-mute">{b.d}</p></div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CIUDADES · lista con vista previa -->
+  <section id="places" class="mx-auto mt-40 max-w-7xl px-5">
+    <p class="text-sm font-bold uppercase tracking-[0.3em] text-lime">Sitios populares</p>
+    <ul class="mt-8 border-t border-line">
+      {places.map((p, i) => (
+        <li>
+          <a href="#/eventos" class="place group flex items-center justify-between gap-4 border-b border-line py-7 transition-all duration-500 hover:px-4 sm:py-9" data-prev={i}>
+            <span class="font-display text-[clamp(1.6rem,5vw,4rem)] font-bold uppercase leading-none text-outline transition group-hover:text-white group-hover:[-webkit-text-stroke:0]">{p.n}</span>
+            <span class="flex items-center gap-4 text-sm text-mute"><span class="hidden sm:inline">{p.c}</span><span class="rounded-full border border-line px-3 py-1 text-white">{p.e} eventos</span><span class="text-2xl transition group-hover:translate-x-2 group-hover:text-lime">→</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div id="place-prev" class="pointer-events-none fixed left-0 top-0 z-40 hidden h-56 w-44 overflow-hidden rounded-2xl opacity-0 shadow-2xl lg:block">
+      {places.map((p, i) => (<div class="poster absolute inset-0 hidden" data-pp={i} set:html={poster(events[(i * 3) % events.length], 50 + i)}></div>))}
+    </div>
+  </section>
+
+  <!-- VENDER -->
+  <section class="mx-auto mt-40 max-w-7xl px-5">
+    <div id="sellbox" class="relative isolate overflow-hidden rounded-[2.5rem] border border-line px-6 py-20 text-center sm:px-16 sm:py-28">
+      <div class="aurora -left-20 -top-20 h-96 w-96 bg-violet"></div><div class="aurora -bottom-24 -right-10 h-96 w-96 bg-pink/70"></div><div class="aurora bottom-0 left-1/2 h-72 w-72 bg-cyan/50"></div>
+      <div class="dotgrid absolute inset-0 -z-10 opacity-40"></div>
+      <p class="text-sm font-bold uppercase tracking-[0.3em] text-lime">¿No puedes ir?</p>
+      <h2 class="mx-auto mt-4 max-w-4xl text-[clamp(2.2rem,6vw,5.5rem)] font-bold uppercase leading-[0.98]" data-split>Convierte tu entrada en <span class="text-lime">dinero</span></h2>
+      <p class="mx-auto mt-6 max-w-xl text-lg text-white/75">Publicar es gratis. Solo pagamos cuando vendes: recibes el dinero automáticamente tras el evento.</p>
+      <div class="mt-10 flex flex-col justify-center gap-3 sm:flex-row"><a href="#/vender" class="btn btn-lime !px-9 !py-4" data-magnetic>Vender mis entradas</a><a href="#/ayuda" class="btn btn-ghost !px-9 !py-4">Cómo se cobra</a></div>
+    </div>
+  </section>
+
+  <!-- OPINIONES -->
+  <section class="mt-40 overflow-hidden">
+    <h2 class="mx-auto max-w-7xl px-5 text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-none" data-split>Lo que dicen <span class="text-outline">nuestros usuarios</span></h2>
+    <div class="mt-12 space-y-5">
+      {[0, 1].map((row) => (
+        <div class="marquee-row !gap-5" data-mq={row ? "1" : "-1"} data-slow>
+          {[0, 1].map(() => reviews.slice(row * 3, row * 3 + 3).map((r) => (
+            <figure class="spot glass w-[82vw] shrink-0 rounded-3xl p-7 sm:w-[28rem]">
+              <div class="flex gap-0.5 text-lime">{"★★★★★"}</div>
+              <blockquote class="mt-4 whitespace-normal leading-relaxed text-white/80">“{r[2]}”</blockquote>
+              <figcaption class="mt-5 flex items-center gap-3"><span class="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-violet to-cyan font-bold">{r[0][0]}</span><span class="text-sm"><b class="block">{r[0]}</b><span class="text-mute">{r[1]}</span></span></figcaption>
+            </figure>
+          )))}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="mx-auto mt-40 max-w-3xl px-5">
+    <h2 class="text-center text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-none" data-split>Preguntas frecuentes</h2>
+    <div class="mt-10 divide-y divide-line overflow-hidden rounded-3xl border border-line">
+      {[
+        ["¿Es legal comprar en Handticket?", "Sí. Operamos dentro de la normativa y verificamos a vendedores y entradas antes de publicarlas."],
+        ["¿Qué pasa si la entrada no funciona?", "Te devolvemos el dinero o te conseguimos una equivalente. Tu pago está protegido hasta que accedes al evento."],
+        ["¿Cuánto cuesta vender?", "Publicar es gratis. Solo cobramos una comisión del 10 % cuando la entrada se vende."],
+        ["¿Cuándo cobro si vendo?", "Automáticamente tras el evento, directo a tu cuenta."],
+        ["¿Cómo recibo mi entrada?", "En tu cuenta y en la app, normalmente al instante, con un QR único."],
+      ].map(([q, a]) => (
+        <details class="group px-6 py-5"><summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">{q}<svg viewBox="0 0 24 24" class="faq-icon h-5 w-5 shrink-0 text-lime transition" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></summary><p class="mt-3 leading-relaxed text-mute">{a}</p></details>
+      ))}
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section class="mx-auto mt-40 max-w-7xl px-5">
+    <div class="glass relative overflow-hidden rounded-[2.5rem] p-8 sm:p-14">
+      <div class="grid items-center gap-10 lg:grid-cols-2">
+        <div><h2 class="text-balance text-[clamp(2rem,4.6vw,3.8rem)] font-bold uppercase leading-[1]" data-split>Sé el primero en conseguir entradas</h2>
+          <p class="mt-5 max-w-md text-lg text-white/70">Descarga la app: alertas de nuevas entradas y tu QR siempre a mano, incluso sin cobertura.</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#" class="flex items-center gap-3 rounded-2xl border border-line bg-black px-5 py-3 transition hover:border-lime" data-magnetic><svg viewBox="0 0 24 24" class="h-7 w-7" fill="currentColor"><path d="M16.4 12.6c0-2.4 2-3.5 2.1-3.6-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9s-1.9-.9-3.2-.8c-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.100-.8s1.9.8 3.200.8c1.300 0 2.100-1.200 2.900-2.300.9-1.300 1.300-2.600 1.300-2.700-.1 0-2.400-.9-2.400-3.800zM14 5.400c.7-.8 1.100-1.900 1-3-1 0-2.100.7-2.800 1.500-.6.700-1.200 1.800-1 2.900 1.100.1 2.100-.6 2.800-1.400z"></path></svg><span class="text-left"><span class="block text-[10px] leading-none text-white/60">Download on the</span><span class="text-lg font-semibold leading-tight">App Store</span></span></a>
+            <a href="#" class="flex items-center gap-3 rounded-2xl border border-line bg-black px-5 py-3 transition hover:border-lime" data-magnetic><svg viewBox="0 0 24 24" class="h-7 w-7"><path fill="#34a853" d="M3.600 2.300 13.400 12 3.600 21.700a1.500 1.500 0 01-.6-1.200V3.500c0-.5.200-.9.600-1.200z"></path><path fill="#fbbc04" d="m17 8.400-3.600 3.600L17 15.600l4-2.300c1.200-.7 1.200-1.800 0-2.500L17 8.400z"></path><path fill="#ea4335" d="M3.600 21.700 13.400 12 17 15.600 5.700 22c-.8.400-1.600.2-2.100-.3z"></path><path fill="#4285f4" d="M3.600 2.300c.5-.5 1.300-.7 2.100-.3L17 8.400 13.400 12 3.600 2.300z"></path></svg><span class="text-left"><span class="block text-[10px] leading-none text-white/60">GET IT ON</span><span class="text-lg font-semibold leading-tight">Google Play</span></span></a>
+          </div></div>
+        <div class="relative mx-auto h-80 w-full max-w-md" aria-hidden="true">
+          <div class="absolute left-2 top-8 h-64 w-44 rounded-[2rem] border-[7px] border-zinc-800 bg-gradient-to-b from-blue to-cyan shadow-2xl" data-par="-40" style="transform:rotate(-8deg)"></div>
+          <div class="absolute right-2 top-0 h-72 w-48 rounded-[2rem] border-[7px] border-zinc-800 bg-gradient-to-b from-violet to-pink shadow-2xl" data-par="40" style="transform:rotate(6deg)"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>

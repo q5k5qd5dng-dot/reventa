@@ -1,0 +1,75 @@
+---
+import { events, poster } from "../data/events";
+const mine = [events[0], events[4], events[6]];
+const tabs = [["tickets", "Mis entradas"], ["selling", "En venta"], ["wallet", "Monedero"], ["favs", "Favoritos"], ["settings", "Ajustes"]];
+---
+
+<section id="v-cuenta" class="view" data-view="cuenta">
+  <div class="mx-auto max-w-7xl px-5 pb-10 pt-32">
+    <p class="text-sm font-bold uppercase tracking-[0.3em] text-lime">Mi cuenta</p>
+    <h1 class="mt-3 text-[clamp(2.2rem,6vw,5rem)] font-bold uppercase leading-none">Hola, <span class="text-grad" id="acc-name">tú</span></h1>
+    <div class="mt-10 grid gap-8 lg:grid-cols-[16rem_1fr]">
+      <nav class="glass flex gap-1 overflow-x-auto rounded-3xl p-2 lg:flex-col lg:self-start" aria-label="Cuenta" id="acc-tabs">
+        {tabs.map(([k, t], i) => (<button type="button" data-tab={k} aria-selected={i === 0} class="atab shrink-0 rounded-2xl px-5 py-3 text-left text-sm font-semibold text-mute transition hover:text-white aria-selected:bg-lime aria-selected:text-black">{t}</button>))}
+        <button type="button" id="logout" class="shrink-0 rounded-2xl px-5 py-3 text-left text-sm font-semibold text-pink hover:bg-pink/10">Cerrar sesión</button>
+      </nav>
+
+      <div id="acc-panes">
+        <div data-pane="tickets" class="apane">
+          <div id="tickets" class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {mine.map((e, i) => (
+              <div class="flip aspect-[3/4]" data-flip>
+                <div class="flip-inner h-full w-full">
+                  <button type="button" class="flip-face poster-wrap block h-full w-full text-left" aria-label={`Ver QR de ${e.t}`}>
+                    <div class="poster absolute inset-0" set:html={poster(e, 400 + i)}></div><div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent"></div>
+                    <span class="absolute left-4 top-4 rounded-full bg-lime px-3 py-1 text-xs font-extrabold text-black">Verificada</span>
+                    <div class="absolute inset-x-0 bottom-0 p-6"><p class="text-xs font-bold uppercase tracking-widest text-white/70">{e.a}</p><p class="font-display text-2xl font-semibold leading-tight">{e.t}</p><p class="mt-1 text-sm text-white/70">{e.d} · {e.c}</p><p class="mt-4 text-xs text-lime">Toca para ver el QR ↻</p></div>
+                  </button>
+                  <button type="button" class="flip-face flip-back grid h-full w-full place-items-center rounded-[1.6rem] bg-white p-8 text-black" aria-label="Volver">
+                    <div class="w-full"><p class="text-center text-xs font-bold uppercase tracking-widest text-black/50">{e.t}</p><div class="qr mx-auto mt-4 max-w-[12rem]" data-qr={`t${i}`} data-dark></div><p class="mt-4 text-center font-display text-lg font-bold">Grada {12 + i} · Fila {4 + i}</p><p class="mt-1 text-center text-xs text-black/50">Código HT-{(1000 + i * 137).toString(16).toUpperCase()}</p></div>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div data-pane="selling" class="apane hidden">
+          <div class="glass divide-y divide-line rounded-3xl">
+            {[[events[1], 2, "Publicada"], [events[3], 1, "Vendida"]].map(([e, q, st]) => (
+              <div class="flex flex-wrap items-center gap-4 p-5"><div class="poster-wrap h-16 w-14 shrink-0 !rounded-xl"><div class="poster absolute inset-0" set:html={poster(e, 600)}></div></div>
+                <div class="min-w-0 flex-1"><p class="truncate font-semibold">{e.t}</p><p class="text-sm text-mute">{q} entrada{q > 1 ? "s" : ""} · {e.p} € c/u</p></div>
+                <span class:list={["rounded-full px-3 py-1 text-xs font-bold", st === "Vendida" ? "bg-lime text-black" : "bg-white/10"]}>{st}</span></div>
+            ))}
+          </div>
+          <a href="#/vender" class="btn btn-lime mt-6">+ Vender entradas</a>
+        </div>
+
+        <div data-pane="wallet" class="apane hidden">
+          <div class="grid gap-6 md:grid-cols-3">
+            <div class="glass spot rounded-3xl p-6"><p class="text-sm text-mute">Saldo disponible</p><p class="mt-2 font-display text-4xl font-bold"><span data-count="108" data-dec="0">0</span><span class="text-lime">€</span></p></div>
+            <div class="glass spot rounded-3xl p-6"><p class="text-sm text-mute">Pendiente de cobro</p><p class="mt-2 font-display text-4xl font-bold"><span data-count="240" data-dec="0">0</span><span class="text-lime">€</span></p></div>
+            <div class="glass spot rounded-3xl p-6"><p class="text-sm text-mute">Ahorrado vs. precio oficial</p><p class="mt-2 font-display text-4xl font-bold"><span data-count="35" data-dec="0">0</span><span class="text-lime">%</span></p></div>
+          </div>
+          <div class="glass mt-6 rounded-3xl p-6 sm:p-8"><p class="font-semibold">Ingresos · últimos 7 meses</p>
+            <svg viewBox="0 0 700 260" class="mt-6 w-full" id="chart" role="img" aria-label="Gráfico de ingresos">
+              <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6ff3d" stop-opacity=".35"/><stop offset="1" stop-color="#c6ff3d" stop-opacity="0"/></linearGradient></defs>
+              {[0, 1, 2, 3].map((i) => (<line x1="0" x2="700" y1={20 + i * 60} y2={20 + i * 60} stroke="rgba(255,255,255,.08)"/>))}
+              <path id="chart-area" d="M0 220 L0 180 C60 170 100 120 175 130 S280 160 350 100 S470 60 525 80 S640 30 700 20 L700 220Z" fill="url(#cg)" opacity="0"/>
+              <path id="chart-line" class="path-draw" d="M0 180 C60 170 100 120 175 130 S280 160 350 100 S470 60 525 80 S640 30 700 20" fill="none" stroke="#c6ff3d" stroke-width="4" stroke-linecap="round"/>
+              {["Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct"].map((m, i) => (<text x={i * 112 + 10} y="250" fill="#9b9bb4" font-size="13">{m}</text>))}
+            </svg></div>
+        </div>
+
+        <div data-pane="favs" class="apane hidden"><div id="favs" class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3"></div><p id="favs-empty" class="glass rounded-3xl p-10 text-center text-mute">Aún no has guardado ningún evento. Toca el ♥ en cualquier evento.</p></div>
+
+        <div data-pane="settings" class="apane hidden"><form id="settings-form" class="glass max-w-xl space-y-4 rounded-3xl p-6 sm:p-8" novalidate>
+          <div class="field"><input id="a-name" placeholder=" " /><label for="a-name">Nombre</label></div>
+          <div class="field"><input id="a-email" type="email" placeholder=" " /><label for="a-email">Email</label></div>
+          <label class="flex items-center justify-between rounded-2xl border border-line p-4 text-sm"><span>Avisos de nuevas entradas</span><input type="checkbox" class="h-5 w-5 accent-[#c6ff3d]" checked /></label>
+          <label class="flex items-center justify-between rounded-2xl border border-line p-4 text-sm"><span>Recordatorio el día del evento</span><input type="checkbox" class="h-5 w-5 accent-[#c6ff3d]" checked /></label>
+          <button class="btn btn-lime">Guardar cambios</button></form></div>
+      </div>
+    </div>
+  </div>
+</section>

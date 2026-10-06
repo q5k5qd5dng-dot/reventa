@@ -1,0 +1,104 @@
+---
+import "../styles/app.css";
+import { brand } from "../brand";
+const { title = `${brand.name} · Reventa de entradas segura y legal`, description = "Compra y vende entradas de conciertos, festivales y deportes con pago protegido, entrega garantizada y vendedores verificados." } = Astro.props;
+const links = [
+  { h: "#/eventos", t: "Eventos" },
+  { h: "#/vender", t: "Vender" },
+  { h: "#/ayuda", t: "Ayuda" },
+];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#07070d" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader" aria-hidden="true">
+      <div class="relative z-10 text-center">
+        <svg viewBox="0 0 64 64" class="mx-auto mb-6 h-16 w-16" fill="none" stroke="#c6ff3d" stroke-width="3" stroke-linejoin="round">
+          <path id="pl-path" d="M10 20h44v8a4 4 0 000 8v8H10v-8a4 4 0 000-8v-8z"></path>
+          <path d="M40 20v24" stroke-dasharray="3 4"></path>
+        </svg>
+        <p class="font-display text-5xl font-semibold tracking-tight sm:text-7xl"><span id="pl-count">0</span><span class="text-lime">%</span></p>
+        <p class="mt-3 text-xs uppercase tracking-[0.4em] text-mute">handticket</p>
+      </div>
+    </div>
+    <div class="curtain" id="curtain" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cursor-dot" id="cd" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cr" aria-hidden="true"><span>Ver</span></div>
+    <div id="progress" class="fixed inset-x-0 top-0 z-[110] h-[3px] origin-left scale-x-0 bg-gradient-to-r from-violet via-cyan to-lime" aria-hidden="true"></div>
+
+    <!-- NAV -->
+    <header id="nav" class="fixed inset-x-0 top-0 z-[100] transition-transform duration-500">
+      <div class="mx-auto mt-3 flex max-w-7xl items-center justify-between gap-3 rounded-full px-4 py-2.5 sm:mx-4 lg:mx-auto glass" id="navbar">
+        <a href="#/" class="flex items-center gap-2" aria-label={`${brand.name}, inicio`}>
+          <svg viewBox="0 0 32 32" class="h-8 w-8 text-lime" aria-hidden="true"><path d="M5 10h22v5a2.5 2.5 0 000 5v5H5v-5a2.5 2.5 0 000-5v-5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path><path d="M20 10v15" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2.5"></path></svg>
+          <span class="font-display text-lg font-semibold lowercase tracking-tight">hand<span class="text-lime">ticket</span></span>
+        </a>
+        <nav class="hidden items-center gap-1 md:flex" aria-label="Principal">
+          {links.map((l) => (<a href={l.h} data-scramble class="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:bg-white/10 hover:text-white">{l.t}</a>))}
+        </nav>
+        <div class="flex items-center gap-2">
+          <a href="#/cuenta" id="nav-account" class="hidden h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold text-white/80 hover:bg-white/10 sm:flex" aria-label="Mi cuenta">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path></svg>
+            <span id="nav-account-label">Mi cuenta</span>
+          </a>
+          <a href="#/login" id="nav-login" class="btn btn-lime !px-5 !py-2.5 !text-sm" data-magnetic>Entrar</a>
+          <button id="burger" class="grid h-10 w-10 place-items-center rounded-full hover:bg-white/10 md:hidden" aria-label="Menú" aria-expanded="false">
+            <span class="relative block h-3 w-5"><i class="absolute left-0 top-0 h-[2px] w-5 bg-white transition"></i><i class="absolute bottom-0 left-0 h-[2px] w-5 bg-white transition"></i></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Menú móvil -->
+    <div id="mmenu" class="fixed inset-0 z-[95] hidden bg-bg/95 px-6 pt-28 backdrop-blur-2xl md:hidden">
+      <nav class="flex flex-col gap-2" aria-label="Móvil">
+        {[...links, { h: "#/cuenta", t: "Mi cuenta" }, { h: "#/login", t: "Entrar" }].map((l) => (<a href={l.h} class="mlink block overflow-hidden border-b border-line py-4 font-display text-4xl font-semibold"><span class="block">{l.t}</span></a>))}
+      </nav>
+    </div>
+
+    <main id="app"><slot /></main>
+
+    <!-- Footer -->
+    <footer id="footer" class="relative mt-32 overflow-hidden border-t border-line px-5 pb-8 pt-20">
+      <div class="aurora left-1/2 top-0 h-80 w-[40rem] -translate-x-1/2 bg-violet/40"></div>
+      <div class="relative mx-auto grid max-w-7xl gap-12 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+        <div>
+          <p class="font-display text-2xl font-semibold lowercase">hand<span class="text-lime">ticket</span></p>
+          <p class="mt-4 max-w-xs text-mute">Reventa de entradas segura y legal. Compra y vende con garantía, sin sustos.</p>
+          <form id="newsletter" class="mt-6 flex max-w-sm gap-2" novalidate>
+            <input type="email" required placeholder="tu@email.com" aria-label="Email" class="min-w-0 flex-1 rounded-full border border-line bg-white/5 px-5 py-3 text-sm outline-none focus:border-violet" />
+            <button class="btn btn-lime !px-5 !py-3 !text-sm">Avisarme</button>
+          </form>
+        </div>
+        <div><p class="text-sm font-semibold text-white">Explorar</p>
+          <ul class="mt-4 space-y-2.5 text-mute"><li><a class="hover:text-white" href="#/eventos">Eventos</a></li><li><a class="hover:text-white" href="#/vender">Vender entradas</a></li><li><a class="hover:text-white" href="#/ayuda">Centro de ayuda</a></li><li><a class="hover:text-white" href="#/cuenta">Mi cuenta</a></li></ul></div>
+        <div><p class="text-sm font-semibold text-white">Legal</p>
+          <ul class="mt-4 space-y-2.5 text-mute"><li><a class="hover:text-white" href="#/ayuda">Términos y condiciones</a></li><li><a class="hover:text-white" href="#/ayuda">Privacidad</a></li><li><a class="hover:text-white" href="#/ayuda">Cookies</a></li></ul></div>
+        <div><p class="text-sm font-semibold text-white">Síguenos</p>
+          <ul class="mt-4 space-y-2.5 text-mute"><li><a class="hover:text-white" href="#">Instagram</a></li><li><a class="hover:text-white" href="#">TikTok</a></li><li><a class="hover:text-white" href="#">X</a></li></ul></div>
+      </div>
+      <p id="giant" class="relative mt-16 select-none text-center font-display text-[17vw] font-bold lowercase leading-none tracking-tighter text-outline">handticket</p>
+      <div class="relative mx-auto mt-8 flex max-w-7xl flex-wrap justify-between gap-2 text-xs text-mute"><p>© {new Date().getFullYear()} {brand.name}. Todos los derechos reservados.</p><p>Plataforma independiente. Los nombres de eventos y artistas pertenecen a sus titulares.</p></div>
+    </footer>
+
+    <canvas id="confetti" class="pointer-events-none fixed inset-0 z-[150] h-full w-full" aria-hidden="true"></canvas>
+    <div id="toasts" aria-live="polite"></div>
+    <script>
+      import "../scripts/main";
+    </script>
+  </body>
+</html>
