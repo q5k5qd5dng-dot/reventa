@@ -40,7 +40,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
   <style slot="head" is:inline set:html={css}></style>
   <!-- HEADER -->
   <header id="hdr" data-hdr="home" class="fixed inset-x-0 top-0 z-[100]">
-    <div class="mx-auto flex max-w-[1650px] items-center justify-between px-6 py-4 sm:py-6 lg:px-0">
+    <div class="mx-auto flex max-w-[1650px] items-center justify-between px-6 py-4 sm:py-6 min-[1720px]:px-0">
       <a href="#/" id="logo" class="hl logo-word text-[2.1rem] sm:text-[3.4rem]" aria-label={`${brand.name}, inicio`}>handticket</a>
       <nav class="relative flex items-center gap-2 sm:gap-3" aria-label="Principal">
         <div class="hout flex items-center gap-2 sm:gap-3">
@@ -70,24 +70,24 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
   <div id="pages">
   <main id="v-home" class="view" data-view="home">
     <!-- HERO -->
-    <section id="hero" class="hero-bg relative overflow-hidden pt-28 text-center text-white sm:pt-36 lg:pt-[11rem]">
+    <section id="hero" class="hero-bg relative overflow-x-clip pt-28 text-center text-white sm:pt-36 lg:pt-[11rem]">
       <div class="pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full bg-accent/35 blur-[100px]" data-blob></div>
       <div class="pointer-events-none absolute -right-24 top-24 h-80 w-80 rounded-full bg-sky-200/50 blur-[100px]" data-blob></div>
-      <div class="relative mx-auto max-w-[1650px] px-6 lg:px-0">
+      <div class="relative mx-auto max-w-[1650px] px-6 min-[1580px]:px-0">
         <h1 id="hero-title" class="mx-auto mt-6 max-w-3xl text-[1.9rem] font-normal leading-[1.28] sm:mt-4 sm:text-5xl sm:leading-[1.2] lg:max-w-none">Reventa de entradas segura y legal</h1>
         <p id="hero-sub" class="mt-3 text-lg font-normal sm:mt-7 sm:text-[1.4rem]">Compra y vende entradas</p>
 
-        <form id="search" role="search" class="relative mx-auto mt-8 max-w-[1000px] text-left sm:mt-10" onsubmit="return false" autocomplete="off">
-          <div id="search-box" class="flex h-14 items-center gap-3 rounded-lg bg-white px-4 text-ink transition-shadow sm:h-[4.4rem] sm:px-5">
+        <form id="search" role="search" class="relative z-30 mx-auto mt-8 w-full max-w-[1000px] text-left sm:mt-10 sm:w-[max(34rem,53vw)]" onsubmit="return false" autocomplete="off">
+          <div id="search-box" class="flex h-14 items-center gap-3 rounded-lg bg-white px-4 text-ink transition-shadow sm:h-[clamp(3.4rem,3.7vw,4.4rem)] sm:px-5">
             <svg viewBox="0 0 24 24" class="h-6 w-6 shrink-0 text-ink/35" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.3-4.3"></path></svg>
-            <input id="q" type="search" placeholder="Busca eventos, recintos, ciudades o artistas" aria-label="Buscar eventos" class="w-full bg-transparent text-base outline-none placeholder:text-ink/70 sm:text-xl" />
+            <input id="q" type="search" placeholder="Busca eventos, recintos, ciudades o artistas" aria-label="Buscar eventos" class="w-full bg-transparent text-base outline-none placeholder:text-ink/70 sm:text-[clamp(1rem,1.06vw,1.25rem)]" />
           </div>
           <ul id="results" class="absolute inset-x-0 top-full z-30 mt-2 hidden overflow-hidden rounded-xl bg-white p-2 text-ink shadow-2xl ring-1 ring-black/5"></ul>
         </form>
       </div>
 
       <!-- Tira de butacas (render 3D) -->
-      <div id="seats-wrap" class="seats-wrap relative mt-4 sm:mt-6">
+      <div id="seats-wrap" class="seats-wrap relative z-0 mt-4 overflow-hidden sm:mt-6">
         <div id="seats" class="seats-img" role="img" aria-label="Filas de butacas de estadio, una de ellas resaltada en naranja"></div>
         <div id="seat-tip" class="pointer-events-none absolute z-10 hidden whitespace-nowrap rounded-xl bg-white px-4 py-2.5 text-left text-sm text-ink shadow-xl lg:block"><p class="font-semibold text-accent">Tu entrada</p><p class="text-xs text-sub">Grada 12 · Fila 4</p></div>
       </div>
@@ -95,11 +95,11 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
 
     <!-- SUGERENCIAS -->
     <section id="sugerencias" class="mx-auto max-w-[1500px] pt-12 sm:pt-16" aria-labelledby="t-sug">
-      <div class="flex items-center justify-between px-6 lg:px-0">
+      <div class="flex items-center justify-between px-6 min-[1580px]:px-0">
         <h2 id="t-sug" class="text-2xl font-medium sm:text-3xl" data-reveal>Sugerencias para ti</h2>
         <div class="hidden gap-2 sm:flex"><button class="car-btn" data-car="sug" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><button class="car-btn" data-car="sug" data-dir="1" aria-label="Siguiente"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div>
       </div>
-      <div id="sug" class="car no-scrollbar mt-6 flex gap-6 overflow-x-auto px-6 pb-2 lg:px-0" tabindex="0" aria-label="Eventos sugeridos">
+      <div id="sug" class="car no-scrollbar mt-6 flex gap-6 overflow-x-auto px-6 pb-2 min-[1580px]:px-0" tabindex="0" aria-label="Eventos sugeridos">
         {events.map((e, i) => (
           <article class="w-[17.25rem] shrink-0 lg:w-[18.1rem]" data-card>
             <a href={`#/evento/${e.id}`} class="block w-full text-left" aria-label={`Ver ${e.t}`}>
@@ -115,11 +115,11 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
 
     <!-- NO TE LO PUEDES PERDER -->
     <section class="mx-auto max-w-[1500px] pt-12 sm:pt-16" aria-labelledby="t-top">
-      <div class="flex items-center justify-between px-6 lg:px-0">
+      <div class="flex items-center justify-between px-6 min-[1580px]:px-0">
         <h2 id="t-top" class="text-2xl font-medium sm:text-3xl" data-reveal>No te lo puedes perder</h2>
         <div class="hidden gap-2 sm:flex"><button class="car-btn" data-car="top" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><button class="car-btn" data-car="top" data-dir="1" aria-label="Siguiente"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div>
       </div>
-      <div id="top" class="car no-scrollbar mt-6 flex gap-6 overflow-x-auto px-6 pb-2 lg:px-0" tabindex="0" aria-label="Eventos destacados">
+      <div id="top" class="car no-scrollbar mt-6 flex gap-6 overflow-x-auto px-6 pb-2 min-[1580px]:px-0" tabindex="0" aria-label="Eventos destacados">
         {featured.map((f, i) => (
           <article class="w-[19.3rem] shrink-0 sm:w-[21rem] lg:w-[18.1rem]" data-card>
             <a href={`#/evento/${f.ev.id}`} class="group relative block h-[27rem] w-full overflow-hidden rounded-3xl text-left text-white sm:h-[27rem] lg:h-[18.1rem]" aria-label={`Ver ${f.t}`} data-tiltcard>
@@ -137,11 +137,11 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
 
     <!-- SITIOS POPULARES -->
     <section class="mx-auto max-w-[1500px] pt-12 sm:pt-16" aria-labelledby="t-pop">
-      <div class="flex items-center justify-between px-6 lg:px-0">
+      <div class="flex items-center justify-between px-6 min-[1580px]:px-0">
         <h2 id="t-pop" class="text-2xl font-medium sm:text-3xl" data-reveal>Sitios populares</h2>
         <div class="hidden gap-2 sm:flex"><button class="car-btn" data-car="pop" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><button class="car-btn" data-car="pop" data-dir="1" aria-label="Siguiente"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div>
       </div>
-      <div id="pop" class="car no-scrollbar mt-6 flex gap-6 overflow-x-auto px-6 pb-2 lg:px-0" tabindex="0" aria-label="Sitios populares">
+      <div id="pop" class="car no-scrollbar mt-6 flex gap-6 overflow-x-auto px-6 pb-2 min-[1580px]:px-0" tabindex="0" aria-label="Sitios populares">
         {sedes.map((s, i) => (
           <article class="w-[17.25rem] shrink-0 lg:w-[18.1rem]" data-card>
             <a href={`#/buscar/${encodeURIComponent(s.c)}`} class="block w-full text-left" aria-label={`Ver eventos en ${s.n}`}>
@@ -155,7 +155,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
     </section>
 
     <!-- CTA APP -->
-    <section class="mx-auto max-w-[1500px] px-5 pt-16 sm:pt-24 lg:px-0" aria-labelledby="t-cta">
+    <section class="mx-auto max-w-[1500px] px-5 pt-16 sm:pt-24 min-[1580px]:px-0" aria-labelledby="t-cta">
       <div id="cta" class="grid items-center overflow-hidden rounded-[1.75rem] bg-soft md:grid-cols-2">
         <div class="px-7 pb-2 pt-10 text-center md:px-16 md:pb-14 md:pt-14 md:text-left">
           <h2 id="t-cta" class="text-balance text-[1.9rem] font-semibold leading-[1.15] sm:text-[2.6rem]" data-reveal>Sé el primero en conseguir entradas para tus eventos favoritos.</h2>
@@ -181,7 +181,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
     </section>
 
     <!-- POR QUÉ -->
-    <section id="como" class="mx-auto max-w-[1500px] px-5 pt-16 sm:pt-24 lg:px-0" aria-labelledby="t-why">
+    <section id="como" class="mx-auto max-w-[1500px] px-5 pt-16 sm:pt-24 min-[1580px]:px-0" aria-labelledby="t-why">
       <h2 id="t-why" class="text-2xl font-medium sm:text-3xl" data-reveal>¿Por qué {brand.name}?</h2>
       <div class="mt-7 grid gap-5 md:grid-cols-3">
         <!-- 1 · Reventa segura -->
@@ -261,7 +261,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
     <section class="mt-16 bg-soft py-16 sm:mt-24 sm:py-24" aria-labelledby="t-rev">
       <h2 id="t-rev" class="mx-auto max-w-3xl px-5 text-center text-[2rem] font-normal leading-tight sm:text-4xl" data-reveal>Lo que dicen nuestros usuarios</h2>
       <div class="mx-auto mt-10 max-w-[1500px]">
-        <div id="rev" class="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 lg:pb-0">
+        <div id="rev" class="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 lg:grid lg:grid-cols-3 lg:overflow-visible min-[1580px]:px-0 lg:pb-0">
           {reviews.map((r, i) => (
             <figure class="rev relative flex min-h-[22rem] w-[86vw] shrink-0 snap-center flex-col rounded-3xl bg-white p-7 shadow-[0_14px_40px_-18px_rgba(0,0,0,0.18)] sm:w-[28rem] lg:min-h-[19rem] lg:w-auto" data-i={i}>
               <svg viewBox="0 0 48 36" class="h-9 w-12 text-black/10" fill="currentColor" aria-hidden="true"><path d="M0 36V20C0 8 6 1.5 17 0v7c-5 1-8 4-8 9h8v20H0zm27 0V20C27 8 33 1.5 44 0v7c-5 1-8 4-8 9h8v20H27z"/></svg>
@@ -284,7 +284,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
   </div>
 
   <!-- FOOTER -->
-  <footer id="footer" class="border-t border-line px-6 pb-8 pt-12 lg:px-0">
+  <footer id="footer" class="border-t border-line px-6 pb-8 pt-12 min-[1580px]:px-0">
     <div class="mx-auto grid max-w-[1500px] gap-10 md:grid-cols-4">
       <div>
         <p class="text-base">Descarga la App</p>
