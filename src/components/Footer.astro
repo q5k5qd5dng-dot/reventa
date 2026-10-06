@@ -11,12 +11,12 @@ import { footer, sectorLinks } from "../data/site";
       </div>
     </div>
     <div class="grid grid-cols-2 gap-6 sm:grid-cols-[1.3fr_1.2fr_0.8fr_1fr]">
-      <div><p class="font-semibold text-white">Soluciones</p><ul class="mt-3 space-y-3">{footer.a.map((l) => <li><a href="/#solucion" class="hover:text-white">{l}</a></li>)}</ul></div>
-      <div><p class="invisible font-semibold">.</p><ul class="mt-3 space-y-3">{footer.b.map((l) => <li><a href="/#solucion" class="hover:text-white">{l}</a></li>)}</ul></div>
+      <div><p class="font-semibold text-white">Soluciones</p><ul class="mt-3 space-y-3">{footer.a.map((l) => <li><a href="/#servicios" class="hover:text-white">{l}</a></li>)}</ul></div>
+      <div><p class="invisible font-semibold">.</p><ul class="mt-3 space-y-3">{footer.b.map((l) => <li><a href="/#servicios" class="hover:text-white">{l}</a></li>)}</ul></div>
       <div><p class="font-semibold text-white">Sectores</p><ul class="mt-3 space-y-3">{sectorLinks.map(([l, h]) => <li><a href={h} class="hover:text-white">{l}</a></li>)}</ul></div>
       <div>
         <p class="font-semibold text-white">Nosotros</p>
-        <ul class="mt-3 space-y-3"><li><a href="/empresas" class="hover:text-white">Wave para empresas</a></li>{footer.n.map((l) => <li><a href="#" class="hover:text-white">{l}</a></li>)}</ul>
+        <ul class="mt-3 space-y-3">{footer.n.map((l) => <li><a href="#" class="hover:text-white">{l}</a></li>)}</ul>
         <p class="mt-5 font-bold text-white">Recursos</p>
         <ul class="mt-3 space-y-3">{footer.r.map((l) => <li><a href="#" class="hover:text-white">{l}</a></li>)}</ul>
       </div>

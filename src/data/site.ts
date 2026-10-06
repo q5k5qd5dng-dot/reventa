@@ -2,31 +2,31 @@ export type Link = [label: string, href: string];
 
 export const menus: [string, [string, string, string][]][] = [
   ["Soluciones", [
-    ["Venta de entradas", "Tienda online y QR", "/#solucion"],
-    ["Taquilla", "Vende en puerta", "/#solucion"],
-    ["Reservas y VIP", "Mesas y botellas", "/#solucion"],
-    ["Pases de temporada", "Fideliza a tu público", "/#solucion"],
+    ["Venta de entradas", "Tienda online y QR", "/#servicios"],
+    ["Taquilla", "Vende en puerta", "/#servicios"],
+    ["Reservas y VIP", "Mesas y botellas", "/#servicios"],
+    ["Pases de temporada", "Fideliza a tu público", "/#servicios"],
     ["Gestión de RRPP", "Listas y comisiones", "/promotores"],
-    ["Control de accesos", "Aforo en directo", "/#solucion"],
+    ["Control de accesos", "Aforo en directo", "/#servicios"],
   ]],
   ["Servicios", [
-    ["Wave para empresas", "Todo en un panel", "/empresas"],
-    ["Marca blanca y API", "Tu marca, tu dominio", "/#diferencia"],
-    ["Integraciones", "Conecta tus canales", "/#integraciones"],
+    ["Todo en un panel", "Herramientas para tu local", "/#servicios"],
+    ["Marca blanca y API", "Tu marca, tu dominio", "/#marca-blanca"],
+    ["Integraciones", "Conecta tus canales", "/#marca-blanca"],
     ["Soporte 24/7", "Backstage del éxito", "/#soporte"],
-    ["Formación", "Para todo tu equipo", "/#faq"],
+    ["Formación", "Para todo tu equipo", "/#soporte"],
   ]],
   ["Recursos", [
     ["Blog", "Ideas para tu local", "#"],
     ["Lanzamientos", "Lo último de Wave", "#"],
-    ["Casos de éxito", "Locales que ya venden", "/#casos"],
+    ["Casos de éxito", "Locales que ya venden", "/#soporte"],
     ["Academy", "Aprende con nosotros", "#"],
   ]],
   ["Nosotros", [
-    ["Quiénes somos", "Nacidos en Zaragoza", "/#creamos"],
+    ["Quiénes somos", "Nacidos en Zaragoza", "/#soporte"],
     ["Trabaja con nosotros", "Únete al equipo", "#"],
     ["Wave Business Days", "Eventos para locales", "#"],
-    ["Contacto", "Hablemos", "/#cta"],
+    ["Contacto", "Hablemos", "/#demo"],
   ]],
 ];
 
