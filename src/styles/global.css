@@ -6,7 +6,7 @@
   --color-wave-soft: #e8f7f9;
   --color-ink: #0a0a0a;
   --color-ink-soft: #141414;
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 @layer base {
@@ -66,3 +66,59 @@ details[open] .faq-icon { transform: rotate(45deg); }
 @media (prefers-reduced-motion: reduce) {
   .marquee { animation: none; }
 }
+
+/* ---- Réplica: efectos ---- */
+.hero-bg {
+  background:
+    radial-gradient(28% 40% at 12% 18%, rgba(160, 20, 50, 0.55), transparent 70%),
+    radial-gradient(26% 38% at 88% 22%, rgba(30, 90, 60, 0.45), transparent 70%),
+    radial-gradient(30% 30% at 55% 0%, rgba(170, 40, 70, 0.4), transparent 70%),
+    #050506;
+}
+.hero-dots {
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.35) 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(255, 120, 140, 0.4) 1.5px, transparent 2.2px);
+  background-size: 29px 31px, 53px 47px;
+  background-position: 0 0, 17px 11px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 85%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 85%);
+  opacity: 0.55;
+}
+.beam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(99, 102, 241, 0.05), rgba(79, 70, 229, 0.38));
+  filter: blur(14px);
+}
+.two-tone > span { color: #9b9ba6; }
+.text-grad {
+  background: linear-gradient(180deg, #fff, #b4b4c0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.ind { flex: 1 1 0; transition: flex 0.5s cubic-bezier(0.2, 0.7, 0.2, 1); min-width: 0; }
+.ind[data-on] { flex: 2.3 1 0; }
+.ind .ind-more { display: none; }
+.ind[data-on] .ind-more { display: block; }
+@media (max-width: 767px) {
+  .ind, .ind[data-on] { flex: none; }
+  .ind .ind-more { display: block; }
+}
+[data-tab][data-on] .tab-body { display: block; }
+.tab-body { display: none; }
+.iso {
+  transform: rotateX(58deg) rotateZ(-38deg);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 14px 14px 30px rgba(0, 0, 0, 0.5);
+}
+.star {
+  background-image:
+    radial-gradient(circle, rgba(165, 180, 252, 0.8) 1px, transparent 1.6px);
+  background-size: 61px 53px;
+  opacity: 0.5;
+}
+.wordmark { color: rgba(255, 255, 255, 0.85); font-size: 22px; white-space: nowrap; }

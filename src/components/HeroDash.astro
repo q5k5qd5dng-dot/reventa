@@ -1,0 +1,99 @@
+---
+// Dashboard grande del hero. Diseñado a 900px de ancho y escalado con data-fit.
+const bars = [8, 14, 22, 36, 44, 58, 52, 66, 70, 62, 68, 84];
+const rrpp = [["Marta R.", "212", "6.360 €"], ["Pablo S.", "174", "5.220 €"], ["Irene L.", "139", "4.170 €"]];
+const best = [["Carlos M.", "12 visitas", "980 €"], ["Sara G.", "9 visitas", "840 €"], ["Dani P.", "8 visitas", "720 €"]];
+const seed = (n: number) => Array.from({ length: 49 }, (_, i) => ((i * 7 + n * 13) % 5 < 2) || [0, 1, 7, 6, 8, 42, 48, 41, 43, 14, 35].includes(i));
+const avatar = ["#c08457", "#8fb996", "#d4a5a5", "#9aa5d4"];
+---
+<div data-fit="900" class="w-full overflow-hidden rounded-xl border border-white/10 bg-[#07070b] text-[11px] text-white/60 shadow-[0_0_80px_rgba(79,70,229,0.25)]">
+  <div class="grid grid-cols-[1.05fr_0.75fr_1.2fr] gap-3 p-4">
+    <!-- col 1 -->
+    <div class="space-y-3">
+      <div class="grid grid-cols-4 gap-2">
+        {[["Entradas", "4.812", "#22c55e"], ["Ingresos", "62.410 €", "#6366f1"], ["Asistentes", "3.964", "#f59e0b"], ["Reservas", "318", "#ef4444"]].map(([a, b, c]) => (
+          <div class="rounded-md bg-white/[0.04] p-2"><p class="text-[9px]">{a}</p><p class="mt-1 text-[12px] font-semibold text-white">{b}</p><i class="mt-1.5 block h-0.5 rounded-full" style={`background:${c}`}></i></div>
+        ))}
+      </div>
+      <div class="rounded-md bg-white/[0.04] p-3">
+        <p class="font-semibold text-white">Evolución de ventas</p>
+        <div class="mt-3 flex h-32 items-end gap-1.5 border-l border-b border-white/10 pl-2">
+          {bars.map((h) => <div class="flex-1 rounded-t-sm bg-gradient-to-t from-indigo-700 to-indigo-400" style={`height:${h}%`}></div>)}
+        </div>
+      </div>
+      <div class="rounded-md bg-white/[0.04] p-3">
+        <p class="font-semibold text-white">Equipo RRPP</p>
+        <div class="mt-2 space-y-2">
+          {rrpp.map(([n, a, b], i) => (
+            <div class="flex items-center gap-2"><i class="h-5 w-5 rounded-full" style={`background:${avatar[i]}`}></i><span class="flex-1 text-white/80">{n}</span><span>{a}</span><span class="w-14 text-right text-white/80">{b}</span></div>
+          ))}
+        </div>
+      </div>
+      <div class="grid grid-cols-[1fr_auto] gap-2 rounded-md bg-white/[0.04] p-3">
+        <div>
+          <p class="font-semibold text-white">Mejores clientes</p>
+          <div class="mt-2 space-y-2">
+            {best.map(([n, a, b], i) => (
+              <div class="flex items-center gap-2"><i class="h-5 w-5 rounded-full" style={`background:${avatar[i + 1]}`}></i><span class="flex-1 text-white/80">{n}</span><span>{a}</span><span class="w-10 text-right text-white/80">{b}</span></div>
+            ))}
+          </div>
+        </div>
+        <div class="w-20 rounded-md bg-indigo-500/10 p-2 text-center"><p class="text-[9px]">Ticket medio</p><p class="mt-1 text-sm font-semibold text-white">13 €</p><p class="mt-1 text-[9px] text-emerald-400">+8 %</p></div>
+      </div>
+    </div>
+    <!-- col 2 -->
+    <div class="space-y-3">
+      <div class="rounded-md bg-white/[0.04] p-3">
+        <p class="font-semibold text-white">Componentes</p>
+        <div class="mt-2 space-y-1.5">
+          {["Entradas", "Taquilla", "Reservas", "Pases"].map((c) => <div class="flex items-center justify-between rounded bg-white/[0.05] px-2 py-1.5"><span>{c}</span><i class="h-3 w-6 rounded-full bg-indigo-500"></i></div>)}
+        </div>
+      </div>
+      <div class="rounded-md bg-white/[0.04] p-3">
+        <p class="font-semibold text-white">Gestión</p>
+        <div class="mt-2 space-y-2">
+          {[["Lista de sala", "#6366f1"], ["Mesa VIP 4", "#22c55e"], ["Cumple Laura", "#f59e0b"]].map(([n, c]) => (
+            <div class="flex items-center gap-2"><i class="h-5 w-5 rounded" style={`background:${c}`}></i><div class="flex-1"><p class="text-white/80">{n}</p><i class="mt-1 block h-1 w-3/4 rounded bg-white/10"></i></div></div>
+          ))}
+        </div>
+      </div>
+      <div class="relative h-36 overflow-hidden rounded-md bg-white/[0.04]">
+        <div class="absolute inset-0 opacity-50" style="background-image:radial-gradient(circle,#6b7280 1px,transparent 1.5px);background-size:7px 7px;-webkit-mask-image:radial-gradient(ellipse 60% 45% at 50% 50%,#000 60%,transparent 62%);mask-image:radial-gradient(ellipse 60% 45% at 50% 50%,#000 60%,transparent 62%)"></div>
+        <i class="absolute left-[46%] top-[40%] h-2 w-2 rounded-full bg-indigo-400 shadow-[0_0_10px_#818cf8]"></i>
+      </div>
+    </div>
+    <!-- col 3 -->
+    <div class="space-y-3">
+      <div class="rounded-md bg-white/[0.04] p-3">
+        <p class="font-semibold text-white">Terminal TPV</p>
+        <div class="mt-2 grid grid-cols-3 gap-2">
+          {[["Barra", "2.140 €"], ["Guardarropa", "380 €"], ["Cachimbas", "610 €"]].map(([a, b]) => <div class="rounded bg-white/[0.05] p-2"><p class="text-[9px]">{a}</p><p class="mt-1 font-semibold text-white">{b}</p></div>)}
+        </div>
+        <i class="mt-3 block h-1.5 w-2/3 rounded-full bg-indigo-500"></i>
+        <div class="mt-3 space-y-1.5">{[["Pedidos", "318", "+12 %"], ["Cobrados", "301", "95 %"], ["Pendientes", "17", "5 %"]].map(([a, b, c]) => <div class="flex justify-between"><span>{a}</span><span>{b}</span><span class="text-emerald-400">{c}</span></div>)}</div>
+      </div>
+      <div class="grid grid-cols-[1fr_1.1fr] gap-2 rounded-md bg-white/[0.04] p-3">
+        <div class="space-y-2">
+          <p class="font-semibold text-white">Reservas</p>
+          {[["Mesa 3", "#60a5fa"], ["Mesa 7", "#4ade80"], ["Mesa 9", "#facc15"]].map(([n, c]) => <div class="flex items-center gap-2 rounded bg-white/[0.05] p-1.5"><i class="h-4 w-4 rounded" style={`background:${c}`}></i><span class="text-white/80">{n}</span></div>)}
+        </div>
+        <svg viewBox="0 0 120 120" class="h-full w-full" aria-hidden="true">
+          <path d="M8 20 L70 8 L112 30 L104 78 L58 112 L14 90 Z" fill="#312e81" stroke="#4f46e5"/>
+          <path d="M30 36 L60 30 L84 44 L78 70 L52 84 L32 70 Z" fill="#3730a3" stroke="#6366f1"/>
+          {[[34, 40], [70, 36], [86, 60], [52, 78], [24, 62]].map(([x, y]) => <rect x={x} y={y} width="9" height="9" rx="2" fill="#a5b4fc"/>)}
+        </svg>
+      </div>
+      <div class="rounded-md bg-indigo-500/15 p-3">
+        <p class="font-semibold text-white">Pases</p>
+        <div class="mt-2 grid grid-cols-3 gap-2">
+          {[1, 2, 3].map((n) => (
+            <div class="rounded bg-indigo-400/60 p-1.5">
+              <div class="rounded bg-white p-1"><div class="grid grid-cols-7 gap-px">{seed(n).map((on) => <i class={`aspect-square ${on ? "bg-black" : "bg-white"}`}></i>)}</div></div>
+              <p class="mt-1 text-center text-[8px] text-white">Pase {n}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
