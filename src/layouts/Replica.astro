@@ -1,0 +1,46 @@
+---
+import "../styles/replica.css";
+import { brand } from "../brand";
+import { DESC, SITE } from "../seo";
+const SHORT = "Compra y vende entradas de conciertos, festivales, clubs y deporte con pago protegido y entrega al instante.";
+const { title = `${brand.name} · Reventa de entradas segura y legal en España`, description = SHORT, canonical = "/", image = "/og/gira-verano.webp", jsonld, noindex = false, type = "website" } = Astro.props;
+const url = `${SITE}${canonical}`, img = image.startsWith("http") ? image : `${SITE}${image}`;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#e8590c" />
+    <meta name="robots" content={noindex ? "noindex,nofollow" : "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"} />
+    <meta name="author" content="Handticket" />
+    <link rel="canonical" href={url} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" hreflang="es" href={url} />
+    <link rel="alternate" hreflang="x-default" href={url} />
+    <meta property="og:site_name" content={brand.name} />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={img} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={img} />
+    {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+    <canvas id="confetti" class="pointer-events-none fixed inset-0 z-[400] h-full w-full" aria-hidden="true"></canvas>
+    <div id="toasts" aria-live="polite"></div>
+    <script>
+      import "../scripts/replica";
+    </script>
+  </body>
+</html>

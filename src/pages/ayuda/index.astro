@@ -1,0 +1,9 @@
+---
+import Seo from "../../layouts/Seo.astro";
+import { help, graph, crumbs, organization, faqLd, helpFaq } from "../../seo";
+---
+<Seo title="Centro de ayuda de Handticket: comprar y vender entradas" description="Resuelve tus dudas sobre cómo comprar y vender entradas, pagos, devoluciones, seguridad y tu cuenta en Handticket." canonical="/ayuda/" jsonld={graph(organization(), crumbs([["Inicio", "/"], ["Centro de ayuda", "/ayuda/"]]), faqLd(helpFaq()))}>
+  <h1 class="mt-6 text-[2.2rem] font-semibold sm:text-[3rem]">Centro de ayuda</h1>
+  <p class="mt-3 text-lg text-ink/80">Todo lo que necesitas saber para comprar y vender entradas con seguridad.</p>
+  <div class="mt-10 space-y-8">{help.map((c) => <section><h2 class="text-2xl font-semibold"><a href={`/ayuda/${c.id}/${c.items[0].slug}/`} class="hover:text-accent">{c.n}</a></h2><p class="text-sub">{c.d}</p><ul class="mt-3 space-y-1.5">{c.items.map((a) => <li><a class="text-accent hover:underline" href={`/ayuda/${c.id}/${a.slug}/`}>{a.t}</a></li>)}</ul></section>)}</div>
+</Seo>

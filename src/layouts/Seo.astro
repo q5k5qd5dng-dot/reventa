@@ -1,0 +1,38 @@
+---
+// Páginas estáticas indexables (HTML real, sin JS) que enlazan a la app.
+import "../styles/replica.css";
+import { brand } from "../brand";
+import { SITE, DESC, cities, landings, slugify } from "../seo";
+const { title, description = DESC, canonical, image = "/og/gira-verano.webp", jsonld, type = "website", appHref = "/#/" } = Astro.props;
+const url = `${SITE}${canonical}`, img = image.startsWith("http") ? image : `${SITE}${image}`;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+    <meta name="theme-color" content="#e8590c" />
+    <link rel="canonical" href={url} /><slot name="head" /><link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" hreflang="es" href={url} /><link rel="alternate" hreflang="x-default" href={url} />
+    <meta property="og:site_name" content={brand.name} /><meta property="og:locale" content="es_ES" /><meta property="og:type" content={type} />
+    <meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={url} /><meta property="og:image" content={img} />
+    <meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content={title} /><meta name="twitter:description" content={description} /><meta name="twitter:image" content={img} />
+    {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
+  </head>
+  <body class="bg-white text-ink">
+    <header class="mx-auto flex max-w-[64rem] items-center justify-between px-6 py-6">
+      <a href="/" class="logo-word text-[2.4rem]" aria-label={`${brand.name}, inicio`}>handticket</a>
+      <nav class="flex items-center gap-5 text-sm" aria-label="Principal"><a href="/ayuda/" class="hover:text-accent">Ayuda</a><a href="/legal/terminos/" class="hover:text-accent">Legal</a><a href="/#/vender/evento" class="rounded-lg bg-ink px-4 py-2.5 font-medium text-white">Vender entrada</a></nav>
+    </header>
+    <main class="mx-auto max-w-[64rem] px-6 pb-20"><slot /></main>
+    <footer class="border-t border-line">
+      <div class="mx-auto max-w-[64rem] px-6 py-10 text-sm text-sub">
+        <ul class="grid grid-cols-2 gap-x-6 gap-y-2 md:grid-cols-3">{cities.map((c) => <li><a class="hover:text-accent" href={`/reventa-entradas-${slugify(c)}/`}>Reventa de entradas {c}</a></li>)}</ul>
+        <p class="mt-6 flex flex-wrap gap-x-6 gap-y-2"><a href="/legal/terminos/">Términos y condiciones</a><a href="/legal/privacidad/">Privacidad</a><a href="/legal/cookies/">Cookies</a><a href="/legal/aviso-legal/">Aviso legal</a><a href="/ayuda/">Centro de ayuda</a></p>
+        <p class="mt-4">© 2026 {brand.name}. Reventa de entradas segura y legal.</p>
+      </div>
+    </footer>
+  </body>
+</html>

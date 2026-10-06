@@ -1,0 +1,146 @@
+---
+import { avatar } from "../../scripts/avatars";
+import { brand } from "../../brand";
+
+const faces = [
+  { s: "sofia", x: "9%", y: "32%", z: 100 }, { s: "marco", x: "21%", y: "64%", z: 66 }, { s: "iker", x: "30%", y: "18%", z: 54 },
+  { s: "lucia", x: "37%", y: "74%", z: 74 }, { s: "tomas", x: "3%", y: "76%", z: 58 },
+  { s: "aina", x: "62%", y: "66%", z: 64 }, { s: "hugo", x: "72%", y: "24%", z: 72 }, { s: "noa", x: "83%", y: "50%", z: 104 },
+  { s: "pau", x: "93%", y: "14%", z: 60 }, { s: "irene", x: "58%", y: "14%", z: 52 }, { s: "dani", x: "96%", y: "78%", z: 70 },
+];
+const stack = ["a1", "b2", "c3", "d4", "e5"];
+const faq = [
+  ["¿Es seguro vender mis entradas en Handticket?", "Sí. Verificamos cada entrada antes de publicarla y el comprador paga a Handticket, no a ti. Tú cobras cuando ya ha entrado al evento, así que nadie puede estafarte ni estafar al comprador."],
+  ["¿Cuándo cobraré el dinero?", "De forma automática tras el evento, mediante transferencia a la cuenta que hayas indicado. Normalmente tarda unos días hábiles."],
+  ["¿Cuánto cuesta vender?", "Publicar es gratis. Solo cobramos una comisión del 10 % cuando se vende la entrada."],
+  ["¿Puedo poner el precio que quiera?", "Dentro de los límites que marca la normativa de cada evento. Te sugerimos un precio según la demanda."],
+];
+const reviews = [
+  { n: "Marta", t: "Vendí mis dos entradas el mismo día que las publiqué. Todo fue clarísimo y el dinero me llegó solo después del evento." },
+  { n: "Pablo", t: "Me daba miedo que me estafaran o estafar a alguien. Con Handticket no hay que tratar con desconocidos, y eso da mucha tranquilidad." },
+  { n: "Lucía", t: "Subí el PDF, puse el precio y en un par de minutos estaba publicada. Me avisaron al venderse. Muy cómodo." },
+];
+---
+
+<main id="v-sell" class="view hidden" data-view="sell">
+  <!-- HERO -->
+  <section class="sell-hero relative isolate overflow-hidden px-6 pb-24 pt-32 text-center md:pt-40">
+    <div class="sell-blob left-[-8%] top-[-6%] h-[28rem] w-[28rem] bg-[#ffd9c2]" data-blob></div>
+    <div class="sell-blob left-[30%] top-[-12%] h-[26rem] w-[30rem] bg-[#e8dcff]" data-blob></div>
+    <div class="sell-blob right-[-8%] top-[2%] h-[26rem] w-[26rem] bg-[#c9f2e2]" data-blob></div>
+    <div class="sell-blob left-[50%] top-[12%] h-[20rem] w-[22rem] bg-[#ffe3ef]" data-blob></div>
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-balance text-[2rem] font-bold leading-tight tracking-tight sm:text-[2.7rem]" data-sell-in>Vender entradas online de forma rápida y segura</h2>
+      <p class="mx-auto mt-3 max-w-md text-sm text-sub sm:text-base" data-sell-in>¿No puedes acudir a un evento? Dale una segunda vida a tu entrada hoy.</p>
+      <button data-sell data-sell-in class="btn btn-accent mt-6 !rounded-xl !px-7" data-magnetic>Empezar a vender</button>
+    </div>
+
+    <div class="relative mx-auto mt-14 h-[26rem] max-w-[100rem]" id="sell-stage">
+      {faces.map((f) => (<div class="face absolute rounded-full shadow-[0_14px_30px_-12px_rgba(40,30,80,0.35)] ring-4 ring-white" style={`left:${f.x};top:${f.y};width:${f.z}px;height:${f.z}px`} set:html={avatar(f.s, f.s)} data-face></div>))}
+      <div id="sell-ticket" class="absolute left-1/2 top-2 w-[15.5rem] -translate-x-1/2 rounded-2xl bg-white px-5 pb-5 pt-9 text-center shadow-[0_30px_70px_-20px_rgba(60,40,20,0.35)] ring-1 ring-black/5">
+        <span id="sell-up" class="absolute -top-5 left-1/2 grid h-10 w-10 -translate-x-1/2 place-items-center rounded-full bg-accent text-white shadow-lg"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span>
+        <div class="qr mx-auto w-24" data-qr="pablo"></div>
+        <p class="mt-4 text-lg font-semibold">Pablo González</p>
+        <div class="mt-3 space-y-2 text-left text-[10px] text-sub"><div class="rounded-md bg-soft px-2.5 py-1.5">Entrada General</div><div class="rounded-md bg-soft px-2.5 py-1.5">Tribuna lateral · Fila 8</div></div>
+        <p class="mt-3 text-[10px] tracking-[0.25em] text-ink/50">XCNK87</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- POR QUÉ -->
+  <section class="mx-auto max-w-[69rem] px-6 pt-10" aria-labelledby="t-sw">
+    <h2 id="t-sw" class="text-center text-[1.7rem] font-bold sm:text-3xl" data-reveal>¿Por qué {brand.name}?</h2>
+    <div class="mt-10 grid gap-5 md:grid-cols-3">
+      <article class="sw-card" data-sw>
+        <div class="sw-img"><div class="flex -space-x-3">{stack.map((s) => (<span class="inline-block h-12 w-12 overflow-hidden rounded-full ring-4 ring-white" set:html={avatar(s, s + "x")}></span>))}</div><span class="ml-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-sub shadow-sm">+ 300 mil</span></div>
+        <h3 class="sw-t">Llega a millones de fans en busca de tu entrada</h3>
+        <p class="sw-p">Disponemos de una gran comunidad de fans que buscan entradas para eventos. Si creas un anuncio, los usuarios que estén buscando entradas para ese evento serán notificados y tu entrada se venderá con rapidez.</p>
+      </article>
+      <article class="sw-card" data-sw>
+        <div class="sw-img"><div class="w-[88%] rounded-xl bg-white p-3 text-left shadow-md"><div class="flex items-center gap-2 text-[10px] uppercase tracking-wider text-sub"><span class="grid h-5 w-5 place-items-center rounded-md bg-accent text-[9px] text-white">🎟</span>{brand.name}<span class="ml-auto normal-case tracking-normal">ahora</span></div><p class="mt-1 text-[13px] font-semibold">¡Has vendido una entrada!</p><p class="text-[11px] text-sub">Recibirás tu dinero tras el evento.</p></div></div>
+        <h3 class="sw-t">Vende cuándo y dónde quieras</h3>
+        <p class="sw-p">Desde tu navegador o descargando nuestra app podrás gestionar tus anuncios con solo un clic. Nosotros nos encargaremos de todo y te notificaremos cuando un comprador la reserve, para que no tengas que preocuparte de nada.</p>
+      </article>
+      <article class="sw-card" data-sw>
+        <div class="sw-img"><div class="relative h-[4.6rem] w-[6.6rem] rounded-lg bg-white shadow-md"><span class="absolute -right-3 -top-3 grid h-9 w-9 place-items-center rounded-full bg-accent text-white shadow-lg"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM8.5 12l2.5 2.5 4.5-5"/></svg></span><i class="mx-3 mt-4 block h-1.5 w-16 rounded bg-black/10"></i><i class="mx-3 mt-2 block h-1.5 w-12 rounded bg-black/10"></i><i class="mx-3 mt-2 block h-1.5 w-14 rounded bg-black/10"></i></div></div>
+        <h3 class="sw-t">Legal, justo y con políticas reguladas</h3>
+        <p class="sw-p">{brand.name} está regulado por las leyes españolas y recoge todos los datos del vendedor para garantizar tu seguridad. Nosotros nos encargamos de que todas las ventas se produzcan de forma legal y estableciendo controles para prevenir el fraude y garantizar que la transacción sea justa.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- CÓMO VENDER -->
+  <section class="mx-auto max-w-[62rem] px-6 pt-24" aria-labelledby="t-how">
+    <h2 id="t-how" class="text-center text-[1.7rem] font-bold sm:text-3xl" data-reveal>Cómo vender entradas con nosotros</h2>
+    <div class="mt-14 space-y-16 md:space-y-24">
+      <!-- 1 -->
+      <div class="step grid items-center gap-8 md:grid-cols-2" data-step>
+        <div class="order-2 md:order-1"><h3 class="text-xl font-semibold">Sube tus entradas</h3><p class="mt-3 max-w-md text-[0.95rem] leading-relaxed text-sub">Selecciona tus entradas desde tu móvil o desde tu navegador, sube el PDF y podrás eliminar las páginas que no quieras vender. Asegúrate de que todos los códigos QR estén visibles. ¡Tranquilo! Las entradas no se compartirán con nadie hasta que se compren.</p></div>
+        <div class="step-img order-1 md:order-2" data-stepimg>
+          <div class="relative mx-auto h-[17rem] w-[13rem] overflow-hidden rounded-t-[2rem] border-[7px] border-b-0 border-ink bg-white px-3 pt-5">
+            <div class="mx-auto h-4 w-16 rounded-full bg-ink"></div>
+            <div class="mt-5 flex items-center justify-between rounded-lg bg-soft px-2.5 py-2 text-[9px]"><span class="font-medium">entrada.pdf</span><span class="rounded bg-accent px-1.5 py-0.5 text-white">PDF</span></div>
+            <div class="qr mx-auto mt-4 w-20" data-qr="step1"></div>
+            <p class="mt-3 text-center text-[11px] font-semibold">Pablo González</p>
+            <div class="mt-2 h-8 rounded-lg bg-accent text-center text-[10px] font-semibold leading-8 text-white">Subir entrada</div>
+          </div>
+        </div>
+      </div>
+      <!-- 2 -->
+      <div class="step grid items-center gap-8 md:grid-cols-2" data-step>
+        <div class="step-img" data-stepimg>
+          <div class="relative mx-auto h-[17rem] w-[13rem] overflow-hidden rounded-t-[2rem] border-[7px] border-b-0 border-ink bg-white px-3 pt-5">
+            <div class="mx-auto h-4 w-16 rounded-full bg-ink"></div>
+            <p class="mt-5 text-[10px] font-semibold text-sub">Cuenta para cobrar</p>
+            <div class="mt-2 rounded-lg border border-line px-2.5 py-2 text-[10px] tracking-wider text-ink/60">ES•• •••• •••• •••• ••••</div>
+            <div class="mt-3 space-y-1.5 text-[9px]"><div class="flex justify-between rounded-md bg-soft px-2 py-1.5"><span>Venta bruta</span><b>120,00 €</b></div><div class="flex justify-between rounded-md bg-soft px-2 py-1.5"><span>Comisión 10 %</span><b>− 12,00 €</b></div><div class="flex justify-between rounded-md bg-accent/10 px-2 py-1.5 text-accent"><span>Recibirás</span><b>108,00 €</b></div></div>
+          </div>
+        </div>
+        <div><h3 class="text-xl font-semibold">Añade un método de pago</h3><p class="mt-3 max-w-md text-[0.95rem] leading-relaxed text-sub">Indica una cuenta bancaria válida y el nombre del titular. Utilizaremos esa información únicamente para emitir el pago de tus entradas. Se almacenará de forma cifrada y segura, y no podremos realizar cobros a esa cuenta.</p></div>
+      </div>
+      <!-- 3 -->
+      <div class="step grid items-center gap-8 md:grid-cols-2" data-step>
+        <div class="order-2 md:order-1"><h3 class="text-xl font-semibold">¡Recibe el dinero!</h3><p class="mt-3 max-w-md text-[0.95rem] leading-relaxed text-sub">Cuando alguien compre tu entrada, te notificaremos y tu pago se efectuará después del evento mediante transferencia SEPA a la cuenta que indicaste durante el proceso de venta. Es posible que este proceso tarde algunos días.</p></div>
+        <div class="step-img order-1 md:order-2" data-stepimg>
+          <div class="relative mx-auto w-[15rem]"><div class="receipt w-full px-5 pt-6 text-left"><p class="text-center text-sm font-semibold text-accent">{brand.name}</p><div class="mt-3 border-t border-dashed border-black/15 pt-3"><p class="text-[11px] text-sub">Tickets</p><div class="mt-1 flex justify-between text-[11px]"><span class="text-black/40">2 x Tickets</span><b class="text-emerald-600">+ 108,00 €</b></div></div><div class="mt-3 border-t border-dashed border-black/15 pb-5"><p class="mt-2 text-[10px] text-sub">Vendedor · Pablo G.</p></div></div>
+            <span class="coin absolute -left-6 top-10 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-amber-300 to-accent text-lg font-bold text-white shadow-lg" data-coin>€</span><span class="coin absolute -right-5 bottom-6 grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-amber-300 to-accent text-base font-bold text-white shadow-lg" data-coin>€</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVENTA OFICIAL -->
+  <section class="mx-auto max-w-[56rem] px-6 pt-28 text-center" aria-labelledby="t-off">
+    <span class="inline-block rounded-full bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent" data-reveal>Novedad</span>
+    <h2 id="t-off" class="mt-4 text-[1.7rem] font-bold sm:text-3xl" data-reveal>Reventa Oficial Con {brand.name}</h2>
+    <p class="mx-auto mt-3 max-w-xl text-[0.95rem] text-sub" data-reveal>{brand.name} tiene alianzas con algunos promotores para crear un circuito cerrado.</p>
+    <div class="mt-10 grid gap-5 text-left md:grid-cols-2">
+      <article class="sw-card !p-0" data-sw><div class="grid h-52 place-items-center rounded-t-2xl bg-soft"><div class="relative"><div class="grid h-20 w-20 place-items-center rounded-2xl bg-white shadow-lg"><svg viewBox="0 0 24 24" class="h-10 w-10 text-accent" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 012-2h14a2 2 0 012 2v1.5a2 2 0 000 3V15a2 2 0 01-2 2H5a2 2 0 01-2-2v-1.5a2 2 0 000-3V9zM14 7v10" stroke-dasharray="0"/></svg></div><span class="absolute -bottom-2 -right-2 grid h-8 w-8 place-items-center rounded-full bg-emerald-500 text-white"><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span></div></div><div class="p-6"><h3 class="text-lg font-semibold">Garantía de acceso</h3><p class="mt-2 text-[0.92rem] leading-relaxed text-sub">Aseguramos el acceso del comprador al evento gracias al cambio de nombre de las entradas.</p></div></article>
+      <article class="sw-card !p-0" data-sw><div class="grid h-52 place-items-center rounded-t-2xl bg-soft"><div class="relative h-24 w-24"><span class="absolute inset-0 rounded-full border-[6px] border-accent/25"></span><span class="absolute inset-3 rounded-full border-[6px] border-accent/60" data-spin></span><span class="absolute inset-0 m-auto grid h-10 w-10 place-items-center rounded-full bg-accent text-white"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 01-4 4H3"/></svg></span></div></div><div class="p-6"><h3 class="text-lg font-semibold">Circuito cerrado</h3><p class="mt-2 text-[0.92rem] leading-relaxed text-sub">Invalidamos la entrada del vendedor creando una nueva con los datos del nuevo comprador.</p></div></article>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="mx-auto max-w-[56rem] px-6 pt-24" aria-labelledby="t-sfaq">
+    <h2 id="t-sfaq" class="text-center text-[1.7rem] font-bold sm:text-3xl" data-reveal>Preguntas frecuentes</h2>
+    <div class="faq mt-8 divide-y divide-line" data-faq>
+      {faq.map(([q, a], i) => (
+        <details class="py-5" open={i === 0}><summary class="flex cursor-pointer items-center justify-between gap-4 text-[1rem] font-medium">{q}<span class="faq-i grid h-7 w-7 shrink-0 place-items-center rounded-full bg-soft"><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><p class="mt-3 pr-10 text-[0.92rem] leading-relaxed text-sub">{a}</p></details>
+      ))}
+    </div>
+  </section>
+
+  <!-- OPINIONES -->
+  <section class="mt-24 bg-soft py-20" aria-labelledby="t-srev">
+    <h2 id="t-srev" class="px-6 text-center text-[1.7rem] font-normal sm:text-4xl" data-reveal>Lo que dicen nuestros usuarios</h2>
+    <div class="mx-auto mt-10 grid max-w-[69rem] gap-5 px-6 md:grid-cols-3">
+      {reviews.map((r) => (
+        <figure class="sw-rev rounded-3xl bg-white p-7 shadow-[0_14px_40px_-18px_rgba(0,0,0,0.18)]" data-sw>
+          <svg viewBox="0 0 48 36" class="h-8 w-10 text-black/10" fill="currentColor" aria-hidden="true"><path d="M0 36V20C0 8 6 1.5 17 0v7c-5 1-8 4-8 9h8v20H0zm27 0V20C27 8 33 1.5 44 0v7c-5 1-8 4-8 9h8v20H27z"/></svg>
+          <blockquote class="mt-4 text-[0.98rem] font-light leading-relaxed text-ink/80">{r.t}</blockquote>
+          <figcaption class="mt-6 flex items-center gap-3"><span class="h-12 w-12 overflow-hidden rounded-full" set:html={avatar(r.n, "r" + r.n)}></span><span class="text-base">{r.n}</span></figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+</main>

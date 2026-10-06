@@ -1,0 +1,57 @@
+---
+import Logo from "./Logo.astro";
+
+const links = [
+  { href: "#ventajas", label: "Ventajas" },
+  { href: "#como-funciona", label: "Cómo funciona" },
+  { href: "#vender", label: "Vender" },
+  { href: "#faq", label: "FAQ" },
+];
+---
+
+<header class="fixed inset-x-0 top-0 z-50 px-4 pt-4">
+  <nav
+    class="mx-auto flex max-w-5xl items-center justify-between rounded-full border border-black/5 bg-white/80 py-2.5 pl-5 pr-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl"
+    aria-label="Principal"
+  >
+    <a href="#" aria-label="Handticket, inicio"><Logo /></a>
+
+    <ul class="hidden items-center gap-8 text-sm font-medium text-ink/70 md:flex">
+      {links.map((l) => (
+        <li><a href={l.href} class="transition-colors hover:text-ink">{l.label}</a></li>
+      ))}
+    </ul>
+
+    <div class="flex items-center gap-2">
+      <a
+        href="#cta"
+        class="hidden rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand sm:inline-block"
+      >
+        Ver entradas
+      </a>
+      <button
+        id="menu-btn"
+        class="grid h-10 w-10 place-items-center rounded-full bg-ink/5 md:hidden"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="menu"
+      >
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h16M4 16h16"></path></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div
+    id="menu"
+    class="mx-auto mt-2 hidden max-w-5xl rounded-3xl border border-black/5 bg-white/95 p-4 shadow-xl backdrop-blur-xl md:hidden"
+  >
+    <ul class="flex flex-col text-base font-semibold">
+      {links.map((l) => (
+        <li><a href={l.href} class="block rounded-2xl px-4 py-3 hover:bg-brand-soft">{l.label}</a></li>
+      ))}
+      <li class="pt-2">
+        <a href="#cta" class="block rounded-full bg-brand px-4 py-3 text-center text-white">Ver entradas</a>
+      </li>
+    </ul>
+  </div>
+</header>

@@ -2,8 +2,11 @@ import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  site: "https://siemprewave.es",
+  build: {
+    inlineStylesheets: "always",
+  },
   vite: {
+    build: { assetsInlineLimit: Infinity },
     plugins: [tailwindcss()],
   },
 });

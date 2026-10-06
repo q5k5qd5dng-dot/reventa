@@ -1,0 +1,259 @@
+<!doctype html><meta charset="utf-8">
+<body style="margin:0;background:#222"><canvas id="c" width="1000" height="1000"></canvas>
+<script>
+const S = 1000, TAU = Math.PI * 2;
+const fonts = [
+  ["Anton", "/node_modules/@fontsource/anton/files/anton-latin-400-normal.woff2"],
+  ["PoppinsB", "/node_modules/@fontsource/poppins/files/poppins-latin-700-normal.woff2"],
+  ["PoppinsS", "/node_modules/@fontsource/poppins/files/poppins-latin-600-normal.woff2"],
+  ["Playfair", "/node_modules/@fontsource/playfair-display/files/playfair-display-latin-800-italic.woff2"],
+];
+window.ready = Promise.all(fonts.map(async ([n, u]) => { const f = new FontFace(n, `url(${u})`); await f.load(); document.fonts.add(f); }));
+
+const rng = (seed) => { let a = seed >>> 0; return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
+const lin = (c, x0, y0, x1, y1, stops) => { const g = c.createLinearGradient(x0, y0, x1, y1); stops.forEach(([o, col]) => g.addColorStop(o, col)); return g; };
+const rad = (c, x, y, r0, r1, stops) => { const g = c.createRadialGradient(x, y, r0, x, y, r1); stops.forEach(([o, col]) => g.addColorStop(o, col)); return g; };
+const fx = (c, fn, o = {}) => { c.save(); c.filter = o.blur ? `blur(${o.blur}px)` : "none"; c.globalCompositeOperation = o.comp || "source-over"; c.globalAlpha = o.alpha ?? 1; fn(); c.restore(); };
+const circle = (c, x, y, r, fill) => { c.beginPath(); c.arc(x, y, r, 0, TAU); c.fillStyle = fill; c.fill(); };
+function beam(c, x, y, ang, spread, len, color, alpha = 0.4, blur = 10) {
+  fx(c, () => {
+    const x1 = x + Math.cos(ang - spread) * len, y1 = y + Math.sin(ang - spread) * len, x2 = x + Math.cos(ang + spread) * len, y2 = y + Math.sin(ang + spread) * len;
+    c.beginPath(); c.moveTo(x, y); c.lineTo(x1, y1); c.lineTo(x2, y2); c.closePath();
+    c.fillStyle = lin(c, x, y, x + Math.cos(ang) * len, y + Math.sin(ang) * len, [[0, color], [1, "rgba(0,0,0,0)"]]); c.fill();
+  }, { blur, comp: "screen", alpha });
+}
+function bokeh(c, r, n, colors, rmin, rmax, box, alpha = 0.35) {
+  for (let i = 0; i < n; i++) {
+    const x = box[0] + r() * (box[2] - box[0]), y = box[1] + r() * (box[3] - box[1]), rr = rmin + r() * (rmax - rmin), col = colors[(r() * colors.length) | 0];
+    fx(c, () => circle(c, x, y, rr, rad(c, x, y, 0, rr, [[0, col], [0.7, col], [1, "rgba(0,0,0,0)"]])), { blur: 1.5, comp: "screen", alpha: alpha * (0.4 + r() * 0.8) });
+  }
+}
+function person(c, x, base, h, color, arms = 0, r = Math.random) {
+  // cabeza + hombros + torso; arms: 0 abajo, 1 levantados, 2 uno
+  const hw = h * 0.16, hr = h * 0.085;
+  c.fillStyle = color;
+  circle(c, x, base - h + hr, hr, color);
+  c.beginPath(); c.moveTo(x - hw * 1.55, base); c.quadraticCurveTo(x - hw * 1.75, base - h * 0.66, x - hw * 0.55, base - h * 0.79);
+  c.lineTo(x + hw * 0.55, base - h * 0.79); c.quadraticCurveTo(x + hw * 1.75, base - h * 0.66, x + hw * 1.55, base); c.closePath(); c.fill();
+  if (arms) {
+    c.strokeStyle = color; c.lineWidth = h * 0.075; c.lineCap = "round";
+    const side = (s) => { c.beginPath(); c.moveTo(x + s * hw * 1.2, base - h * 0.7); c.lineTo(x + s * hw * (2 + r() * 1.2), base - h * (1.05 + r() * 0.25)); c.stroke(); };
+    if (arms === 1) { side(-1); side(1); } else side(r() < 0.5 ? -1 : 1);
+  }
+}
+function crowd(c, r, base, rows, color, hMin, hMax, arms = 0.35, xmin = -40, xmax = S + 40) {
+  for (let k = 0; k < rows; k++) {
+    const y = base + k * (hMax * 0.42), h = hMin + (hMax - hMin) * (k / Math.max(1, rows - 1)), step = h * 0.38;
+    for (let x = xmin + (k % 2) * step * 0.5; x < xmax; x += step * (0.8 + r() * 0.5)) person(c, x, y + h * 0.6, h * (0.9 + r() * 0.2), color, r() < arms ? (r() < 0.6 ? 1 : 2) : 0, r);
+  }
+}
+function title(c, t, x, y, font, color, ls = 0, align = "center", shadow) {
+  c.save(); c.font = font; c.textAlign = align; c.textBaseline = "alphabetic"; c.letterSpacing = ls + "px"; c.fillStyle = color;
+  if (shadow) { c.shadowColor = shadow; c.shadowBlur = 24; c.shadowOffsetY = 4; }
+  c.fillText(t, x, y); c.restore();
+}
+function grain(c, amt = 0.045) {
+  const id = c.getImageData(0, 0, S, S), d = id.data;
+  for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - 0.5) * 255 * amt; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+  c.putImageData(id, 0, 0);
+}
+function vignette(c, s = 0.55) { fx(c, () => { c.fillStyle = rad(c, S / 2, S * 0.48, S * 0.3, S * 0.78, [[0, "rgba(0,0,0,0)"], [1, `rgba(0,0,0,${s})`]]); c.fillRect(0, 0, S, S); }); }
+
+const painters = {
+  /* ───── Karol Vega · gira pop ───── */
+  "gira-verano"(c, r) {
+    const sky = lin(c, 0, 0, 0, S, [[0, "#1b0733"], [0.32, "#6d1370"], [0.58, "#ff3d86"], [0.76, "#ff9a45"], [1, "#ffcf7a"]]);
+    c.fillStyle = sky; c.fillRect(0, 0, S, S);
+    fx(c, () => circle(c, 500, 640, 460, "rgba(255,180,100,.6)"), { blur: 70, comp: "screen" });
+    circle(c, 500, 600, 240, lin(c, 0, 360, 0, 840, [[0, "#fff3bb"], [0.5, "#ffc073"], [1, "#ff6d44"]]));
+    for (let i = 0; i < 9; i++) { c.fillStyle = sky; c.fillRect(250, 640 + i * 26, 500, 4 + i * 3.2); }
+    for (const x of [140, 500, 860]) beam(c, x, 710, -Math.PI / 2 + (x - 500) / 1400, 0.1, 760, "rgba(255,240,220,.9)", 0.34, 12);
+    c.fillStyle = lin(c, 0, 700, 0, S, [[0, "#1a0420"], [1, "#05010a"]]); c.fillRect(0, 700, S, 300);
+    // artista
+    fx(c, () => person(c, 500, 700, 360, "#ffb070", 1, rng(11)), { blur: 18, comp: "screen", alpha: 0.65 });
+    person(c, 500, 700, 360, "#08020d", 1, rng(11));
+    c.save(); c.fillStyle = "#08020d"; c.strokeStyle = "#08020d"; c.lineCap = "round";
+    c.beginPath(); c.moveTo(455, 560); c.quadraticCurveTo(430, 640, 405, 700); c.lineTo(595, 700); c.quadraticCurveTo(570, 640, 545, 560); c.closePath(); c.fill();
+    for (let i = -6; i <= 6; i++) { c.beginPath(); c.moveTo(500, 352); c.quadraticCurveTo(500 + i * 30, 285 - Math.abs(i) * 5, 500 + i * 46, 300 + Math.abs(i) * 14); c.lineWidth = 6; c.stroke(); }
+    c.beginPath(); c.moveTo(478, 365); c.bezierCurveTo(440, 430, 450, 520, 462, 580); c.lineTo(478, 580); c.bezierCurveTo(474, 520, 482, 440, 494, 372); c.fill();
+    c.restore();
+    bokeh(c, r, 46, ["#ffd1a0", "#ff7aa8", "#fff2c0", "#ff9a45"], 6, 22, [0, 560, S, 760], 0.45);
+    crowd(c, r, 840, 4, "#07010c", 120, 250, 0.4);
+    fx(c, () => { c.fillStyle = lin(c, 0, 760, 0, 1000, [[0, "rgba(255,120,150,0)"], [1, "rgba(255,120,150,.0)"]]); }, {});
+    title(c, "KAROL VEGA", 500, 205, "190px Anton", "#fff7ea", 4, "center", "rgba(120,0,60,.6)");
+    title(c, "GIRA VERANO 2027", 500, 268, "40px PoppinsB", "#ffe3bd", 14);
+    vignette(c, 0.4);
+  },
+  /* ───── Duro Festival · blanco y negro ───── */
+  "duro-festival"(c, r) {
+    c.fillStyle = "#070707"; c.fillRect(0, 0, S, S);
+    fx(c, () => { c.fillStyle = rad(c, 500, 430, 0, 620, [[0, "rgba(210,210,210,.55)"], [0.5, "rgba(110,110,110,.28)"], [1, "rgba(0,0,0,0)"]]); c.fillRect(0, 0, S, S); }, { blur: 30 });
+    // semitono
+    c.fillStyle = "#fff";
+    for (let y = 0; y < S; y += 15) for (let x = ((y / 15) % 2) * 7.5; x < S; x += 15) { const d = Math.hypot(x - 500, y - 520) / 700, rr = Math.max(0, 6.2 * (1 - d) * (0.55 + 0.45 * Math.sin(y / 70))); if (rr > 0.5) { c.globalAlpha = 0.22; circle(c, x, y, rr, "#fff"); } }
+    c.globalAlpha = 1;
+    // torres de truss
+    const truss = (x, w, top, bot) => { c.strokeStyle = "rgba(235,235,235,.85)"; c.lineWidth = 3; c.strokeRect(x, top, w, bot - top); c.beginPath(); for (let y = top; y < bot; y += w) { c.moveTo(x, y); c.lineTo(x + w, y + w); c.moveTo(x + w, y); c.lineTo(x, y + w); } c.stroke(); };
+    truss(120, 60, 250, 900); truss(820, 60, 250, 900); truss(120, 760, 190, 250);
+    for (let i = 0; i < 9; i++) { const x = 175 + i * 80; fx(c, () => circle(c, x, 215, 24, "#fff"), { blur: 9, comp: "screen" }); circle(c, x, 215, 8, "#fff"); beam(c, x, 225, Math.PI / 2 + (i - 4) * 0.07, 0.07, 640, "rgba(255,255,255,.95)", 0.26, 8); }
+    // DJ
+    c.fillStyle = "#000"; c.fillRect(260, 760, 480, 70); c.fillRect(300, 700, 400, 60);
+    person(c, 500, 700, 230, "#000", 1, r);
+    fx(c, () => person(c, 500, 700, 230, "#fff", 1, rng(7)), { blur: 14, comp: "screen", alpha: 0.22 });
+    crowd(c, r, 880, 4, "#000", 100, 230, 0.5);
+    title(c, "DURO", 500, 395, "300px Anton", "rgba(255,255,255,.98)", 8);
+    c.save(); c.font = "300px Anton"; c.textAlign = "center"; c.letterSpacing = "8px"; c.lineWidth = 5; c.strokeStyle = "#fff"; c.strokeText("XXL", 500, 650); c.restore();
+    title(c, "10 · 11 OCT 2026 — MONTMELÓ", 500, 960, "34px PoppinsB", "#fff", 8);
+    vignette(c, 0.45);
+  },
+  /* ───── Viva Noche · póster retro ───── */
+  "viva-noche"(c, r) {
+    const sky = lin(c, 0, 0, 0, S, [[0, "#ffd84a"], [0.55, "#ff9d1e"], [1, "#e8590c"]]);
+    c.fillStyle = sky; c.fillRect(0, 0, S, S);
+    c.save(); c.translate(500, 560); for (let i = 0; i < 28; i++) { c.rotate(TAU / 28); c.fillStyle = i % 2 ? "rgba(255,244,190,.5)" : "rgba(255,244,190,.14)"; c.beginPath(); c.moveTo(0, 0); c.lineTo(1400, -60); c.lineTo(1400, 60); c.fill(); } c.restore();
+    circle(c, 500, 560, 260, "#fff3b8"); circle(c, 500, 560, 205, "#ffe27a");
+    for (let i = 0; i < 6; i++) { c.fillStyle = "#ffa21f"; c.fillRect(220, 600 + i * 24, 560, 3 + i * 3); }
+    // suelo
+    c.fillStyle = "#3b1b08"; c.fillRect(0, 780, S, 220);
+    c.fillStyle = "rgba(255,200,90,.12)"; for (let i = 0; i < 12; i++) c.fillRect(0, 790 + i * 18, S, 4);
+    // banda
+    const heights = [0.78, 0.9, 1.0, 0.86, 0.76];
+    heights.forEach((k, i) => { const x = 170 + i * 165; person(c, x, 800, 380 * k, "#2a1004", i % 2 ? 2 : 0, r); c.strokeStyle = "#2a1004"; c.lineWidth = 12; c.beginPath(); c.moveTo(x - 44, 690 - i * 4); c.lineTo(x + 52, 612 - i * 4); c.stroke(); });
+    bokeh(c, r, 14, ["#fff6c8"], 4, 10, [0, 80, S, 500], 0.35);
+    title(c, "VIVA NOCHE", 500, 215, "210px Anton", "#3b1b08", 6);
+    title(c, "BANDA NORTE · 17 OCT · ESPACIO NORTE", 500, 925, "32px PoppinsB", "#ffe9a8", 6);
+    title(c, "MADRID", 500, 972, "30px PoppinsB", "#ff9d1e", 18);
+    vignette(c, 0.28);
+  },
+  /* ───── Jornada de liga · estadio nocturno ───── */
+  "jornada-12"(c, r) {
+    c.fillStyle = lin(c, 0, 0, 0, S, [[0, "#02081c"], [0.4, "#0a2a68"], [0.58, "#134aa0"], [1, "#0b1b44"]]); c.fillRect(0, 0, S, S);
+    // gradas
+    c.fillStyle = "#050d24"; c.beginPath(); c.moveTo(0, 360); c.lineTo(S, 360); c.lineTo(S, 600); c.lineTo(0, 600); c.fill();
+    for (let k = 0; k < 7; k++) { const y = 372 + k * 32; c.fillStyle = `rgba(20,50,120,${0.55 - k * 0.04})`; c.fillRect(0, y, S, 22); for (let x = 0; x < S; x += 7 + r() * 7) { c.fillStyle = ["#ff4d4d", "#ffe14d", "#ffffff", "#7fb6ff", "#ff9a45"][(r() * 5) | 0]; c.globalAlpha = 0.25 + r() * 0.7; c.fillRect(x, y + r() * 18, 4, 4); } c.globalAlpha = 1; }
+    // césped en perspectiva
+    c.save(); c.beginPath(); c.moveTo(0, 600); c.lineTo(S, 600); c.lineTo(S, S); c.lineTo(0, S); c.clip();
+    for (let i = 0; i < 14; i++) { const t0 = i / 14, t1 = (i + 1) / 14, y0 = 600 + 400 * t0 * t0, y1 = 600 + 400 * t1 * t1; c.fillStyle = i % 2 ? "#1f8f43" : "#27a850"; c.fillRect(0, y0, S, y1 - y0 + 1); }
+    c.strokeStyle = "rgba(255,255,255,.85)"; c.lineWidth = 5; c.beginPath(); c.ellipse(500, 830, 330, 120, 0, 0, TAU); c.stroke(); c.beginPath(); c.moveTo(500, 600); c.lineTo(500, S); c.stroke(); c.restore();
+    // focos
+    const lights = [[120, 250], [880, 250], [330, 190], [670, 190]];
+    lights.forEach(([x, y]) => { fx(c, () => circle(c, x, y, 70, "#fff"), { blur: 26, comp: "screen" }); for (let i = 0; i < 12; i++) circle(c, x - 28 + (i % 4) * 18, y - 20 + ((i / 4) | 0) * 20, 6, "#fff"); beam(c, x, y + 20, Math.PI / 2 + (500 - x) / 1700, 0.28, 900, "rgba(210,230,255,.9)", 0.3, 20); });
+    fx(c, () => { c.fillStyle = rad(c, 500, 760, 0, 520, [[0, "rgba(180,255,200,.5)"], [1, "rgba(0,0,0,0)"]]); c.fillRect(0, 580, S, 420); }, { blur: 20, comp: "screen" });
+    // balón
+    circle(c, 640, 880, 34, "#fff"); c.fillStyle = "#111"; for (let a = 0; a < 5; a++) { c.beginPath(); c.arc(640 + Math.cos(a * 1.256) * 20, 880 + Math.sin(a * 1.256) * 20, 7, 0, TAU); c.fill(); }
+    title(c, "JORNADA 12", 500, 215, "200px Anton", "#ffffff", 6, "center", "rgba(0,20,80,.7)");
+    title(c, "LIGA · 8 NOV · 16:00", 500, 275, "40px PoppinsB", "#bcd9ff", 12);
+    vignette(c, 0.45);
+  },
+  /* ───── Noche Techno · láseres ───── */
+  "noche-techno"(c, r) {
+    c.fillStyle = lin(c, 0, 0, 0, S, [[0, "#010a10"], [0.5, "#03212c"], [1, "#010609"]]); c.fillRect(0, 0, S, S);
+    fx(c, () => { c.fillStyle = rad(c, 500, 420, 0, 560, [[0, "rgba(0,255,200,.38)"], [0.5, "rgba(0,120,160,.18)"], [1, "rgba(0,0,0,0)"]]); c.fillRect(0, 0, S, S); }, { blur: 40, comp: "screen" });
+    const cols = ["rgba(0,255,210,1)", "rgba(120,255,60,1)", "rgba(255,40,150,1)", "rgba(40,170,255,1)"];
+    for (let i = 0; i < 46; i++) { const a = -Math.PI / 2 + (i - 23) * 0.058 + (r() - 0.5) * 0.02; const col = cols[i % 4]; fx(c, () => { c.strokeStyle = col; c.lineWidth = 1.8; c.beginPath(); c.moveTo(500, 520); c.lineTo(500 + Math.cos(a) * 1300, 520 + Math.sin(a) * 1300); c.stroke(); }, { comp: "screen", alpha: 0.55 }); fx(c, () => { c.strokeStyle = col; c.lineWidth = 6; c.beginPath(); c.moveTo(500, 520); c.lineTo(500 + Math.cos(a) * 1300, 520 + Math.sin(a) * 1300); c.stroke(); }, { comp: "screen", alpha: 0.12, blur: 5 }); }
+    fx(c, () => circle(c, 500, 520, 60, "#bffff0"), { blur: 22, comp: "screen" });
+    // cabina + DJ
+    c.fillStyle = "#020608"; c.fillRect(300, 640, 400, 140); person(c, 500, 640, 250, "#020608", 1, r);
+    fx(c, () => person(c, 500, 640, 250, "#7fffe0", 1, rng(3)), { blur: 12, comp: "screen", alpha: 0.28 });
+    c.fillStyle = "#0b3b45"; c.fillRect(300, 640, 400, 6);
+    crowd(c, r, 860, 4, "#010304", 110, 240, 0.55);
+    bokeh(c, r, 22, ["#00ffd0", "#ff2a96", "#7dff3c"], 5, 15, [0, 640, S, 900], 0.28);
+    const t = (dx, col) => title(c, "NOCHE", 500 + dx, 215, "200px Anton", col, 4);
+    fx(c, () => { t(-6, "rgba(0,255,220,.9)"); t(6, "rgba(255,40,150,.85)"); }, { comp: "screen" }); t(0, "#ffffff");
+    const t2 = (dx, col) => title(c, "TECHNO", 500 + dx, 380, "200px Anton", col, 4);
+    fx(c, () => { t2(-6, "rgba(0,255,220,.9)"); t2(6, "rgba(255,40,150,.85)"); }, { comp: "screen" }); t2(0, "#ffffff");
+    title(c, "SALA APOLO · 25 OCT · 00:00", 500, 960, "32px PoppinsB", "#aef", 10);
+    vignette(c, 0.5);
+  },
+  /* ───── El Rey de la Escena · telón rojo ───── */
+  "rey-escena"(c, r) {
+    c.fillStyle = "#2a0408"; c.fillRect(0, 0, S, S);
+    // pliegues del telón
+    for (let x = 0; x < S; x += 2) { const f = Math.sin(x / 38) * 0.5 + Math.sin(x / 15 + 2) * 0.25, v = 0.5 + f * 0.5; const side = Math.abs(x - 500) / 500; const R = Math.round(110 + v * 125 - (1 - side) * 40), G = Math.round(8 + v * 14), B = Math.round(18 + v * 18); c.fillStyle = `rgb(${R},${G},${B})`; c.fillRect(x, 0, 2, S); }
+    // abertura central con luz
+    c.save(); c.beginPath(); c.moveTo(330, 0); c.quadraticCurveTo(440, 520, 300, S); c.lineTo(700, S); c.quadraticCurveTo(560, 520, 670, 0); c.closePath(); c.clip();
+    c.fillStyle = lin(c, 0, 0, 0, S, [[0, "#1a0305"], [1, "#050001"]]); c.fillRect(0, 0, S, S);
+    for (let i = 0; i < 40; i++) { c.fillStyle = `rgba(255,${190 + (i % 3) * 20},120,${0.04})`; c.fillRect(300, 640 + i * 9, 400, 6); }
+    c.restore();
+    beam(c, 500, -20, Math.PI / 2, 0.19, 1050, "rgba(255,226,170,1)", 0.62, 16);
+    fx(c, () => circle(c, 500, 800, 180, "rgba(255,210,140,.75)"), { blur: 40, comp: "screen" });
+    // corona
+    c.save(); const g = lin(c, 0, 520, 0, 730, [[0, "#fff2b5"], [0.5, "#f3b43a"], [1, "#a96a0c"]]); c.fillStyle = g; c.strokeStyle = "#7a4a06"; c.lineWidth = 3;
+    c.beginPath(); c.moveTo(380, 740); c.lineTo(360, 560); c.lineTo(440, 640); c.lineTo(500, 530); c.lineTo(560, 640); c.lineTo(640, 560); c.lineTo(620, 740); c.closePath(); c.fill(); c.stroke();
+    [[360, 556], [500, 526], [640, 556]].forEach(([x, y]) => circle(c, x, y, 13, "#fff6cf")); [[430, 716], [500, 716], [570, 716]].forEach(([x, y]) => circle(c, x, y, 12, "#c1272d")); c.restore();
+    fx(c, () => { c.fillStyle = "rgba(255,230,160,.9)"; c.beginPath(); c.moveTo(380, 740); c.lineTo(620, 740); c.lineTo(620, 760); c.lineTo(380, 760); c.fill(); }, { blur: 14, comp: "screen", alpha: 0.5 });
+    // escenario y cortina superior
+    c.fillStyle = lin(c, 0, 790, 0, S, [[0, "#3a1a0c"], [1, "#120604"]]); c.fillRect(0, 790, S, 210);
+    for (let i = 0; i < 10; i++) { c.fillStyle = `rgba(255,200,120,${0.07})`; c.fillRect(0, 800 + i * 20 * (1 + i * 0.1), S, 3); }
+    c.fillStyle = "#6b0a14"; c.beginPath(); c.moveTo(0, 0); c.lineTo(S, 0); c.lineTo(S, 90); for (let x = S; x >= 0; x -= 100) c.quadraticCurveTo(x - 50, 160, x - 100, 90); c.closePath(); c.fill();
+    c.fillStyle = "#e8b64a"; c.fillRect(0, 84, S, 6);
+    crowd(c, r, 980, 2, "#050001", 90, 170, 0.3);
+    title(c, "EL REY DE", 500, 250, "130px Playfair", "#ffe6a8", 2, "center", "rgba(0,0,0,.7)");
+    title(c, "LA ESCENA", 500, 380, "130px Playfair", "#ffe6a8", 2, "center", "rgba(0,0,0,.7)");
+    title(c, "EL MUSICAL · TEATRO PRINCIPAL · ZARAGOZA", 500, 935, "28px PoppinsB", "#f3c76a", 8);
+    vignette(c, 0.5);
+  },
+  /* ───── Copa de Europa · estadio cenital ───── */
+  "copa-europa"(c, r) {
+    c.fillStyle = rad(c, 500, 560, 40, 780, [[0, "#0c6b5b"], [0.5, "#06302f"], [1, "#010c10"]]); c.fillRect(0, 0, S, S);
+    // graderío en elipses
+    for (let k = 0; k < 9; k++) { const rx = 470 - k * 22, ry = 330 - k * 15; c.fillStyle = k % 2 ? "#0b2a35" : "#0d3a47"; c.beginPath(); c.ellipse(500, 640, rx + 30, ry + 20, 0, 0, TAU); c.fill(); }
+    for (let i = 0; i < 1500; i++) { const a = r() * TAU, k = r(), rx = 330 + k * 160, ry = 180 + k * 165; c.fillStyle = ["#ffffff", "#ffe27a", "#7fe3ff", "#ff7a7a"][(r() * 4) | 0]; c.globalAlpha = 0.25 + r() * 0.6; c.fillRect(500 + Math.cos(a) * rx, 640 + Math.sin(a) * ry, 3, 3); } c.globalAlpha = 1;
+    // césped
+    c.save(); c.beginPath(); c.ellipse(500, 640, 300, 150, 0, 0, TAU); c.clip();
+    for (let i = 0; i < 12; i++) { c.fillStyle = i % 2 ? "#1d9a4e" : "#25b45e"; c.fillRect(200 + i * 50, 480, 50, 320); }
+    c.strokeStyle = "rgba(255,255,255,.9)"; c.lineWidth = 4; c.strokeRect(215, 520, 570, 240); c.beginPath(); c.moveTo(500, 520); c.lineTo(500, 760); c.stroke(); c.beginPath(); c.ellipse(500, 640, 60, 30, 0, 0, TAU); c.stroke(); c.restore();
+    fx(c, () => { c.fillStyle = rad(c, 500, 640, 0, 420, [[0, "rgba(160,255,200,.6)"], [1, "rgba(0,0,0,0)"]]); c.fillRect(0, 300, S, 700); }, { blur: 24, comp: "screen" });
+    // focos
+    [[100, 470], [900, 470], [260, 330], [740, 330]].forEach(([x, y]) => { fx(c, () => circle(c, x, y, 36, "#fff"), { blur: 14, comp: "screen" }); beam(c, x, y, Math.atan2(640 - y, 500 - x), 0.17, 700, "rgba(210,255,240,.9)", 0.3, 16); });
+    // trofeo
+    c.save(); const gold = lin(c, 420, 90, 580, 400, [[0, "#fff2b8"], [0.45, "#e9b13c"], [1, "#8a5a0b"]]); c.fillStyle = gold;
+    fx(c, () => { c.beginPath(); c.arc(500, 250, 120, 0, TAU); c.fillStyle = "rgba(255,225,130,.8)"; c.fill(); }, { blur: 50, comp: "screen", alpha: 0.7 });
+    c.fillStyle = gold; c.beginPath(); c.moveTo(430, 110); c.bezierCurveTo(430, 230, 470, 250, 470, 290); c.lineTo(530, 290); c.bezierCurveTo(530, 250, 570, 230, 570, 110); c.closePath(); c.fill();
+    c.lineWidth = 12; c.strokeStyle = "#e0a42f"; c.beginPath(); c.arc(424, 160, 36, Math.PI * 0.5, Math.PI * 1.5); c.stroke(); c.beginPath(); c.arc(576, 160, 36, -Math.PI * 0.5, Math.PI * 0.5); c.stroke();
+    c.fillStyle = gold; c.fillRect(488, 290, 24, 60); c.beginPath(); c.moveTo(450, 400); c.lineTo(550, 400); c.lineTo(536, 350); c.lineTo(464, 350); c.closePath(); c.fill(); c.fillStyle = "#6e4608"; c.fillRect(450, 400, 100, 22); c.restore();
+    title(c, "COPA DE EUROPA", 500, 860, "112px Anton", "#ffffff", 4, "center", "rgba(0,40,30,.8)");
+    title(c, "SEMIFINAL · 29 ABR 2027 · BILBAO", 500, 925, "32px PoppinsB", "#aef5d6", 8);
+    vignette(c, 0.4);
+  },
+  /* ───── Sunset Sessions ───── */
+  "sunset-sessions"(c, r) {
+    c.fillStyle = lin(c, 0, 0, 0, S, [[0, "#15153f"], [0.3, "#6b2a7a"], [0.52, "#f0508a"], [0.66, "#ff9a5c"], [1, "#ffd48a"]]); c.fillRect(0, 0, S, S);
+    fx(c, () => circle(c, 500, 600, 420, "rgba(255,170,110,.65)"), { blur: 80, comp: "screen" });
+    circle(c, 500, 600, 150, lin(c, 0, 450, 0, 750, [[0, "#fff6d0"], [1, "#ffb15a"]]));
+    // nubes
+    for (let i = 0; i < 6; i++) fx(c, () => { c.fillStyle = "rgba(255,180,170,.45)"; c.beginPath(); c.ellipse(120 + i * 170 + r() * 40, 300 + r() * 160, 140, 12 + r() * 10, 0, 0, TAU); c.fill(); }, { blur: 10 });
+    // agua
+    c.fillStyle = lin(c, 0, 660, 0, S, [[0, "#d46a7a"], [0.4, "#6b2f6e"], [1, "#1d1440"]]); c.fillRect(0, 660, S, 340);
+    for (let i = 0; i < 60; i++) { const y = 670 + i * 5.5, w = 300 * (1 - i / 80) + r() * 80; fx(c, () => { c.fillStyle = `rgba(255,210,150,${0.7 - i / 90})`; c.fillRect(500 - w / 2 + (r() - 0.5) * 40, y, w, 2 + r() * 2); }, { blur: 0.8 }); }
+    // palmeras
+    const palm = (x, base, h, lean) => { c.strokeStyle = "#0a0518"; c.lineWidth = 16; c.lineCap = "round"; c.beginPath(); c.moveTo(x, base); c.quadraticCurveTo(x + lean * 0.4, base - h * 0.55, x + lean, base - h); c.stroke(); for (let i = 0; i < 9; i++) { const a = -Math.PI / 2 + (i - 4) * 0.5 + lean / 600; c.lineWidth = 7; c.beginPath(); c.moveTo(x + lean, base - h); c.quadraticCurveTo(x + lean + Math.cos(a) * 80, base - h + Math.sin(a) * 60 - 20, x + lean + Math.cos(a) * 170, base - h + Math.sin(a) * 120 + 70); c.stroke(); } };
+    palm(90, 760, 520, 90); palm(930, 780, 560, -100); palm(210, 800, 330, 40);
+    // terraza + gente
+    c.fillStyle = "#0a0518"; c.fillRect(0, 810, S, 190);
+    for (let x = 30; x < S; x += 50 + r() * 70) person(c, x, 840, 120 + r() * 70, "#0a0518", r() < 0.3 ? 1 : 0, r);
+    c.strokeStyle = "#0a0518"; c.lineWidth = 3; c.beginPath(); c.moveTo(0, 700); c.quadraticCurveTo(250, 770, 500, 710); c.quadraticCurveTo(750, 650, S, 720); c.stroke();
+    for (let i = 0; i < 28; i++) { const t = i / 27, x = t * S, y = 700 + (t < 0.5 ? Math.sin(t * Math.PI) * 52 : -Math.sin((t - 0.5) * Math.PI) * 50 + 10); fx(c, () => circle(c, x, y + 8, 7, "rgba(255,230,160,1)"), { blur: 6, comp: "screen" }); circle(c, x, y + 8, 3, "#fff3c8"); }
+    bokeh(c, r, 24, ["#ffe3a0", "#ffb07a", "#fff"], 6, 18, [0, 640, S, 900], 0.28);
+    title(c, "SUNSET", 500, 215, "190px Anton", "#fff3dc", 8, "center", "rgba(120,20,60,.5)");
+    title(c, "Sessions", 500, 330, "120px Playfair", "#ffe0b0", 2, "center", "rgba(120,20,60,.5)");
+    title(c, "CHILL & HOUSE · 1 NOV · TERRAZA EBRO", 500, 960, "28px PoppinsB", "#ffe0b0", 8);
+    vignette(c, 0.32);
+  },
+};
+
+window.paint = async (id) => {
+  await window.ready;
+  const cv = document.getElementById("c"), c = cv.getContext("2d", { willReadFrequently: true });
+  c.clearRect(0, 0, S, S);
+  const seed = [...id].reduce((a, ch) => a * 31 + ch.charCodeAt(0), 7);
+  painters[id](c, rng(seed));
+  grain(c, id === "duro-festival" ? 0.07 : 0.045);
+  // color dominante (ponderado por saturación)
+  const d = c.getImageData(0, 0, S, S).data; let R = 0, G = 0, B = 0, W = 0, sat = 0;
+  for (let i = 0; i < d.length; i += 4 * 9) { const r_ = d[i], g_ = d[i + 1], b_ = d[i + 2], mx = Math.max(r_, g_, b_), mn = Math.min(r_, g_, b_), s = mx ? (mx - mn) / mx : 0, l = (mx + mn) / 510; const w = 0.15 + s * s * 3 + (l > 0.12 && l < 0.85 ? 0.5 : 0); R += r_ * w; G += g_ * w; B += b_ * w; W += w; sat += s; }
+  const n = d.length / 36;
+  return { png: cv.toDataURL("image/png"), tint: [R / W, G / W, B / W].map(Math.round), sat: sat / n };
+};
+window.ids = Object.keys(painters);
+</script>
