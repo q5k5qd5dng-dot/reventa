@@ -1,0 +1,151 @@
+---
+import Base from "../layouts/Base.astro";
+
+const social = [
+  { t: "Zona Fiesta", d: "Mira qué planes hay hoy y esta semana en tu ciudad.", i: "🎉" },
+  { t: "Match", d: "Descubre a gente que también va a tu fiesta.", i: "💬" },
+  { t: "Party Music", d: "Pide y vota la música antes de llegar.", i: "🎵" },
+  { t: "Instantáneas", d: "Fotos, historias y publicaciones de la noche.", i: "📸" },
+];
+const locales = [
+  { t: "Entradas y QR", d: "Venta online y control de acceso desde el móvil." },
+  { t: "Taquilla", d: "Vende en puerta sin salir del sistema." },
+  { t: "RRPP", d: "Cada RRPP con su enlace, sus ventas y sus comisiones." },
+  { t: "CRM", d: "Conoce a tus clientes y cuántas veces vuelven." },
+  { t: "Reservas y VIP", d: "Mesas, botellas y listas en un solo sitio." },
+  { t: "Pagos", d: "Cobra con tarjeta, con comisiones claras." },
+];
+const faqs = [
+  ["¿Qué es Wave?", "Es donde descubres dónde salir, ves quién va y compras la entrada. Todo en la misma app."],
+  ["¿Cuánto cuesta para un local?", "Hablamos contigo y te damos números claros: qué cobra Wave y qué recibe tu local."],
+  ["¿Dónde está disponible?", "Empezamos en Zaragoza y vamos a más ciudades."],
+  ["¿Puedo traer a mi equipo de RRPP?", "Sí. Cada RRPP tiene su propio enlace y ve sus ventas."],
+];
+---
+<Base title="Wave · Sal de fiesta, de principio a fin" description="Descubre dónde salir, mira quién va y compra tu entrada. Wave, la ticketera social para ocio nocturno.">
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-black/5 bg-white/80 backdrop-blur">
+    <nav class="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
+      <a href="/" class="flex items-center gap-2 text-xl font-extrabold tracking-tight">
+        <img src="/favicon.svg" alt="" class="h-7 w-7" /> Wave
+      </a>
+      <div class="hidden items-center gap-8 text-sm font-semibold md:flex">
+        <a href="#app" class="hover:text-wave">La app</a>
+        <a href="#locales" class="hover:text-wave">Para locales</a>
+        <a href="#faq" class="hover:text-wave">FAQ</a>
+      </div>
+      <a href="#contacto" class="rounded-full bg-ink px-5 py-2 text-sm font-bold text-white transition hover:bg-wave">Hablemos</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="relative overflow-hidden pt-32 pb-20">
+      <div class="pointer-events-none absolute -top-40 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-wave/20 blur-3xl"></div>
+      <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-5 md:grid-cols-2">
+        <div class="reveal">
+          <span class="rounded-full bg-wave-soft px-4 py-1.5 text-xs font-bold text-wave-dark">Ahora en Zaragoza</span>
+          <h1 class="mt-5 text-5xl font-extrabold leading-[1.05] tracking-tight md:text-7xl">
+            La fiesta empieza <span class="text-wave">en Wave.</span>
+          </h1>
+          <p class="mt-5 max-w-md text-lg text-black/60">Descubre dónde salir, mira quién va y compra tu entrada. Todo en un sitio.</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#app" class="rounded-full bg-wave px-7 py-3.5 font-bold text-white shadow-lg shadow-wave/30 transition hover:bg-wave-dark">Descubrir Wave</a>
+            <a href="#locales" class="rounded-full border border-black/10 px-7 py-3.5 font-bold transition hover:border-wave hover:text-wave">Soy un local</a>
+          </div>
+        </div>
+        <div class="reveal flex justify-center">
+          <div class="float-slow w-72 rounded-[2.5rem] border-8 border-ink bg-ink p-0 shadow-2xl">
+            <div class="rounded-[2rem] bg-white p-4">
+              <p class="text-xs font-bold text-wave">Esta noche · Zaragoza</p>
+              {["Sala Neón · 23:30", "Club Aurora · 00:00", "Terraza Sol · 22:00"].map((e, i) => (
+                <div class="mt-3 rounded-2xl bg-wave-soft p-3">
+                  <div class={`h-20 rounded-xl ${i === 0 ? "bg-wave" : i === 1 ? "bg-purple-500" : "bg-ink"}`}></div>
+                  <p class="mt-2 text-sm font-bold">{e}</p>
+                  <p class="text-xs text-black/50">+{40 + i * 17} van · Entrada desde 10€</p>
+                </div>
+              ))}
+              <div class="mt-3 rounded-full bg-ink py-2.5 text-center text-sm font-bold text-white">Comprar entrada</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pilares -->
+    <section id="app" class="mx-auto max-w-6xl px-5 py-20">
+      <h2 class="reveal max-w-2xl text-4xl font-extrabold tracking-tight md:text-5xl">Antes, durante y después de la fiesta.</h2>
+      <div class="mt-12 grid gap-5 md:grid-cols-3">
+        {[
+          ["01", "Descubre", "Encuentra planes por fecha, local y ambiente."],
+          ["02", "Mira quién va", "Sabe qué amigos y qué gente va a cada fiesta."],
+          ["03", "Compra y entra", "Entrada con QR en tu móvil. Sin colas de papel."],
+        ].map(([n, t, d]) => (
+          <div class="reveal rounded-3xl border border-black/5 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+            <span class="text-sm font-extrabold text-wave">{n}</span>
+            <h3 class="mt-3 text-2xl font-extrabold">{t}</h3>
+            <p class="mt-2 text-black/60">{d}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Social -->
+    <section class="bg-ink py-24 text-white">
+      <div class="mx-auto max-w-6xl px-5">
+        <p class="reveal text-sm font-bold text-wave">Lo que no hace una ticketera</p>
+        <h2 class="reveal mt-3 max-w-2xl text-4xl font-extrabold tracking-tight md:text-5xl">Wave es también tu red social de ocio.</h2>
+        <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {social.map((s) => (
+            <div class="reveal rounded-3xl bg-ink-soft p-6 ring-1 ring-white/10 transition hover:ring-wave">
+              <div class="text-3xl">{s.i}</div>
+              <h3 class="mt-4 text-xl font-bold">{s.t}</h3>
+              <p class="mt-2 text-sm text-white/60">{s.d}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Locales -->
+    <section id="locales" class="mx-auto max-w-6xl px-5 py-24">
+      <p class="reveal text-sm font-bold text-wave">Para discotecas, promotoras y locales</p>
+      <h2 class="reveal mt-3 max-w-2xl text-4xl font-extrabold tracking-tight md:text-5xl">Gestiona la noche. Llena la sala.</h2>
+      <div class="mt-12 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+        {locales.map((l) => (
+          <div class="reveal border-t-2 border-wave pt-4">
+            <h3 class="text-lg font-extrabold">{l.t}</h3>
+            <p class="mt-1 text-black/60">{l.d}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="mx-auto max-w-3xl px-5 pb-24">
+      <h2 class="reveal text-4xl font-extrabold tracking-tight">Preguntas</h2>
+      <div class="mt-8 divide-y divide-black/10 border-y border-black/10">
+        {faqs.map(([q, a]) => (
+          <details class="group py-5">
+            <summary class="flex cursor-pointer items-center justify-between text-lg font-bold">
+              {q}<span class="faq-icon text-2xl text-wave transition">+</span>
+            </summary>
+            <p class="mt-3 text-black/60">{a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="contacto" class="px-5 pb-24">
+      <div class="mx-auto max-w-6xl rounded-[2rem] bg-wave px-8 py-16 text-center text-white">
+        <h2 class="text-4xl font-extrabold tracking-tight md:text-5xl">Sal con Wave.</h2>
+        <p class="mx-auto mt-3 max-w-md text-white/90">¿Tienes un local o una promotora? Cuéntanos y lo ponemos en marcha.</p>
+        <a href="mailto:hola@siemprewave.es" class="mt-8 inline-block rounded-full bg-ink px-8 py-3.5 font-bold transition hover:bg-white hover:text-ink">hola@siemprewave.es</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-black/5 py-8 text-center text-sm text-black/50">
+    © {new Date().getFullYear()} Wave · siemprewave.es · Zaragoza
+  </footer>
+</Base>
