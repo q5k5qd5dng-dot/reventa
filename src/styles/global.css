@@ -58,3 +58,11 @@
 details > summary { list-style: none; }
 details > summary::-webkit-details-marker { display: none; }
 details[open] .faq-icon { transform: rotate(45deg); }
+
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+.marquee { animation: marquee 30s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none; }
+}

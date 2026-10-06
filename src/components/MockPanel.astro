@@ -1,0 +1,14 @@
+---
+const { title = "Panel", items = [] } = Astro.props;
+---
+<div class="rounded-xl border border-white/10 bg-[#0b0b10] p-3 text-[10px] text-white/60 shadow-2xl">
+  <p class="mb-2 font-bold text-white">{title}</p>
+  <div class="space-y-1.5">
+    {items.map((it: string, i: number) => (
+      <div class="flex items-center justify-between rounded bg-white/5 px-2 py-2">
+        <span>{it}</span>
+        <span class={`h-3.5 w-6 rounded-full ${i % 2 === 0 ? "bg-wave" : "bg-white/15"}`}></span>
+      </div>
+    ))}
+  </div>
+</div>
