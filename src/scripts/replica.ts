@@ -54,6 +54,12 @@ function title(r: Route) {
   const ev = r.name === "event" && r.arg ? byId(r.arg) : undefined;
   const t: Record<Name, string> = { home: "Reventa de entradas segura y legal", event: ev ? nameOf(ev) : "Evento", search: r.arg ? `Resultados para ${r.arg}` : "Eventos", sell: "Vender entradas online de forma rápida y segura", tickets: "Entradas compradas", listings: "Tus anuncios", help: "Centro de ayuda", profile: "Perfil", pick: "Selecciona el evento", wizard: "Completa tu anuncio", legal: legalBy(r.arg)?.n ?? "Legal" };
   document.title = `${t[r.name]} · Handticket`;
+  const path = r.name === "event" && r.arg ? `/evento/${r.arg}/` : r.name === "legal" ? `/legal/${r.arg}/` : r.name === "help" ? `/ayuda/` : "/";
+  const link = document.querySelector<HTMLLinkElement>("link[rel=canonical]");
+  if (link) link.href = new URL(path, link.href).href;
+  const meta = document.querySelector<HTMLMetaElement>("meta[name=robots]");
+  if (meta && !meta.dataset.base) meta.dataset.base = meta.content;
+  if (meta) meta.content = ["tickets", "listings", "profile", "pick", "wizard"].includes(r.name) ? "noindex,nofollow" : meta.dataset.base!;
 }
 
 function ensureHome() {
@@ -253,6 +259,11 @@ function globals() {
   document.addEventListener("click", (e) => {
     const t = e.target as HTMLElement;
     if (t.closest("[data-store]")) { e.preventDefault(); toast("Próximamente en las tiendas de apps", "📱"); return; }
+    const sa = t.closest<HTMLAnchorElement>("a[href^='/']");
+    if (sa && location.protocol === "file:") {
+      const m = sa.getAttribute("href")!.match(/^\/(evento|ayuda|legal)\/(.+?)\/?$/) , c = sa.getAttribute("href")!.match(/^\/reventa-entradas-(.+?)\/$/);
+      if (m || c) { e.preventDefault(); location.hash = c ? `#/buscar/${c[1].replace(/-/g, " ")}` : `#/${m![1]}/${m![2]}`; return; }
+    }
     if (t.closest("[data-soon]")) { e.preventDefault(); toast("Próximamente", "⏳"); return; }
     if (t.closest("[data-sell]") || t.closest("#sell-btn") || t.closest("#sell-btn2")) { e.preventDefault(); openSell(); return; }
     if (t.closest("#login-btn")) { openLogin(); return; }

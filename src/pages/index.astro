@@ -7,6 +7,8 @@ import { events, fechaLarga } from "../data/events";
 import { extra } from "../data/extra";
 import art from "../data/art.json";
 import { brand } from "../brand";
+import { homeFaq, organization, website, eventLd, faqLd, graph, extra as ex, abs } from "../seo";
+import { cities as seoCities, slugify } from "../seo";
 
 const fecha = fechaLarga;
 const b64 = (f: string) => `url(data:image/webp;base64,${fs.readFileSync(path.join(process.cwd(), "src/assets/art", f + ".webp")).toString("base64")})`;
@@ -36,7 +38,7 @@ const reviews = [
 const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla", "Málaga", "A Coruña", "Donostia", "Zaragoza", "Tenerife", "Murcia"];
 ---
 
-<Replica>
+<Replica jsonld={graph(organization(), website(), ...events.map(eventLd), faqLd(homeFaq), { "@type": "ItemList", itemListElement: events.map((e, i) => ({ "@type": "ListItem", position: i + 1, url: abs(`/evento/${e.id}/`), name: ex[e.id].name })) })} image="/og/gira-verano.webp">
   <style slot="head" is:inline set:html={css}></style>
   <!-- HEADER -->
   <header id="hdr" data-hdr="home" class="fixed inset-x-0 top-0 z-[100]">
@@ -277,6 +279,14 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
         </div>
       </div>
     </section>
+
+    <!-- PREGUNTAS FRECUENTES (contenido visible y rastreable) -->
+    <section class="mx-auto mt-16 max-w-[56rem] px-6 sm:mt-24" aria-labelledby="t-faq">
+      <h2 id="t-faq" class="text-2xl font-medium sm:text-3xl">Preguntas frecuentes sobre la reventa de entradas</h2>
+      <div class="mt-6 divide-y divide-line border-y border-line">
+        {homeFaq.map((f) => (<details class="group py-4"><summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">{f.q}<svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 transition group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></summary><p class="mt-3 text-ink/80">{f.a}</p></details>))}
+      </div>
+    </section>
   </main>
   <main id="v-event" class="view hidden" data-view="event"></main>
   <main id="v-search" class="view hidden" data-view="search"></main>
@@ -306,7 +316,7 @@ const cities = ["Madrid", "Barcelona", "Bilbao", "Ibiza", "Valencia", "Sevilla",
     </div>
     <div class="mx-auto mt-12 max-w-[1500px] border-t border-line pt-8">
       <ul class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm font-light text-sub md:grid-cols-3">
-        {cities.map((c) => (<li><a class="hover:text-accent" href={`#/buscar/${encodeURIComponent(c)}`}>Reventa de entradas {c}</a></li>))}
+        {cities.map((c) => (<li><a class="hover:text-accent" href={`/reventa-entradas-${slugify(c)}/`}>Reventa de entradas {c}</a></li>))}
         <li><a class="hover:text-accent" href="#/vender">Reventa fan to fan de entradas</a></li>
         <li><a class="hover:text-accent" href="#/buscar/musica">Entradas de conciertos</a></li>
         <li><a class="hover:text-accent" href="#/buscar/festival">Entradas de festivales</a></li>

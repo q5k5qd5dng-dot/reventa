@@ -1,0 +1,12 @@
+---
+import Seo from "../../layouts/Seo.astro";
+import { legal, graph, crumbs, organization } from "../../seo";
+export const getStaticPaths = () => legal.map((d) => ({ params: { slug: d.slug }, props: { d } }));
+const { d } = Astro.props;
+---
+<Seo title={`${d.n} | Handticket`} description={d.intro} canonical={`/legal/${d.slug}/`} jsonld={graph(organization(), crumbs([["Inicio", "/"], [d.n, `/legal/${d.slug}/`]]))}>
+  <nav class="flex flex-wrap gap-2 text-sm">{legal.map((l) => <a href={`/legal/${l.slug}/`} class:list={["rounded-full px-4 py-2", l.slug === d.slug ? "bg-ink text-white" : "bg-[#f1f1f3]"]}>{l.n}</a>)}</nav>
+  <h1 class="mt-10 text-[2.2rem] font-semibold sm:text-[3rem]">{d.n}</h1>
+  <p class="mt-2 text-sm text-sub">Última actualización: {d.upd}</p><p class="mt-5 text-lg text-ink/80">{d.intro}</p>
+  <div class="mt-8 space-y-9 leading-[1.75] text-ink/85">{d.secs.map((s) => <section><h2 class="text-xl font-semibold text-ink">{s.h}</h2>{s.p.map((p) => <p class="mt-3">{p}</p>)}</section>)}</div>
+</Seo>

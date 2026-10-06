@@ -1,0 +1,15 @@
+---
+import Seo from "../../../layouts/Seo.astro";
+import { help, allArticles, graph, crumbs, organization, faqLd } from "../../../seo";
+export const getStaticPaths = () => allArticles().map((a) => ({ params: { cat: a.cat.id, slug: a.slug }, props: { a } }));
+const { a } = Astro.props;
+const text = a.body.join(" ");
+const url = `/ayuda/${a.cat.id}/${a.slug}/`;
+---
+<Seo title={`${a.t} | Ayuda Handticket`} description={text.slice(0, 155).replace(/\s\S*$/, "…")} canonical={url} type="article" jsonld={graph(organization(), crumbs([["Inicio", "/"], ["Centro de ayuda", "/ayuda/"], [a.cat.n, `/ayuda/${a.cat.id}/${a.cat.items[0].slug}/`], [a.t, url]]), faqLd([{ q: a.t, a: text }]), { "@type": "Article", headline: a.t, inLanguage: "es-ES", author: { "@type": "Organization", name: "Handticket" }, publisher: { "@id": organization()["@id"] }, mainEntityOfPage: url })}>
+  <nav class="text-sm text-sub"><a href="/ayuda/" class="hover:text-accent">Centro de ayuda</a> › {a.cat.n}</nav>
+  <h1 class="mt-6 text-[2rem] font-semibold sm:text-[2.6rem]">{a.t}</h1>
+  <div class="mt-6 space-y-4 text-lg leading-[1.75] text-ink/85">{a.body.map((p) => <p>{p}</p>)}</div>
+  <h2 class="mt-12 text-xl font-semibold">Más en {a.cat.n}</h2>
+  <ul class="mt-3 space-y-1.5">{a.cat.items.filter((i) => i.slug !== a.slug).map((i) => <li><a class="text-accent hover:underline" href={`/ayuda/${a.cat.id}/${i.slug}/`}>{i.t}</a></li>)}</ul>
+</Seo>
