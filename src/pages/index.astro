@@ -5,6 +5,7 @@ import FxFooter from "../components/FxFooter.astro";
 import FxDemo from "../components/FxDemo.astro";
 import HeroUI from "../components/HeroUI.astro";
 import FeatureMock from "../components/FeatureMock.astro";
+import Qr from "../components/Qr.astro";
 
 const services = [
   ["Entradas", "Vende antes, vende más", "Tipos de entrada, precios por fases y códigos promocionales.", ["Tipos de entrada con precios por fases", "Hora límite de acceso y códigos de desbloqueo", "Cuenta atrás y avisos de pocas entradas"], "tickets"],
@@ -26,7 +27,6 @@ const faqs = [
 ];
 const swA = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "Naranja"], ["#a3e635", "Lima"], ["#f43f5e", "Coral"]];
 const swB = [["#0f0f12", "Noche"], ["#ffffff", "Blanco"], ["#1b1030", "Violeta oscuro"], ["#0e1c1a", "Verde noche"]];
-const qr = (n: number) => Array.from({ length: 49 }, (_, i) => ((i * 7 + n * 13) % 5 < 2) || [0, 1, 7, 6, 8, 42, 48, 41, 43, 14, 35].includes(i));
 const tablePos = [[40, 54], [100, 54], [160, 54], [220, 54], [70, 94], [130, 94], [190, 94]];
 const phases = [
   ["Antes", "Vende antes de abrir puertas", [["Entradas por fases", "3 tipos"], ["Listas de RRPP", "activas"], ["Tienda online", "publicada"], ["Reservados", "con plano"]]],
@@ -172,11 +172,11 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
                 <div class="wl-mailhead"><b><span data-brand>Tu Local</span> · tus entradas ✓</b><small>De: entradas@tulocal.com</small></div>
                 <div class="wl-mailbody">
                   <div class="wl-mailcard">
-                    <div class="top"><span class="wl-logo" data-initial>T</span><b style="font-family:var(--f-h);font-weight:400;font-size:1.4rem;text-transform:uppercase" data-brand>Tu Local</b></div>
+                    <div class="top"><span class="wl-logo" data-initial>T</span><b style="font-weight:800;font-size:1.25rem;letter-spacing:-.03em" data-brand>Tu Local</b></div>
                     <div class="in">
                       <h4>¡Nos vemos el sábado!</h4>
                       <ul data-order></ul>
-                      <div class="qrbox"><div class="qr" aria-hidden="true">{qr(5).map((on) => <i class={on ? "on" : ""}></i>)}</div><div><small>Total</small><br /><b data-total>12 €</b></div></div>
+                      <div class="qrbox"><Qr class="qr" /><div><small>Total</small><br /><b data-total>12 €</b></div></div>
                       <span class="btn2">Ver mis entradas</span>
                       <p class="foot">Enviado por <span data-brand>Tu Local</span> con tecnología Wave</p>
                     </div>
@@ -191,9 +191,9 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
                 <div class="wl-phone">
                   <p class="mono">Apple Wallet</p>
                   <div class="pass apple">
-                    <div class="row"><b style="font-family:var(--f-h);font-weight:400;text-transform:uppercase;font-size:1.2rem" data-brand>Tu Local</b><small>Sáb 23:30</small></div>
+                    <div class="row"><b style="font-weight:800;font-size:1.1rem;letter-spacing:-.03em" data-brand>Tu Local</b><small>Sáb 23:30</small></div>
                     <h4>Entrada<br />Sábado</h4>
-                    <div class="qrw"><div class="qr" aria-hidden="true">{qr(8).map((on) => <i class={on ? "on" : ""}></i>)}</div></div>
+                    <div class="qrw"><Qr class="qr" /></div>
                     <small>Acceso válido para 1 persona</small>
                   </div>
                 </div>
@@ -202,7 +202,7 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
                   <div class="pass google">
                     <div class="row"><div class="wl-brand"><span class="wl-logo" data-initial>T</span><b data-brand>Tu Local</b></div><small>Sáb 23:30</small></div>
                     <h4>Entrada<br />Sábado</h4>
-                    <div class="qrw"><div class="qr" aria-hidden="true">{qr(11).map((on) => <i class={on ? "on" : ""}></i>)}</div></div>
+                    <div class="qrw"><Qr class="qr" /></div>
                     <small>Acceso válido para 1 persona</small>
                   </div>
                 </div>

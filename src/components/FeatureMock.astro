@@ -1,6 +1,6 @@
 ---
+import Qr from "./Qr.astro";
 const { kind } = Astro.props;
-const cells = (n: number) => Array.from({ length: 49 }, (_, i) => ((i * 7 + n * 13) % 5 < 2) || [0, 1, 7, 6, 8, 42, 48, 41, 43, 14, 35].includes(i));
 const tableState = ["ok", "res", "res", "ok", "sold", "ok", "res", "sold", "ok", "ok", "res", "ok"];
 ---
 <div class="fm">
@@ -26,7 +26,7 @@ const tableState = ["ok", "res", "res", "ok", "sold", "ok", "res", "sold", "ok",
     </div>
   )}
   {kind === "vip" && (
-    <div class="fm-vip"><div><span class="mono">Pase de temporada</span><b>WAVE VIP</b><small>Tu nombre · Nº 0042</small></div><div class="fm-qr">{cells(3).map((on) => <i class={on ? "on" : ""}></i>)}</div></div>
+    <div class="fm-vip"><div><span class="mono">Pase de temporada</span><b>WAVE VIP</b><small>Tu nombre · Nº 0042</small></div><Qr class="fm-qr" /></div>
   )}
   {kind === "rrpp" && (
     <div class="fm-col">

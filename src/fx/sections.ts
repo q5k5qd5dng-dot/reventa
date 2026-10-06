@@ -163,6 +163,8 @@ export function initTabs() {
       gsap.to(ind, vars);
     };
     move(false);
+    new ResizeObserver(() => move(false)).observe(list);
+    list.querySelectorAll("button").forEach((b) => new ResizeObserver(() => move(false)).observe(b));
     document.querySelector("#wl-root")?.addEventListener("tabchange", () => move());
     addEventListener("resize", () => move(false));
     document.fonts?.ready.then(() => move(false));

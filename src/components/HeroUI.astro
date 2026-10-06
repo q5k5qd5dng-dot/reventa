@@ -1,7 +1,7 @@
 ---
+import Qr from "./Qr.astro";
 // Composición de producto del hero: panel + móvil + avisos vivos. Capas con profundidad (data-depth).
 const bars = [34, 46, 40, 58, 52, 70, 64, 84, 76, 96];
-const qr = Array.from({ length: 49 }, (_, i) => ((i * 7 + 13) % 5 < 2) || [0, 1, 7, 6, 8, 42, 48, 41, 43, 14, 35].includes(i));
 const feed = [["Entrada vendida", "Marta · 2 × General", "ahora"], ["Acceso correcto", "Puerta 1 · Lista RRPP", "hace 1 min"], ["Mesa reservada", "Mesa 4 · 150 €", "hace 3 min"]];
 ---
 <div class="hui" aria-hidden="true">
@@ -20,7 +20,7 @@ const feed = [["Entrada vendida", "Marta · 2 × General", "ahora"], ["Acceso co
   <div class="hui-phone" data-hero-in data-depth="16">
     <div class="hui-notch"></div>
     <p class="mono">Tu entrada</p>
-    <div class="hui-qr">{qr.map((on) => <i class={on ? "on" : ""}></i>)}</div>
+    <Qr class="hui-qr" />
     <b>Sábado 23:30</b>
     <small>Entrada general · 1 persona</small>
     <span class="hui-ok mono">Acceso correcto</span>
