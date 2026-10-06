@@ -7,7 +7,11 @@
     "dev": "astro dev",
     "build": "astro build && node scripts/inline.mjs",
     "preview": "astro preview",
-    "build:astro": "astro build"
+    "build:astro": "astro build",
+    "api": "node server/index.mjs",
+    "start": "npm run build && node server/index.mjs",
+    "seed:export": "node scripts/export-seed.mjs",
+    "test:api": "node server/test.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

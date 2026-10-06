@@ -1,0 +1,434 @@
+[
+  {
+    "name": "Karol Vega - Gira Verano 2027",
+    "area": "Madrid",
+    "address": "Av. de Luis Aragonés, 4, 28022, Madrid",
+    "kind": "sun",
+    "people": [
+      "Karol Vega",
+      "Zoe Ferrán",
+      "Max Aldea",
+      "Nico Brava"
+    ],
+    "tickets": [
+      {
+        "n": "Pista General",
+        "sub": "24 de junio de 2027, 20:00",
+        "list": 9,
+        "from": 68
+      },
+      {
+        "n": "Grada Lateral",
+        "sub": "24 de junio de 2027, 20:00",
+        "list": 4,
+        "from": 82
+      },
+      {
+        "n": "Tribuna Preferente",
+        "sub": "24 de junio de 2027, 20:00",
+        "list": 1,
+        "from": 140
+      }
+    ],
+    "demand": "Alta demanda",
+    "wanted": 412,
+    "id": "gira-verano",
+    "t": "Gira Verano 2027",
+    "a": "Karol Vega",
+    "d": "24 jun 2027",
+    "day": "24",
+    "mon": "JUN",
+    "time": "20:00",
+    "v": "Estadio Metropolitano",
+    "c": "Madrid",
+    "p": 68,
+    "cat": "musica",
+    "col": [
+      "#ff2d95",
+      "#ff8a3d",
+      "#2b0a4f"
+    ],
+    "hot": true,
+    "left": 14,
+    "date": "2027-06-24T20:00:00",
+    "desc": "La gira del año aterriza en Madrid con un directo de dos horas, escenario 360° y un show de luces que no vas a olvidar.",
+    "venueKind": "Estadio"
+  },
+  {
+    "name": "Duro Festival XXI",
+    "area": "Montmeló",
+    "address": "Camí Mas Moreneta, 08160, Montmeló, Barcelona",
+    "kind": "grid",
+    "people": [
+      "Nora Vex",
+      "Kilo Ray",
+      "Lumen",
+      "Marea Alta",
+      "DJ Cobalto",
+      "Irina Kos",
+      "Fantasma",
+      "Novah",
+      "Fátima H."
+    ],
+    "tickets": [
+      {
+        "n": "Abono 2 días",
+        "sub": "10 de octubre - 11 de octubre",
+        "list": 12,
+        "from": 54
+      },
+      {
+        "n": "Entrada Viernes",
+        "sub": "10 de octubre, 11:00",
+        "list": 6,
+        "from": 38
+      },
+      {
+        "n": "Entrada Sábado",
+        "sub": "11 de octubre, 11:00",
+        "list": 0,
+        "from": 38
+      },
+      {
+        "n": "Camping",
+        "sub": "10 de octubre - 11 de octubre",
+        "list": 0,
+        "from": 25
+      }
+    ],
+    "demand": "Alta demanda",
+    "wanted": 284,
+    "id": "duro-festival",
+    "t": "Duro Festival XXI",
+    "a": "Line-up completo",
+    "d": "10–11 oct",
+    "day": "10",
+    "mon": "OCT",
+    "time": "18:00",
+    "v": "Can Guitet",
+    "c": "Barcelona",
+    "p": 54,
+    "cat": "festival",
+    "col": [
+      "#e5e7eb",
+      "#6b7280",
+      "#050505"
+    ],
+    "hot": true,
+    "left": 9,
+    "date": "2026-10-10T18:00:00",
+    "desc": "Dos días, cuatro escenarios y lo mejor del techno y el house europeo. Pulsera de acceso para los dos días.",
+    "venueKind": "Recinto"
+  },
+  {
+    "name": "Banda Norte - Viva Noche",
+    "area": "Madrid",
+    "address": "C/ de la Princesa, 25, 28008, Madrid",
+    "kind": "rings",
+    "people": [
+      "Banda Norte",
+      "Los Faroles",
+      "Calle Sur"
+    ],
+    "tickets": [
+      {
+        "n": "Entrada anticipada",
+        "sub": "17 de octubre, 21:00",
+        "list": 7,
+        "from": 31
+      },
+      {
+        "n": "Entrada en puerta",
+        "sub": "17 de octubre, 21:00",
+        "list": 3,
+        "from": 36
+      }
+    ],
+    "demand": "Demanda media",
+    "wanted": 96,
+    "id": "viva-noche",
+    "t": "Viva Noche",
+    "a": "Banda Norte",
+    "d": "17 oct",
+    "day": "17",
+    "mon": "OCT",
+    "time": "21:00",
+    "v": "Espacio Norte",
+    "c": "Madrid",
+    "p": 31,
+    "cat": "musica",
+    "col": [
+      "#ffe14d",
+      "#ff9f1c",
+      "#7a2e00"
+    ],
+    "left": 41,
+    "date": "2026-10-17T21:00:00",
+    "desc": "Una noche de rock con las mejores bandas del circuito nacional. Aforo de pie, barra y zona chill.",
+    "venueKind": "Sala"
+  },
+  {
+    "name": "Local FC vs Visitante CF - Jornada 12",
+    "area": "Sevilla",
+    "address": "Av. de la Cartuja, s/n, 41092, Sevilla",
+    "kind": "stripes",
+    "people": [
+      "Local FC",
+      "Visitante CF"
+    ],
+    "tickets": [
+      {
+        "n": "Tribuna Sur",
+        "sub": "8 de noviembre, 16:00",
+        "list": 22,
+        "from": 42
+      },
+      {
+        "n": "Gol Norte",
+        "sub": "8 de noviembre, 16:00",
+        "list": 31,
+        "from": 38
+      },
+      {
+        "n": "Fondo Este",
+        "sub": "8 de noviembre, 16:00",
+        "list": 9,
+        "from": 35
+      },
+      {
+        "n": "Palco",
+        "sub": "8 de noviembre, 16:00",
+        "list": 2,
+        "from": 260
+      }
+    ],
+    "demand": "Demanda media",
+    "wanted": 180,
+    "id": "jornada-12",
+    "t": "Jornada 12 de Liga",
+    "a": "Local vs Visitante",
+    "d": "8 nov",
+    "day": "08",
+    "mon": "NOV",
+    "time": "16:00",
+    "v": "Estadio Municipal",
+    "c": "Sevilla",
+    "p": 42,
+    "cat": "deporte",
+    "col": [
+      "#38bdf8",
+      "#2563eb",
+      "#0b1d5c"
+    ],
+    "left": 120,
+    "date": "2026-11-08T16:00:00",
+    "desc": "El derbi de la jornada. Entradas de grada y tribuna con acceso verificado en puerta.",
+    "venueKind": "Estadio"
+  },
+  {
+    "name": "Noche Techno - Sala Apolo",
+    "area": "Barcelona",
+    "address": "C/ Nou de la Rambla, 113, 08004, Barcelona",
+    "kind": "waves",
+    "people": [
+      "Resident DJs",
+      "Kilo Ray",
+      "Irina Kos",
+      "Lumen"
+    ],
+    "tickets": [
+      {
+        "n": "Entrada anticipada",
+        "sub": "25 de octubre, 00:00",
+        "list": 14,
+        "from": 18
+      },
+      {
+        "n": "Entrada en puerta",
+        "sub": "25 de octubre, 00:00",
+        "list": 5,
+        "from": 25
+      },
+      {
+        "n": "Mesa reservado VIP",
+        "sub": "25 de octubre, 00:00",
+        "list": 1,
+        "from": 180
+      }
+    ],
+    "demand": "Alta demanda",
+    "wanted": 203,
+    "id": "noche-techno",
+    "t": "Noche Techno",
+    "a": "Resident DJs",
+    "d": "25 oct",
+    "day": "25",
+    "mon": "OCT",
+    "time": "00:00",
+    "v": "Sala Apolo",
+    "c": "Barcelona",
+    "p": 18,
+    "cat": "club",
+    "col": [
+      "#a78bfa",
+      "#6d28d9",
+      "#12002b"
+    ],
+    "left": 33,
+    "date": "2026-10-25T23:59:00",
+    "desc": "Sesión de madrugada con residentes y artistas invitados. Sonido de primera y cabina a pie de pista.",
+    "venueKind": "Sala"
+  },
+  {
+    "name": "El Rey de la Escena - El Musical",
+    "area": "Zaragoza",
+    "address": "C/ Cinco de Marzo, 14, 50003, Zaragoza",
+    "kind": "peaks",
+    "people": [
+      "Elenco original",
+      "Orquesta del Principal"
+    ],
+    "tickets": [
+      {
+        "n": "Platea",
+        "sub": "3 de diciembre, 20:30",
+        "list": 12,
+        "from": 39
+      },
+      {
+        "n": "Anfiteatro",
+        "sub": "3 de diciembre, 20:30",
+        "list": 18,
+        "from": 28
+      },
+      {
+        "n": "Palco",
+        "sub": "3 de diciembre, 20:30",
+        "list": 3,
+        "from": 65
+      }
+    ],
+    "demand": "Demanda media",
+    "wanted": 120,
+    "id": "rey-escena",
+    "t": "El Rey de la Escena",
+    "a": "Musical",
+    "d": "3 dic",
+    "day": "03",
+    "mon": "DIC",
+    "time": "20:30",
+    "v": "Teatro Principal",
+    "c": "Zaragoza",
+    "p": 39,
+    "cat": "teatro",
+    "col": [
+      "#fb7185",
+      "#be123c",
+      "#2b0410"
+    ],
+    "left": 56,
+    "date": "2026-12-03T20:30:00",
+    "desc": "El musical que ha llenado teatros de toda Europa llega por fin a Zaragoza. Butaca numerada.",
+    "venueKind": "Teatro"
+  },
+  {
+    "name": "Copa de Europa - Semifinal",
+    "area": "Bilbao",
+    "address": "Alameda de Mazarredo, 1, 48009, Bilbao",
+    "kind": "orbit",
+    "people": [
+      "Club Local",
+      "Club Visitante"
+    ],
+    "tickets": [
+      {
+        "n": "Tribuna Lateral",
+        "sub": "29 de abril de 2027, 21:00",
+        "list": 2,
+        "from": 120
+      },
+      {
+        "n": "Fondo",
+        "sub": "29 de abril de 2027, 21:00",
+        "list": 3,
+        "from": 95
+      },
+      {
+        "n": "Palco VIP",
+        "sub": "29 de abril de 2027, 21:00",
+        "list": 1,
+        "from": 480
+      }
+    ],
+    "demand": "Muy alta demanda",
+    "wanted": 1340,
+    "id": "copa-europa",
+    "t": "Copa de Europa",
+    "a": "Semifinal",
+    "d": "29 abr 2027",
+    "day": "29",
+    "mon": "ABR",
+    "time": "21:00",
+    "v": "Estadio Central",
+    "c": "Bilbao",
+    "p": 120,
+    "cat": "deporte",
+    "col": [
+      "#34d399",
+      "#0d9488",
+      "#04201c"
+    ],
+    "hot": true,
+    "left": 6,
+    "date": "2027-04-29T21:00:00",
+    "desc": "La noche grande del fútbol europeo. Entradas muy limitadas, entrega garantizada y asiento verificado.",
+    "venueKind": "Estadio"
+  },
+  {
+    "name": "Sunset Sessions - Chill & House",
+    "area": "Zaragoza",
+    "address": "Paseo del Ebro, 12, 50008, Zaragoza",
+    "kind": "blob",
+    "people": [
+      "Marea Alta",
+      "DJ Cobalto",
+      "Lumen"
+    ],
+    "tickets": [
+      {
+        "n": "Entrada general",
+        "sub": "1 de noviembre, 18:00",
+        "list": 28,
+        "from": 22
+      },
+      {
+        "n": "Mesa en terraza",
+        "sub": "1 de noviembre, 18:00",
+        "list": 4,
+        "from": 60
+      }
+    ],
+    "demand": "Demanda media",
+    "wanted": 75,
+    "id": "sunset-sessions",
+    "t": "Sunset Sessions",
+    "a": "Chill & House",
+    "d": "1 nov",
+    "day": "01",
+    "mon": "NOV",
+    "time": "18:00",
+    "v": "Terraza Ebro",
+    "c": "Zaragoza",
+    "p": 22,
+    "cat": "festival",
+    "col": [
+      "#fdba74",
+      "#f43f5e",
+      "#4c1d95"
+    ],
+    "left": 77,
+    "date": "2026-11-01T18:00:00",
+    "desc": "Atardecer, buena música y vistas al río. La sesión chill más bonita de la ciudad.",
+    "venueKind": "Terraza"
+  }
+]

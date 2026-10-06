@@ -1,3 +1,4 @@
+import * as API from "./api";
 import { gsap } from "gsap";
 import { animate, hover, stagger } from "motion";
 import { $, $$, toast, reduced, fine } from "./util";
@@ -103,18 +104,20 @@ export function initProfile(root: HTMLElement, tab: "perfil" | "pagos", sig: Abo
     gsap.fromTo("[data-p-in]", { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.1, ease: "power3.out" });
     gsap.fromTo(".ptab.on", { scale: 0.9 }, { scale: 1, duration: 0.6, ease: "back.out(2)", delay: 0.15 });
   }
-  $("#p-form", root)!.addEventListener("submit", (e) => {
+  $("#p-form", root)!.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (tab === "perfil") {
       const n = $<HTMLInputElement>("#p-name", root)!, em = $<HTMLInputElement>("#p-email", root)!;
       if (![err(n, n.value.trim().length >= 2 ? "" : "Dinos tu nombre"), err(em, emailOk(em.value) ? "" : "Introduce un email válido")].every(Boolean)) return;
-      store.set("user", { name: n.value.trim(), email: em.value.trim() }); renderUser(); toast("Perfil actualizado", "✓");
+      if (API.serverMode) { try { await API.patch("/api/me", { name: n.value.trim() }); } catch (er) { err(n, (er as Error).message); return; } }
+      store.set("user", { name: n.value.trim(), email: API.serverMode ? (getUser()?.email ?? em.value.trim()) : em.value.trim() }); renderUser(); toast("Perfil actualizado", "✓");
     } else {
       const h = $<HTMLInputElement>("#p-holder", root)!, ib = $<HTMLInputElement>("#p-iban", root)!;
       const raw = ib.value.replace(/\s/g, "").toUpperCase(), masked = ib.value.includes("•");
       const okI = masked || /^ES\d{22}$/.test(raw);
       if (![err(h, h.value.trim().length >= 3 ? "" : "Nombre y apellidos del titular"), err(ib, okI ? "" : "IBAN no válido (ES + 22 dígitos)")].every(Boolean)) return;
       const prev = store.get<{ holder: string; last4: string } | null>("pay", null);
+      if (API.serverMode && !masked) { try { await API.put("/api/me/payout", { holder: h.value.trim(), iban: raw }); } catch (er) { err(ib, (er as Error).message); return; } }
       store.set("pay", { holder: h.value.trim(), last4: masked ? prev?.last4 ?? "0000" : raw.slice(-4) });
       toast("Datos de pago guardados", "✓");
     }

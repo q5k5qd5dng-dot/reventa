@@ -24,7 +24,23 @@
   ::selection { background: var(--color-accent); color: #fff; }
   :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 8px; }
   input::placeholder { color: #6b6c75; }
+  html { -webkit-tap-highlight-color: transparent; }
+  button, a, summary, label, [role="button"] { -webkit-tap-highlight-color: transparent; }
+  button, [data-dl], [data-qr] { user-select: none; }
+  /* el foco programático (hojas, vistas) nunca dibuja un recuadro; el teclado sí */
+  #sheet:focus, #sheet:focus-visible, main:focus, [tabindex="-1"]:focus { outline: none; }
+  img, svg { -webkit-user-drag: none; }
 }
+
+/* ═════ Interacción limpia: hover/active coherentes ═════ */
+.card-line { transition: box-shadow 0.25s, border-color 0.25s, transform 0.25s; }
+[data-t-card]:hover { border-color: #dcdce2; box-shadow: 0 14px 32px -20px rgba(0, 0, 0, 0.22); }
+.btn.border { transition: background 0.2s, border-color 0.2s, transform 0.15s; }
+.btn.border:hover { background: #f6f6f7; border-color: #d4d4da; }
+.btn.border:active, .black-btn:active, .wbtn:active, .btn-accent:active { transform: scale(0.97); }
+.btn.border:focus:not(:focus-visible), .black-btn:focus:not(:focus-visible), button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none; }
+.btn .ripple { background: rgba(0, 0, 0, 0.08); }
+.btn-accent .ripple, .black-btn .ripple { background: rgba(255, 255, 255, 0.35); }
 
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }

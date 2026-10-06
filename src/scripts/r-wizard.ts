@@ -1,3 +1,4 @@
+import * as API from "./api";
 import { gsap } from "gsap";
 import { animate, hover, stagger } from "motion";
 import { $, $$, toast, reduced, fine, countTo } from "./util";
@@ -70,8 +71,16 @@ export function initHub(root: HTMLElement, sig: AbortSignal) {
     const b = e.currentTarget as HTMLButtonElement; if (b.disabled) return;
     b.disabled = true; b.innerHTML = `${spinner} Publicando…`;
     await sleep(1100);
+    let newId = Math.random().toString(36).slice(2, 9).toUpperCase();
+    if (API.serverMode) {
+      try {
+        const r = await API.post("/api/listings", { event: draft.ev, type: extra[draft.ev!].tickets[draft.type]?.n, qty: selPages().length, price: draft.price, orig: draft.orig, zone: draft.zone, row: draft.row, seat: draft.seat, note: draft.note, nominative: draft.nominative,
+          pages: draft.files.flatMap((f) => f.pages.filter((p) => p.ok && p.sel).map((p, i) => ({ file: f.name, page: i + 1, hash: `${f.hash}:${i}` }))) });
+        newId = r.listing.id;
+      } catch (er) { b.disabled = false; b.textContent = "Publicar anuncio"; toast((er as Error).message, "!"); return; }
+    }
     const list = store.get<unknown[]>("selling", []);
-    list.unshift({ id: Math.random().toString(36).slice(2, 9).toUpperCase(), ev: draft.ev, type: extra[draft.ev!].tickets[draft.type]?.n ?? "Entrada", qty: selPages().length, price: draft.price, at: Date.now() });
+    list.unshift({ id: newId, ev: draft.ev, type: extra[draft.ev!].tickets[draft.type]?.n ?? "Entrada", qty: selPages().length, price: draft.price, at: Date.now() });
     store.set("selling", list);
     resetDraft();
     confetti($<HTMLCanvasElement>("#confetti")!, 0.5, 0.5, 200);
@@ -272,10 +281,11 @@ export function initPay(root: HTMLElement, sig: AbortSignal) {
   const iban = $<HTMLInputElement>("#w-iban", root)!;
   iban.addEventListener("input", () => { if (!iban.value.includes("•")) iban.value = iban.value.replace(/[^\dA-Za-z]/g, "").toUpperCase().replace(/(.{4})/g, "$1 ").trim(); }, { signal: sig });
   iban.addEventListener("focus", () => { if (iban.value.includes("•")) iban.value = ""; }, { signal: sig });
-  const go = () => {
+  const go = async () => {
     const h = $<HTMLInputElement>("#w-holder", root)!, raw = iban.value.replace(/\s/g, "").toUpperCase(), masked = iban.value.includes("•");
     if (![err(h, h.value.trim().length >= 3 ? "" : "Nombre y apellidos del titular"), err(iban, masked || /^ES\d{22}$/.test(raw) ? "" : "IBAN no válido (ES + 22 dígitos)")].every(Boolean)) return;
     const prev = draft.pay ?? store.get<{ holder: string; last4: string } | null>("pay", null);
+    if (API.serverMode && !masked) { try { await API.put("/api/me/payout", { holder: h.value.trim(), iban: raw }); } catch (er) { err(iban, (er as Error).message); return; } }
     draft.pay = { holder: h.value.trim(), last4: masked ? prev?.last4 ?? "0000" : raw.slice(-4) }; store.set("pay", draft.pay); save();
     location.hash = "#/vender/anuncio";
   };

@@ -2,6 +2,7 @@ import { gsap } from "gsap";
 import { animate, stagger } from "motion";
 import { $, $$, toast, paintQR, eur, reduced } from "./util";
 import { confetti } from "./confetti";
+import * as API from "./api";
 import { openSheet, closeSheet, closeBtn, spinner, field, err, emailOk, sleep, SPRING, FEE, nameOf, artBg, renderUser, byId, events, extra, store, getUser, fechaLarga, type Ev } from "./r-core";
 
 export interface Ticket { id: string; ev: string; type: string; qty: number; total: number; code: string; at: number }
@@ -55,8 +56,17 @@ export function openBuy(id: string, typeIdx = 0, qty = 2, pick?: Pick) {
       if (!getUser()) { toast("Inicia sesión para comprar", "i"); openLogin("login", () => openBuy(id, +sel.value, q, pick)); return; }
       const btn = e.currentTarget as HTMLButtonElement;
       btn.disabled = true; btn.innerHTML = `${spinner} Procesando…`;
-      await sleep(1300);
       const base = Math.round(q * unit() * 100) / 100, list = store.get<Ticket[]>("tickets", []);
+      if (API.serverMode) {
+        try {
+          const r = await API.post("/api/orders", { event: ev.id, type: cur().n, qty: q, unitPrice: unit(), feeIncluded: !!pick });
+          if (r.checkoutUrl) { location.href = r.checkoutUrl; return; }
+          await API.hydrate();
+          success(ev, q, r.order.code, cur().n);
+        } catch (e) { btn.disabled = false; btn.textContent = "Comprar entradas"; toast((e as Error).message, "!"); }
+        return;
+      }
+      await sleep(1300);
       const code = `HT-${uid().slice(0, 6)}`;
       list.unshift({ id: uid(), ev: ev.id, type: cur().n, qty: q, total: pick ? base : Math.round(base + base * FEE), code, at: Date.now() });
       store.set("tickets", list);
@@ -93,7 +103,8 @@ export function openLogin(mode: "login" | "register" = "login", after?: () => vo
       <button class="btn btn-accent w-full !py-4" id="l-go"></button>
       <div class="flex items-center gap-3 py-1 text-xs text-sub"><i class="h-px flex-1 bg-line"></i>o<i class="h-px flex-1 bg-line"></i></div>
       <button type="button" data-social class="btn w-full border border-line">Continuar con Google</button>
-      <p class="pt-1 text-center text-xs text-sub">Demostración: tus datos se guardan solo en este navegador.</p>
+      <p id="l-forgot" class="hidden pt-1 text-center text-sm"><button type="button" id="l-fg" class="text-accent hover:underline">¿Has olvidado la contraseña?</button></p>
+      <p class="pt-1 text-center text-xs text-sub">${API.serverMode ? "Tus datos se guardan cifrados en nuestros servidores." : "Demostración: tus datos se guardan solo en este navegador."}</p>
     </form></div>`;
   openSheet(html, (s) => {
     let m = mode;
@@ -105,10 +116,12 @@ export function openLogin(mode: "login" | "register" = "login", after?: () => vo
       title.textContent = m === "login" ? "Bienvenido de nuevo" : "Crea tu cuenta";
       go.textContent = m === "login" ? "Entrar" : "Crear cuenta";
       nameBox.classList.toggle("hidden", m === "login");
+      $("#l-forgot", s)!.classList.toggle("hidden", !(API.serverMode && m === "login"));
       if (!first && !reduced) animate($$("#lf .fld", s), { opacity: [0, 1], y: [10, 0] }, { delay: stagger(0.05), ...SPRING });
     };
     set(m, true);
     $$("[data-m]", s).forEach((b) => b.addEventListener("click", () => set(b.dataset.m as "login" | "register")));
+    $("#l-fg", s)!.addEventListener("click", () => openForgot());
     $("[data-social]", s)!.addEventListener("click", () => toast("Demo: acceso con Google no disponible", "i"));
     $("#lf", s)!.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -117,9 +130,21 @@ export function openLogin(mode: "login" | "register" = "login", after?: () => vo
       if (m === "register") ok.push(err(n, n.value.trim().length >= 2 ? "" : "Dinos tu nombre"));
       if (!ok.every(Boolean)) return;
       (go as HTMLButtonElement).disabled = true; go.innerHTML = `${spinner} Un momento…`;
-      await sleep(900);
-      const name = m === "register" ? n.value.trim() : em.value.split("@")[0].replace(/[._]/g, " ").replace(/^\w/, (c) => c.toUpperCase());
-      store.set("user", { name, email: em.value });
+      let name: string;
+      if (API.serverMode) {
+        try {
+          const r = await API.post(m === "register" ? "/api/auth/register" : "/api/auth/login", { name: n.value, email: em.value, password: pw.value });
+          name = r.user.name; store.set("user", { name, email: r.user.email }); await API.hydrate();
+        } catch (e) {
+          (go as HTMLButtonElement).disabled = false; go.textContent = m === "login" ? "Entrar" : "Crear cuenta";
+          const ae = e as API.ApiError, f = ae.field === "name" ? n : ae.field === "password" || ae.status === 401 ? pw : em;
+          err(f, ae.message); return;
+        }
+      } else {
+        await sleep(900);
+        name = m === "register" ? n.value.trim() : em.value.split("@")[0].replace(/[._]/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+        store.set("user", { name, email: em.value });
+      }
       renderUser();
       toast(`¡Hola, ${name.split(" ")[0]}!`, "👋");
       await closeSheet();
@@ -186,6 +211,7 @@ export function openEditListing(id: string, done: () => void) {
       e.preventDefault();
       const p = $<HTMLInputElement>("#e-p", s)!;
       if (!(+p.value > 0)) { err(p, "Indica un precio"); return; }
+      if (API.serverMode) { try { await API.patch(`/api/listings/${id}`, { price: +p.value }); } catch (er) { err(p, (er as Error).message); return; } }
       l.price = +p.value; store.set("selling", list);
       await closeSheet(); toast("Precio actualizado", "✓"); done();
     });
@@ -255,4 +281,30 @@ export function openHelpOld() {
   openSheet(`<div class="relative p-6 pt-8 sm:p-8">${closeBtn}<h3 class="text-2xl font-semibold">Centro de ayuda</h3><p class="mt-1 text-sub">Respuestas rápidas a las dudas más habituales.</p>
     <div class="mt-5 divide-y divide-line">${faq.map(([q, a], i) => `<details class="py-4" ${i === 0 ? "open" : ""}><summary class="cursor-pointer font-medium">${q}</summary><p class="mt-2 text-sm leading-relaxed text-sub">${a}</p></details>`).join("")}</div>
     <p class="mt-5 rounded-xl bg-soft p-4 text-sm text-sub">¿Sigues con dudas? Escríbenos a <b class="text-ink">ayuda@handticket.es</b> (demo).</p></div>`);
+}
+
+/* ═════ Recuperar contraseña (solo con servidor) ═════ */
+export function openForgot() {
+  openSheet(`<div class="relative p-6 pt-8 sm:p-8">${closeBtn}<h3 class="text-2xl font-semibold">Recupera tu contraseña</h3><p class="mt-1 text-sub">Te enviaremos un enlace para crear una nueva.</p>
+    <form id="ff" class="mt-6 space-y-4" novalidate>${field("f-e", "Email", "email", 'autocomplete="email"')}<button class="btn btn-accent w-full !py-4">Enviar enlace</button></form></div>`, (s) => {
+    $("#ff", s)!.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const em = $<HTMLInputElement>("#f-e", s)!;
+      if (!err(em, emailOk(em.value) ? "" : "Introduce un email válido")) return;
+      try { await API.post("/api/auth/forgot", { email: em.value }); } catch (er) { err(em, (er as Error).message); return; }
+      await closeSheet(); toast("Si el email existe, te hemos enviado un enlace", "✉");
+    });
+  });
+}
+export function openReset(token: string) {
+  openSheet(`<div class="relative p-6 pt-8 sm:p-8">${closeBtn}<h3 class="text-2xl font-semibold">Crea una contraseña nueva</h3>
+    <form id="rf" class="mt-6 space-y-4" novalidate>${field("r-p", "Contraseña nueva (mín. 8 caracteres)", "password", 'autocomplete="new-password"')}<button class="btn btn-accent w-full !py-4">Guardar contraseña</button></form></div>`, (s) => {
+    $("#rf", s)!.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const p = $<HTMLInputElement>("#r-p", s)!;
+      if (!err(p, p.value.length >= 8 ? "" : "Mínimo 8 caracteres")) return;
+      try { await API.post("/api/auth/reset", { token, password: p.value }); } catch (er) { err(p, (er as Error).message); return; }
+      await closeSheet(); toast("Contraseña actualizada. Ya puedes iniciar sesión", "✓"); openLogin("login");
+    });
+  });
 }

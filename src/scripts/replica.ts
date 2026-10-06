@@ -11,6 +11,7 @@ import { initSell } from "./r-sell";
 import { renderHelp, initHelp, renderProfile, initProfile, renderPick, initPick } from "./r-pages";
 import * as W from "./r-wizard";
 import { renderLegal, initLegal } from "./r-legal";
+import * as API from "./api";
 import { legalBy } from "../data/legal";
 import { intro, heroSearch, carousels, cards, reveals, why, phone, cookies, placeTooltip } from "./r-home";
 
@@ -36,6 +37,7 @@ function parse(): Route {
       return { name: "sell" };
     }
     case "ayuda": { const [c, ar] = arg.split("/"); return { name: "help", arg: c || undefined, art: ar || undefined }; }
+    case "restablecer": setTimeout(() => import("./r-sheets").then((m) => m.openReset(arg)), 400); return { name: "home" };
     case "legal": return { name: "legal", arg: arg || "terminos" };
     case "perfil": return { name: "profile", sub: arg === "pagos" ? "pagos" : "perfil" };
     case "mis-entradas": return { name: "tickets" };
@@ -206,7 +208,9 @@ function menu() {
   $("#m-profile")!.addEventListener("click", () => { closeMenu(); location.hash = "#/perfil"; });
   $("#m-help")!.addEventListener("click", () => { closeMenu(); location.hash = "#/ayuda"; });
   $("#logout")!.addEventListener("click", () => {
+    if (API.serverMode) API.post("/api/auth/logout").catch(() => {});
     store.set("user", null); renderUser(); closeMenu(); toast("Sesión cerrada", "👋");
+    if (API.serverMode) { store.set("tickets", []); store.set("selling", []); store.set("pay", null); }
     if (current && (current.name === "tickets" || current.name === "listings")) location.hash = "#/";
   });
 }
@@ -288,7 +292,8 @@ function globals() {
 }
 
 /* ═════ Arranque ═════ */
-function boot() {
+async function boot() {
+  await API.init();
   renderUser();
   header();
   menu();

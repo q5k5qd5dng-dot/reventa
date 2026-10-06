@@ -1,3 +1,4 @@
+import * as API from "./api";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { animate, hover, stagger, spring } from "motion";
@@ -348,6 +349,7 @@ export function initListings(root: HTMLElement, sig: AbortSignal, rerender: () =
   $$("[data-del]", root).forEach((b) => b.addEventListener("click", async () => {
     const card = b.closest("[data-t-card]") as HTMLElement;
     if (!reduced) await gsap.to(card, { x: 40, autoAlpha: 0, height: 0, paddingBlock: 0, marginBlock: 0, duration: 0.45, ease: "power2.in" });
+    if (API.serverMode) { try { await API.del(`/api/listings/${b.dataset.del}`); } catch (er) { toast((er as Error).message, "!"); gsap.set(card, { clearProps: "all" }); return; } }
     store.set("selling", store.get<Listing[]>("selling", []).filter((l) => l.id !== b.dataset.del));
     toast("Anuncio retirado", "🗑");
     rerender();
