@@ -89,3 +89,10 @@ export const cats = [
   { id: "teatro", n: "Teatro" },
   { id: "club", n: "Discotecas" },
 ];
+
+const MES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+export const fechaLarga = (iso: string) => {
+  const d = new Date(iso);
+  const h = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  return `${d.getDate()} de ${MES[d.getMonth()]}${d.getFullYear() !== 2026 ? ` de ${d.getFullYear()}` : ""}, ${h}`;
+};
