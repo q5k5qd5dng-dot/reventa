@@ -6,6 +6,7 @@ export default defineConfig({
     inlineStylesheets: "always",
   },
   vite: {
+    build: { assetsInlineLimit: Infinity },
     plugins: [tailwindcss()],
   },
 });
