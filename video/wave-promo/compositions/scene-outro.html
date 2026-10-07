@@ -5,15 +5,263 @@
     <template>
       <style>
         @font-face { font-family: "Inter Tight"; src: url("assets/fonts/inter-tight-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
-        #ou-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", system-ui, sans-serif; color: #fff; }
-        #ou-label { position: absolute; left: 80px; top: 80px; font-size: 48px; font-weight: 700; opacity: .5; }
+
+        #ou-root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          font-family: "Inter Tight", system-ui, sans-serif;
+          color: #fff;
+        }
+
+        /* Lockup Wave: mismas medidas y posicion que #lg-lockup en la escena 1
+           (squircle 150 + "Wave" 128 px, gap 28, centrado en 960,540). */
+        #ou-lockup {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 28px;
+        }
+        /* scrim: misma forma que el de la escena 1 pero mas tenue (el glow final es menos brillante) */
+        #ou-scrim {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 1560px;
+          height: 1080px;
+          margin: -540px 0 0 -780px;
+          border-radius: 50%;
+          background: radial-gradient(closest-side, rgba(2, 34, 46, 0.31) 0%, rgba(2, 34, 46, 0.3) 22%, rgba(2, 34, 46, 0.27) 40%, rgba(2, 34, 46, 0.21) 56%, rgba(2, 34, 46, 0.12) 72%, rgba(2, 34, 46, 0.04) 88%, rgba(2, 34, 46, 0) 100%);
+          opacity: 0;
+          pointer-events: none;
+        }
+        #ou-mark {
+          position: relative;
+          flex: none;
+          width: 150px;
+          height: 150px;
+          z-index: 2;
+          will-change: transform;
+        }
+        #ou-shadow {
+          position: absolute;
+          inset: 0;
+          border-radius: 28.125%;
+          box-shadow: 0 18px 44px rgba(2, 38, 50, 0.42), 0 2px 8px rgba(2, 38, 50, 0.25);
+        }
+        #ou-sq {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 150px;
+          height: 150px;
+          display: block;
+          overflow: visible;
+        }
+        #ou-w1, #ou-w2 { stroke-dasharray: 100 200; stroke-dashoffset: 110; }
+
+        /* ---- orbe ---- */
+        #ou-halo {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 620px;
+          height: 620px;
+          margin: -310px 0 0 -310px;
+          border-radius: 50%;
+          background: radial-gradient(closest-side, rgba(170, 250, 255, 0.8) 0%, rgba(80, 220, 238, 0.42) 30%, rgba(33, 174, 192, 0.14) 62%, rgba(33, 174, 192, 0) 100%);
+          will-change: transform, opacity;
+        }
+        #ou-orbwrap {
+          position: absolute;
+          inset: 0;
+          will-change: transform, filter, opacity;
+        }
+        #ou-orb {
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          background: radial-gradient(circle at 50% 42%, #b4f7ff 0%, #7eeefc 34%, #43d3e4 72%, #21AEC0 100%);
+          opacity: 0;
+          overflow: hidden;
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4), 0 0 38px 4px rgba(127, 243, 255, 0.7), 0 0 100px 20px rgba(33, 174, 192, 0.5);
+          will-change: transform;
+        }
+        #ou-core {
+          position: absolute;
+          inset: -12%;
+          border-radius: 50%;
+          background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f2feff 18%, #a9f7ff 40%, rgba(92, 232, 246, 0.55) 62%, rgba(33, 174, 192, 0) 84%);
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+        #ou-ring {
+          position: absolute;
+          inset: 0;
+          border-radius: 28.125%;
+          border: 2px solid rgba(160, 248, 255, 0.6);
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+
+        /* ---- wordmark: "Wave" 128 px, letras en las posiciones kerneadas (identicas a #lg-word) ---- */
+        #ou-wordbox {
+          position: relative;
+          flex: none;
+          width: 310px;
+          height: 128px;
+          z-index: 1;
+          clip-path: inset(-60px 350px -60px -40px);
+        }
+        #ou-word {
+          display: block;
+          width: 310px;
+          height: 128px;
+          font-size: 128px;
+          font-weight: 700;
+          line-height: 128px;
+          white-space: nowrap;
+          color: #fff;
+          transform-origin: 0% 50%;
+          filter: drop-shadow(0 6px 17px rgba(2, 44, 58, 0.4));
+        }
+        #ou-word .ou-l {
+          position: absolute;
+          top: 0;
+          display: block;
+          letter-spacing: -0.04em;
+          will-change: transform, filter, opacity;
+        }
+        #ou-l0 { left: 0px; }
+        #ou-l1 { left: 115.83px; }
+        #ou-l2 { left: 178.72px; }
+        #ou-l3 { left: 242.13px; }
+
+        /* ---- URL ---- */
+        #ou-url {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 668px;
+          height: 40px;
+          text-align: center;
+          font-size: 34px;
+          line-height: 40px;
+          font-weight: 500;
+          letter-spacing: 0.08em;
+          padding-left: 0.08em;
+          color: rgba(255, 255, 255, 0.92);
+          text-shadow: 0 2px 18px rgba(2, 44, 58, 0.5);
+          will-change: transform, filter, opacity;
+        }
+        #ou-line {
+          position: absolute;
+          left: 960px;
+          top: 728px;
+          width: 220px;
+          height: 2px;
+          margin-left: -110px;
+          border-radius: 2px;
+          background: linear-gradient(90deg, rgba(127, 243, 255, 0) 0%, #7ff3ff 30%, #7ff3ff 70%, rgba(127, 243, 255, 0) 100%);
+          opacity: 0;
+          will-change: transform, opacity;
+        }
       </style>
+
       <div id="ou-root" data-composition-id="scene-outro" data-width="1920" data-height="1080">
-        <div id="ou-label">placeholder scene-outro</div>
+        <div id="ou-lockup">
+          <div id="ou-scrim"></div>
+          <div id="ou-mark">
+            <div id="ou-halo"></div>
+            <div id="ou-shadow"></div>
+            <div id="ou-orbwrap">
+              <div id="ou-orb"><div id="ou-core"></div></div>
+            </div>
+            <div id="ou-ring"></div>
+            <svg id="ou-sq" viewBox="0 0 32 32" aria-hidden="true">
+              <rect id="ou-sqrect" width="32" height="32" rx="9" fill="#21AEC0" />
+              <path id="ou-w1" pathLength="100" d="M5 13c3-3 5-3 8 0s5 3 8 0 4-3 6-1.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" />
+              <path id="ou-w2" pathLength="100" d="M5 20c3-3 5-3 8 0s5 3 8 0 4-3 6-1.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div id="ou-wordbox">
+            <div id="ou-word"><span class="ou-l" id="ou-l0">W</span><span class="ou-l" id="ou-l1">a</span><span class="ou-l" id="ou-l2">v</span><span class="ou-l" id="ou-l3">e</span></div>
+          </div>
+        </div>
+        <div id="ou-url">siemprewave.es</div>
+        <div id="ou-line"></div>
       </div>
+
       <script>
         const tl = gsap.timeline({ paused: true });
-        tl.fromTo("#ou-label", { opacity: 0 }, { opacity: 0.5, duration: 0.4 }, 0);
+        // desplazamiento inicial del squircle/clip: el orbe nace en el centro (960,540); el lockup final
+        // deja el squircle (150 + 28 + 310) / 2 - 75 = 169 px a la izquierda de ahi.
+        const DX = 169;
+
+        // estado inicial (el squircle plano y las ondas no existen aun; el lockup entero parte desplazado)
+        tl.fromTo("#ou-mark", { x: DX }, { x: 0, duration: 0.6, ease: "power3.inOut" }, 1.0);
+
+        // ---- 0.00-0.42: el brillo se condensa en un orbe nitido (como si el glow de fondo se recogiera en el)
+        tl.fromTo("#ou-orbwrap",
+          { scale: 1.9, filter: "blur(18px)" },
+          { scale: 1, filter: "blur(0px)", duration: 0.36, ease: "power3.out" }, 0.0);
+        // la luz sube rapido (0.13 s) mientras se condensa; el nucleo blanco se enciende despues
+        tl.fromTo("#ou-orb", { opacity: 0 }, { opacity: 1, duration: 0.13, ease: "power1.out", immediateRender: false }, 0.0);
+        tl.fromTo("#ou-halo",
+          { opacity: 0, scale: 1.7 },
+          { opacity: 1, scale: 1, duration: 0.36, ease: "power3.out" }, 0.0);
+
+        // ---- 0.40-0.74: late (1 -> 1.18 -> 1)
+        tl.to("#ou-orbwrap", { scale: 1.18, duration: 0.14, ease: "power2.out" }, 0.4);
+        tl.to("#ou-orbwrap", { scale: 1.0, duration: 0.22, ease: "power2.inOut" }, 0.54);
+        tl.to("#ou-halo", { scale: 1.22, duration: 0.14, ease: "power2.out" }, 0.4);
+        tl.to("#ou-halo", { scale: 1.0, duration: 0.22, ease: "power2.inOut" }, 0.54);
+
+        // ---- 0.55-1.12: el orbe se transforma en el squircle (110 -> 150 px, radio 50% -> 28.125%)
+        // (el orbe base es un circulo de 110 px = 0.7333 de la caja de 150)
+        tl.fromTo("#ou-orb", { scale: 0.7333 }, { scale: 1, duration: 0.55, ease: "back.out(1.5)" }, 0.55);
+        tl.fromTo("#ou-orb", { borderRadius: "50%" }, { borderRadius: "28.125%", duration: 0.5, ease: "power2.inOut", immediateRender: false }, 0.55);
+        // el nucleo blanco se enciende mientras se condensa (sin pasar por un gris palido) y se apaga al morfar
+        tl.fromTo("#ou-core", { opacity: 0 }, { opacity: 1, duration: 0.24, ease: "power1.out" }, 0.0);
+        tl.fromTo("#ou-core", { opacity: 1, scale: 1 }, { opacity: 0, scale: 1.5, duration: 0.5, ease: "power2.inOut", immediateRender: false }, 0.6);
+        // el squircle plano (SVG exacto del logo) toma el relevo cuando la geometria coincide
+        tl.fromTo("#ou-sqrect", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none" }, 1.0);
+        tl.fromTo("#ou-orbwrap", { opacity: 1 }, { opacity: 0, duration: 0.04, ease: "none", immediateRender: false }, 1.13);
+        tl.fromTo("#ou-halo", { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, 0.95);
+        tl.fromTo("#ou-shadow", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.9);
+
+        // anillo suave al asentarse el squircle
+        tl.fromTo("#ou-ring", { opacity: 0.7, scale: 1 }, { opacity: 0, scale: 1.55, duration: 0.5, ease: "power2.out", immediateRender: false }, 0.98);
+
+        // ---- 0.75-1.3: las dos ondas blancas se dibujan dentro (stroke-dashoffset)
+        tl.fromTo("#ou-w1", { strokeDashoffset: 110 }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, 0.78);
+        tl.fromTo("#ou-w2", { strokeDashoffset: 110 }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, 0.9);
+
+        // ---- 1.0-1.6: el squircle se desliza a la izquierda y "Wave" sale por detras de el (mascara + x)
+        tl.fromTo("#ou-wordbox", { x: DX }, { x: 0, duration: 0.6, ease: "power3.inOut" }, 1.0);
+        // la mascara se abre por delante de las letras (que aparecen despues) para que su borde duro no corte nada visible
+        tl.fromTo("#ou-wordbox",
+          { clipPath: "inset(-60px 350px -60px -40px)" },
+          { clipPath: "inset(-60px -80px -60px -40px)", duration: 0.4, ease: "power2.out", immediateRender: false }, 1.0);
+        tl.fromTo("#ou-word", { x: -70 }, { x: 0, duration: 0.65, ease: "power3.out" }, 1.0);
+        [0, 1, 2, 3].forEach((i) => {
+          tl.fromTo("#ou-l" + i,
+            { opacity: 0, filter: "blur(14px)" },
+            { opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power2.out" }, 1.04 + i * 0.05);
+        });
+
+        tl.fromTo("#ou-scrim", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power2.out" }, 1.0);
+
+        // ---- 1.45-1.95: siemprewave.es + linea turquesa fina
+        tl.fromTo("#ou-url",
+          { opacity: 0, y: 14, filter: "blur(8px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, 1.45);
+        tl.fromTo("#ou-line",
+          { opacity: 0, scaleX: 0 },
+          { opacity: 1, scaleX: 1, duration: 0.55, ease: "power3.out" }, 1.5);
+
         window.__timelines["scene-outro"] = tl;
       </script>
     </template>

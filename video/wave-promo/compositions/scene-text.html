@@ -5,16 +5,177 @@
     <template>
       <style>
         @font-face { font-family: "Inter Tight"; src: url("assets/fonts/inter-tight-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
-        #tx-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", system-ui, sans-serif; color: #fff; }
-        #tx-label { position: absolute; left: 80px; top: 80px; font-size: 48px; font-weight: 700; opacity: .5; }
+
+        #tx-root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          font-family: "Inter Tight", system-ui, sans-serif;
+          color: #fff;
+          --tx-accent: #9af7ff;
+        }
+        /* Each line is a full-frame layer (slow scale drift on it); words are absolutely placed with measured widths. */
+        #tx-root .tx-line { position: absolute; inset: 0; }
+
+        /* word box: fixed pixel box (width = natural width at resting tracking, measured offline) with the glyph
+           run centred inside it. Tracking is animated per glyph (x), never via letter-spacing. */
+        #tx-root .tx-w {
+          position: absolute;
+          height: 116px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 96px;
+          line-height: 116px;
+          font-weight: 600;
+          white-space: nowrap;
+          opacity: 0;
+        }
+        #tx-root .tx-s {
+          display: block;
+          white-space: nowrap;
+          letter-spacing: -0.01em;
+        }
+        #tx-root .tx-c { display: inline-block; }
+        #tx-root .tx-acc { color: var(--tx-accent); }
+
+        /* line 1 · centre y = 520 -> box top 462 · resting layout (gap 19 px), line centred on x = 960 */
+        #tx-l1w1 { left: 512.14px; top: 462px; width: 409.32px; }
+        #tx-l1w2 { left: 940.46px; top: 462px; width: 270.2px; }
+        #tx-l1w3 { left: 1229.66px; top: 462px; width: 173.2px; }
+        /* line 2 · centre y = 540 -> box top 482 */
+        #tx-l2w1 { left: 586.72px; top: 482px; width: 159.12px; }
+        #tx-l2w2 { left: 764.84px; top: 482px; width: 108.08px; }
+        #tx-l2w3 { left: 891.92px; top: 482px; width: 176.16px; }
+        #tx-l2w4 { left: 1087.08px; top: 482px; width: 246.2px; }
+
+        /* soft dark-teal haze behind each line: keeps white/accent type >= 3:1 over the brightest part of the glow */
+        #tx-root .tx-scrim {
+          position: absolute;
+          left: 200px;
+          width: 1520px;
+          height: 400px;
+          opacity: 0;
+          background: radial-gradient(ellipse closest-side, rgba(3, 26, 36, 0.24) 0%, rgba(3, 26, 36, 0.19) 52%, rgba(3, 26, 36, 0) 100%);
+        }
+        #tx-scrim { top: 330px; }
+
+        #tx-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
       </style>
+
       <div id="tx-root" data-composition-id="scene-text" data-width="1920" data-height="1080">
-        <div id="tx-label">placeholder scene-text</div>
+        <!-- horizontal-only blur filters (stdDeviation animated through proxies) -->
+        <svg id="tx-defs" width="0" height="0" aria-hidden="true">
+          <defs>
+            <filter id="tx-smear-d" x="-70%" y="-40%" width="240%" height="180%" color-interpolation-filters="sRGB">
+              <feGaussianBlur id="tx-gb-d" in="SourceGraphic" stdDeviation="24 0" />
+            </filter>
+            <filter id="tx-smear-s" x="-80%" y="-40%" width="260%" height="180%" color-interpolation-filters="sRGB">
+              <feGaussianBlur id="tx-gb-s" in="SourceGraphic" stdDeviation="30 0" />
+            </filter>
+          </defs>
+        </svg>
+
+        <div id="tx-scrim" class="tx-scrim"></div>
+
+        <div id="tx-l1" class="tx-line" data-layout-allow-overflow>
+          <div id="tx-l1w1" class="tx-w" data-layout-allow-overflow><span id="tx-l1s1" class="tx-s"><span class="tx-c">D</span><span class="tx-c">e</span><span class="tx-c">s</span><span class="tx-c">c</span><span class="tx-c">u</span><span class="tx-c">b</span><span class="tx-c">r</span><span class="tx-c" style="margin-left:-2.06px">e</span></span></div>
+          <div id="tx-l1w2" class="tx-w" data-layout-allow-overflow><span id="tx-l1s2" class="tx-s" style="filter:url(#tx-smear-d)"><span class="tx-c">d</span><span class="tx-c">ó</span><span class="tx-c">n</span><span class="tx-c">d</span><span class="tx-c">e</span></span></div>
+          <div id="tx-l1w3" class="tx-w" data-layout-allow-overflow><span id="tx-l1s3" class="tx-s tx-acc" style="filter:url(#tx-smear-s)"><span class="tx-c">s</span><span class="tx-c">a</span><span class="tx-c">l</span><span class="tx-c">i</span><span class="tx-c">r</span></span></div>
+        </div>
+
+        <div id="tx-l2" class="tx-line" data-layout-allow-overflow>
+          <div id="tx-l2w1" class="tx-w" data-layout-allow-overflow><span id="tx-l2s1" class="tx-s"><span class="tx-c">c</span><span class="tx-c">o</span><span class="tx-c">n</span></span></div>
+          <div id="tx-l2w2" class="tx-w" data-layout-allow-overflow><span id="tx-l2s2" class="tx-s"><span class="tx-c">u</span><span class="tx-c">n</span></span></div>
+          <div id="tx-l2w3" class="tx-w" data-layout-allow-overflow><span id="tx-l2s3" class="tx-s"><span class="tx-c">s</span><span class="tx-c">o</span><span class="tx-c">l</span><span class="tx-c">o</span></span></div>
+          <div id="tx-l2w4" class="tx-w" data-layout-allow-overflow><span id="tx-l2s4" class="tx-s"><span class="tx-c">t</span><span class="tx-c" style="margin-left:-1.02px">o</span><span class="tx-c">q</span><span class="tx-c">u</span><span class="tx-c">e</span></span></div>
+        </div>
       </div>
+
       <script>
-        const tl = gsap.timeline({ paused: true });
-        tl.fromTo("#tx-label", { opacity: 0 }, { opacity: 0.5, duration: 0.4 }, 0);
-        window.__timelines["scene-text"] = tl;
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+
+          /* ---------- constants (measured offline: Inter Tight 600 @ 96 px) ---------- */
+          const TRACK_OPEN1 = 44.16;  // line 1 "Descubre": 0.45em open -> -0.01em rest  (0.46em of extra advance per glyph)
+          const TRACK_OPEN2 = 10.56;  // line 2: 0.10em open -> rest (0.11em)
+          const TRACK_EXIT = -4.8;    // -0.01em -> -0.06em on exit (-0.05em)
+          const ACCENT = "#9af7ff";
+
+          /* word-centre offsets (px) relative to the resting layout */
+          const DESCUBRE_START_X = 243.2;                   // starts at screen centre (x 960) and glides into its slot
+          const L1_COLLAPSE_X = [37, -7.2, -44.2];          // line 1 words pull together on exit
+          const L2_SPREAD_X = [-91.5, -30.5, 30.5, 91.5];   // 80 px word gaps -> 19 px
+          const L2_COLLAPSE_X = [45.9, 20.9, -6.5, -41.1];  // line 2 words pull together on exit
+
+          /* glyph spread around the word centre: glyph i of n moves by k * (i - (n-1)/2) */
+          const spreadFn = (k, n) => (i) => k * (i - (n - 1) / 2);
+
+          /* ======================= LINE 1 · "Descubre dónde salir" ======================= */
+          // slow drift so the held line is never dead still
+          tl.fromTo("#tx-l1", { scale: 1 }, { scale: 1.035, duration: 2.0, ease: "none" }, 0.1);
+          // soft haze behind the type (in with line 1, out with line 2)
+          tl.fromTo("#tx-scrim", { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, 0.05);
+          tl.fromTo("#tx-scrim", { opacity: 1 }, { opacity: 0, duration: 0.25, ease: "power2.in", immediateRender: false }, 3.55);
+          // 0.10-0.75 "Descubre": wide tracking -> tight, blur 18 -> 0, fades in at screen centre
+          tl.set("#tx-l1w1", { x: DESCUBRE_START_X }, 0);
+          tl.fromTo("#tx-l1w1", { opacity: 0, filter: "blur(18px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.6, ease: "power2.out" }, 0.1);
+          tl.fromTo("#tx-l1w1 .tx-c", { x: spreadFn(TRACK_OPEN1, 8) }, { x: 0, duration: 0.65, ease: "power2.out" }, 0.1);
+          // 0.32-1.12 ...then glides left into its slot while the rest of the line streaks in
+          tl.fromTo("#tx-l1w1", { x: DESCUBRE_START_X }, { x: 0, duration: 0.8, ease: "power3.out", immediateRender: false }, 0.32);
+
+          // 0.46-1.08 "dónde": horizontal smear arriving from the right
+          tl.fromTo("#tx-l1w2", { x: 220, opacity: 0 }, { x: 0, opacity: 1, duration: 0.62, ease: "power3.out" }, 0.46);
+          tl.fromTo("#tx-gb-d", { attr: { stdDeviation: "24 0" } }, { attr: { stdDeviation: "0 0" }, duration: 0.6, ease: "power3.out" }, 0.46);
+          // 0.52-1.16 "salir": a beat behind and the last to come into focus
+          tl.fromTo("#tx-l1w3", { x: 220, opacity: 0 }, { x: 0, opacity: 1, duration: 0.64, ease: "power3.out" }, 0.52);
+          tl.fromTo("#tx-gb-s", { attr: { stdDeviation: "30 0" } }, { attr: { stdDeviation: "0 0" }, duration: 0.7, ease: "power2.out" }, 0.52);
+
+          // 1.70-2.00 exit: tracking closes, words pull together, blur + fade
+          const L1_WORDS = [
+            ["#tx-l1w1", "#tx-l1w1 .tx-c", 8],
+            ["#tx-l1w2", "#tx-l1w2 .tx-c", 5],
+            ["#tx-l1w3", "#tx-l1w3 .tx-c", 5],
+          ];
+          // the collapse (x / tracking / scaleX) is front-loaded (inOut) so it is actually readable while the words are still
+          // opaque; blur and opacity lag behind it and finish together at 2.0 (a cubic "in" made the collapse invisible)
+          L1_WORDS.forEach(([w, chars, n], i) => {
+            tl.fromTo(w, { x: 0 }, { x: L1_COLLAPSE_X[i], duration: 0.3, ease: "power2.inOut", immediateRender: false }, 1.7);
+            tl.fromTo(w, { scaleX: 1 }, { scaleX: 0.96, duration: 0.3, ease: "power2.inOut", immediateRender: false }, 1.7);
+            tl.fromTo(w, { filter: "blur(0px)" }, { filter: "blur(22px)", duration: 0.3, ease: "power2.in", immediateRender: false }, 1.7);
+            tl.fromTo(w, { opacity: 1 }, { opacity: 0, duration: 0.26, ease: "power1.in", immediateRender: false }, 1.74);
+            tl.fromTo(chars, { x: 0 }, { x: spreadFn(TRACK_EXIT, n), duration: 0.3, ease: "power2.inOut", immediateRender: false }, 1.7);
+          });
+
+          /* ======================= LINE 2 · "con un solo toque" ======================= */
+          tl.fromTo("#tx-l2", { scale: 1 }, { scale: 1.035, duration: 1.85, ease: "none" }, 2.0);
+          // 2.05-2.55 words start 80 px apart, close in to the resting gap, blur 20 -> 0
+          const L2_WORDS = [
+            ["#tx-l2w1", "#tx-l2w1 .tx-c", 3],
+            ["#tx-l2w2", "#tx-l2w2 .tx-c", 2],
+            ["#tx-l2w3", "#tx-l2w3 .tx-c", 4],
+            ["#tx-l2w4", "#tx-l2w4 .tx-c", 5],
+          ];
+          L2_WORDS.forEach(([w, chars, n], i) => {
+            const st = 2.05 + (i === 0 || i === 3 ? 0.03 : 0);
+            tl.fromTo(w, { x: L2_SPREAD_X[i], opacity: 0, filter: "blur(20px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, st);
+            tl.fromTo(chars, { x: spreadFn(TRACK_OPEN2, n) }, { x: 0, duration: 0.5, ease: "power3.out" }, st);
+            // 3.45-3.76 exit: words collapse first (readable), then blur + fade finish just before the scene window closes (3.8)
+            tl.fromTo(w, { x: 0 }, { x: L2_COLLAPSE_X[i], duration: 0.29, ease: "power2.inOut", immediateRender: false }, 3.45);
+            tl.fromTo(w, { scaleX: 1 }, { scaleX: 0.96, duration: 0.29, ease: "power2.inOut", immediateRender: false }, 3.45);
+            tl.fromTo(w, { filter: "blur(0px)" }, { filter: "blur(22px)", duration: 0.3, ease: "power2.in", immediateRender: false }, 3.45);
+            tl.fromTo(w, { opacity: 1 }, { opacity: 0, duration: 0.22, ease: "power1.in", immediateRender: false }, 3.52);
+            tl.fromTo(chars, { x: 0 }, { x: spreadFn(TRACK_EXIT, n), duration: 0.29, ease: "power2.inOut", immediateRender: false }, 3.45);
+          });
+
+          // 2.45-2.90 "solo" lights up at the end of the entrance
+          tl.fromTo("#tx-l2s3", { color: "#ffffff" }, { color: ACCENT, duration: 0.3, ease: "power2.out" }, 2.45);
+          tl.fromTo("#tx-l2s3", { scale: 1 }, { scale: 1.045, duration: 0.15, ease: "power2.out", immediateRender: false }, 2.45);
+          tl.to("#tx-l2s3", { scale: 1, duration: 0.3, ease: "power2.inOut" }, 2.6);
+
+          window.__timelines = window.__timelines || {};
+          window.__timelines["scene-text"] = tl;
+        })();
       </script>
     </template>
   </body>
