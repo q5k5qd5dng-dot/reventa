@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Inter Tight"; src: url("assets/fonts/inter-tight-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
+        #fd-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", system-ui, sans-serif; color: #fff; }
+        #fd-label { position: absolute; left: 80px; top: 80px; font-size: 48px; font-weight: 700; opacity: .5; }
+      </style>
+      <div id="fd-root" data-composition-id="scene-feed" data-width="1920" data-height="1080">
+        <div id="fd-label">placeholder scene-feed</div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#fd-label", { opacity: 0 }, { opacity: 0.5, duration: 0.4 }, 0);
+        window.__timelines["scene-feed"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
