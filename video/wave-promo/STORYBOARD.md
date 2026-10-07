@@ -1,106 +1,118 @@
-# Wave · promo 16:9 (14,5 s · 1920×1080 · 30 fps · sin audio)
+# Wave · promo 16:9 (15,1 s · 1920×1080 · 30 fps · sin audio)
 
 Referencia de estilo: promo de producto "Spotify – Single Click" (grabación de pantalla del preview en DaVinci).
 Mismo ritmo y lenguaje, adaptado a Wave: ticketera + red social de ocio nocturno (Zaragoza).
 Fondo azul-noche con un glow turquesa que viaja entre escenas (lo anima `index.html`), UI "glass" semitransparente,
 blur de entrada/salida, un destello violeta de glitch y texto cinético con una palabra acentuada.
 
+**Regla de oro: nada inventado de Wave.** Logos y pantallas de la app son los REALES que ha pasado el equipo
+(`assets/brand/*`, `assets/app/*`). No dibujes iconos, logos, carteles ni pantallas de la app "a mano"; no inventes
+eventos, precios ni textos de producto. El único contenido propio permitido es el de la escena de texto, el fondo/glow y el
+mockup genérico del móvil (marco, pantalla de bloqueo, iconos genéricos del sistema).
+
 ## Marca / tokens
 
 | token | valor |
 | --- | --- |
-| turquesa Wave | `#21AEC0` (brillo `#5CE8F6`, acento de texto sobre glow `#7FF3FF` o similar: validar contraste) |
-| violeta glitch | `#7C3AED`, magenta `#D946EF`, blanco `#FFFFFF` |
-| base | `#060B11` (azul-noche casi negro), texto `#FFFFFF`, secundario `rgba(255,255,255,.62)` |
+| turquesa Wave | `#21AEC0` (brillo `#5CE8F6`; el logo real usa degradado cian claro `#D8F8FC` → `#00FFFF`) |
+| violeta de la app / glitch | `#8878F5` (botones de la app), `#7C3AED`, magenta `#D946EF`, blanco |
+| fondo de la app | `#0A0B10` (casi negro azulado); en el vídeo el fondo es `#060B11` + glow turquesa |
+| texto | blanco, secundario `rgba(255,255,255,.62)` |
 | glass | fondo `rgba(214,222,228,.20)`, borde `rgba(255,255,255,.14)`, radio 22 px, sombra `0 24px 60px rgba(0,0,0,.35)` |
-| tipografía | **Inter Tight** (variable 100–900) — ya cargada en `index.html`, pero **cada escena debe declarar su propio `@font-face`** dentro del `<style>` de su `<template>`: `src: url("assets/fonts/inter-tight-latin.woff2") format("woff2"); font-weight: 100 900;` |
-| logo | `assets/brand/wave-logo.svg` (squircle turquesa + 2 ondas blancas, viewBox 32). Wordmark: "Wave", Inter Tight 700, tracking −0.04em, blanco |
-| carteles | `assets/posters/{neon,aurora,noir,sol,afterglow,onda}.jpg` (3:4, 1080×1440): SALA NEÓN, AURORA, NOIR, TERRAZA SOL, AFTERGLOW, ONDA |
+| tipografía del vídeo | **Inter Tight** (variable 100–900). **Cada escena declara su propio `@font-face`** dentro del `<style>` de su `<template>`: `src: url("assets/fonts/inter-tight-latin.woff2") format("woff2"); font-weight: 100 900;` (la app real usa una geométrica tipo Poppins, pero eso va dentro de las capturas) |
 
-Copy en español, corto, sin tono publicitario. Nada de marcas reales (ni Spotify ni iOS ni Instagram): la UI es genérica/propia.
+### Assets reales (rutas relativas a la raíz del proyecto)
+
+| archivo | qué es |
+| --- | --- |
+| `assets/brand/wave-lockup.png` | logo completo REAL (icono + "WAVE" en cursiva degradado cian), PNG con alfa, 1240×321, recortado al borde |
+| `assets/brand/wave-icon-lockup.png` | solo el icono, tal cual está en el lockup (322×321) |
+| `assets/brand/wave-wordmark.png` | solo "WAVE" (849×249), extraído del mismo lockup (dentro de la caja del lockup 1240×321, `wave-icon-lockup.png` va en (0,0) y `wave-wordmark.png` en left=391, top=32 (verificado: icono+wordmark así colocados reproducen `wave-lockup.png` exactamente)) |
+| `assets/brand/wave-icon.png` | icono de app en alta (379×384): squircle cian claro con degradado a `#00FFFF` y glifo de ola azul-violeta oscuro |
+| `assets/app/ciudad.jpg` | "Busca tu ciudad" (Wave, Mi plan, Mapa, ¿Quieres crear tu evento?, Zaragoza…) — 1206×2179 |
+| `assets/app/disco.jpg` | Zaragoza › Discotecas (Bbsesh 09 OCT, Pulse) — 1206×2176 |
+| `assets/app/entradas.jpg` | Ficha de evento: mapa y "Entradas" (tema rojo del organizador) — 1206×2136 |
+| `assets/app/feed.jpg` | "Para ti": historias y publicación — 1206×2162 |
+| `assets/app/mensajes.jpg` | Mensajes — 1206×2176 |
+| `assets/app/actividad.jpg` | Actividad (seguidores, match) — 1206×2130 |
+| `assets/app/clip-match.mp4` | grabación real, 588×1036, 3.8 s, sin audio: Match (deslizar: "Me gusta", "No es para mí", "Flechazo") |
+| `assets/app/clip-music.mp4` | grabación real, 588×1036, 3.0 s: Experiencias → Party Music "Vota tus canciones favoritas" (Top 10) |
+| `assets/app/clip-snap.mp4` | grabación real, 588×1070, 3.0 s: Instantáneas, "Nueva instantánea" (cámara) |
+
+Todas las capturas ya vienen recortadas sin la barra de estado del iPhone ni la barra de Safari. Proporción ≈ 1 : 1.8.
+Mantén SIEMPRE la relación de aspecto original (usa `object-fit: cover` con un marco de proporción ≈ 1206×2160 y `object-position` que
+muestre lo importante, o encaja sin deformar). No retoques colores ni contenido de las capturas. Úsalas a ≥ resolución nativa cuando se vean
+grandes (hay 1206 px de ancho disponibles).
+
+Hay datos de usuarios reales en las capturas (nombres, fotos de perfil). Mantenlos tal cual (son material del equipo); no los edites.
 
 ## Línea de tiempo global (s)
 
 | escena | archivo | start | dur | fin | contenido |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `compositions/scene-logo.html` | 0.0 | 2.2 | 2.2 | logo Wave aparece desde blur, se mantiene, se encoge/desenfoca al llegar el móvil |
-| 2 | `compositions/scene-phone.html` | 1.2 | 3.1 | 4.3 | móvil 3D vuela → pantalla bloqueo 9:41 → inicio con apps → push-in al icono Wave → glitch violeta |
-| 3 | `compositions/scene-feed.html` | 4.0 | 5.2 | 9.2 | pills + accesos rápidos + "Nuevas fiestas para ti" con carteles |
-| 4 | `compositions/scene-text.html` | 8.9 | 3.8 | 12.7 | "Descubre dónde salir" / "con un solo toque" |
-| 5 | `compositions/scene-outro.html` | 12.3 | 2.2 | 14.5 | orbe turquesa → logo Wave + `siemprewave.es` |
+| 1 | `compositions/scene-logo.html` | 0.0 | 2.2 | 2.2 | logo REAL de Wave aparece desde blur, se mantiene, se encoge/desenfoca al llegar el móvil |
+| 2 | `compositions/scene-phone.html` | 1.2 | 3.1 | 4.3 | móvil 3D vuela → bloqueo 9:41 → inicio con icono REAL de Wave → se abre la app (pantalla real) → push-in → glitch violeta |
+| 3 | `compositions/scene-app.html` | 4.0 | 5.8 | 9.8 | tablero de pantallas y clips reales de la app: Entradas → Social → Experiencias |
+| 4 | `compositions/scene-text.html` | 9.5 | 3.8 | 13.3 | "Descubre dónde salir" / "con un solo toque" (YA HECHA; no tocar) |
+| 5 | `compositions/scene-outro.html` | 12.9 | 2.2 | 15.1 | orbe turquesa → logo REAL + `siemprewave.es` |
 
 Las escenas se solapan en las transiciones; cada raíz es **transparente** (el fondo/glow lo pone `index.html`). Cada escena anima solo lo suyo
-y debe dejar **todo su contenido en opacity 0 / fuera de plano al final de su ventana** (la ventana host acaba y desaparece sola, pero evita un corte seco: sal con blur+fade).
+y debe dejar **todo su contenido invisible al final de su ventana** (sal con blur+fade, nunca un corte seco).
 Los tiempos de abajo son **locales** a cada escena (= global − start).
 
 ### Fondo (ya hecho en index.html, no tocar)
-`#bg-glow` (radial turquesa 2000 px) viaja: centro (0–1 s) → crece y baja (logo→móvil) → abajo-izquierda en el feed (4–9 s) → centro-izquierda en el texto (8.9–12.3) → se recoge a un orbe en el centro (12.1–13) y respira detrás del logo final. `#bg-glow2` = glow tenue arriba-derecha en 10.4–12.3.
+`#bg-glow` (radial turquesa 2000 px) viaja: centro (0–1 s) → crece y baja (logo→móvil) → abajo-izquierda en la app (4–9.5 s) → centro-izquierda en el texto (9.5–13) → se recoge a un orbe en el centro (12.7–13.6) y respira detrás del logo final. `#bg-glow2` = glow tenue arriba-derecha en 11–12.4 (global).
 
 ---
 
 ## Escena 1 · logo (0 → 2.2, local)
-- Lockup centrado en (960, 540): squircle 150 px + "Wave" 128 px (Inter Tight 700), separación ~28 px. Mismo lockup y posición que en la escena 5 (cierre simétrico).
-- 0.25–0.95: aparece desde blur 24 px → 0, opacity 0 → 1, y +30 → 0, scale .92 → 1 (power3.out). El squircle entra primero (≈0.1 s antes) y el texto después con un stagger de letras sutil (tracking ancho → normal).
-- 1.45–2.1: sale encogiéndose (scale 1 → .55), blur 0 → 18 px, opacity → 0, y −40 (power2.in) mientras el móvil llega por detrás/encima (escena 2 empieza en global 1.2).
+- `assets/brand/wave-lockup.png` centrado en (960, 540), ancho ≈ 900 px (escala ≈ .73; nítido). Es la `<img>` real, sin redibujar nada.
+- 0.25–0.95: aparece desde blur 24 px → 0, opacity 0 → 1, y +30 → 0, scale .92 → 1 (power3.out). El icono puede entrar ≈ 0.1 s antes que la palabra: recorta el lockup en dos capas con `clip-path`/dos `<img>` de `wave-icon-lockup.png` + `wave-wordmark.png` colocadas EXACTAMENTE como en el lockup (verifica con superposición de snapshots que coinciden pixel a pixel con `wave-lockup.png`).
+- 1.45–2.1: sale encogiéndose (scale 1 → .55), blur 0 → 18 px, opacity → 0, y −40 (power2.in) mientras el móvil llega (escena 2 empieza en global 1.2).
+- Contraste: el wordmark es cian brillante; sobre el glow turquesa pierde contraste. Resuélvelo con un scrim oscuro suave detrás (elipse grande radial `rgba(4,10,16,.4)`) y/o sombra oscura sutil; el logo debe leerse claramente.
 
 ## Escena 2 · móvil 3D (1.2 → 4.3, local 0 → 3.1)
-Cámara con `perspective` (≈1800–2400 px) sobre un contenedor `transform-style: preserve-3d`; el móvil es un único objeto con caras de pantalla (bloqueo + inicio) para mantener identidad. NO uses escala sola como falsa profundidad: usa z, rotateX/Y/Z.
-- Móvil: cuerpo 430×880 (radio 64, bisel 12 px `#0b0f14`, canto metálico degradado, isla dinámica 120×34, botones laterales), pantalla radio 52.
-- Fondo de pantalla: azul-noche con una gran onda turquesa luminosa (SVG con degradados; recuerda a las ondas del logo).
-- **Bloqueo**: hora "9:41" (Inter Tight 300–400, ~110 px) + fecha "Sábado, 11 de octubre" arriba; abajo una notificación glass: icono Wave + "Wave · Tu entrada para Sala Neón está lista" + "ahora". Linterna/cámara en las esquinas inferiores.
-- **Inicio**: widget glass "Esta noche · Sala Neón · 23:30 · 128 van" (mini cartel neon.jpg), cuadrícula 4 columnas de iconos genéricos (colores propios + glifos SVG simples; etiquetas: Cámara, Fotos, Mapas, Reloj, Notas, Música, Mensajes, Ajustes…) y el **icono Wave** (squircle turquesa + ondas) bien visible, más dock de 4 iconos.
-- 0.00–1.00: el móvil entra desde lejos: pequeño (≈ escala .16), muy inclinado (rotateX ≈ 62°, rotateY ≈ −34°, rotateZ ≈ 26°), difuminado (blur 8 → 0), cruzando de arriba-derecha a centro; llega con rotateX ≈ 16°, rotateY ≈ 0, escala ≈ .95 mostrando el **bloqueo** (como "9:41" visto desde abajo). Ease power3.out con ligero overshoot en el rotateX.
-- 1.00–1.45: respira en el bloqueo (la notificación glass cae desde arriba con un rebote suave).
-- 1.40–1.95: swipe-up: el bloqueo sube y se desvanece; el móvil se endereza (rotateX → 6°) y se acerca (escala → 1.12) revelando el **inicio**; los iconos entran con stagger 0.02 s (scale .8 → 1, opacity).
-- 1.90–2.35: push-in lento sobre el icono Wave (transform-origin calculado a mano hacia el icono; escala → ~2.4 con power2.inOut), el icono hace "tap" (scale .92 → 1.05 + anillo turquesa que se expande).
-- 2.10–3.10: **glitch violeta**: capa a pantalla completa con manchas/gradientes violeta (#7C3AED), magenta (#D946EF) y blanco (mix-blend-mode screen) que crecen desde el icono hasta cubrir todo el plano (lleno en local ≈ 2.5), con 3–5 barras horizontales de glitch (translateX escalonado, skew), separación cromática (RGB split) y 2 parpadeos stepped; desde 2.7 todo se disuelve a transparente (opacity 1 → 0 en ≈0.4 s) para dejar ver el glow limpio y la escena 3 (global 4.0).
-- La escena termina **vacía** (transparente) en local 3.1.
+Ya existe una primera versión (`compositions/scene-phone.html`, generada con un script; su carpeta de trabajo anterior está en `.../scratchpad/work/phone`). **Mantén**: el vuelo 3D del móvil, el bloqueo 9:41 con fondo de ola turquesa, el swipe a inicio, el push-in, y el destello violeta (todo eso es mockup genérico del sistema). **Cambia**:
+- **Icono de Wave en el inicio y en la notificación = `assets/brand/wave-icon.png` real** (no el squircle dibujado).
+- **Notificación del bloqueo**: usa un texto REAL de la app: "Wave · Match confirmado. Ya podéis hablar." (aparece en Mensajes), "ahora".
+- **Sin widget inventado de evento** (era "Esta noche · Sala Neón"): sustitúyelo por un widget genérico de sistema tipo clima ("Zaragoza · 21° · Despejado · Máx 24° Mín 14°") o por nada. Los iconos genéricos de apps y la etiqueta "Wave" bajo el icono se mantienen.
+- **Apertura de la app**: tras el "tap" en el icono, el icono se expande al estilo iOS (zoom del icono a pantalla completa, radio de esquina decreciente) y la pantalla del móvil muestra `assets/app/ciudad.jpg` (Busca tu ciudad). Colócala con el ancho exacto de la pantalla del móvil, alineada arriba con un margen para la isla dinámica, y rellena el resto con `#0A0B10` (la captura ya tiene ese fondo; no la estires ni recortes lados). Superpón tu barra de estado propia (9:41, señal, batería) sobre esa zona. El push-in continúa sobre ese contenido y la pantalla debe verse nítida a su máxima ampliación (hay 1206 px de ancho nativo).
+- Orden de eventos (local): 0.00–1.00 vuelo; 1.00–1.45 bloqueo + notificación; 1.40–1.95 swipe a inicio; 1.90–2.15 tap + apertura de la app; 2.05–2.55 push-in sobre la pantalla de la app; 2.3–3.1 glitch violeta que crece y se disuelve (como la versión actual: lleno ≈ 2.5, disuelto a transparente en 2.7–3.1). La escena termina **vacía** (transparente) en local 3.1.
 
-## Escena 3 · app / feed (4.0 → 9.2, local 0 → 5.2)
-Tablero UI flotante a la izquierda-centro (x ≈ 520–1500 px) con ligera inclinación 3D (rotateY ≈ −7°, rotateX ≈ 4°), perspectiva ~1600 px. Todo en glass (tokens). Texto en Inter Tight.
-- 0.25–0.9: **pills** (alto 52, radio 26): "Todo" (seleccionada, fondo turquesa `#21AEC0`, texto negro), "Fiestas", "Entradas". Entran con blur+y (stagger .07).
-- 0.5–1.3: **accesos rápidos** 2 filas × 2 columnas visibles + 2 columnas más cortadas por el borde derecho (como en la referencia): cada tile = miniatura cuadrada del cartel (60×60 → 96×96) + título ("Sala Neón", "Terraza Sol", "Aurora", "Noir", "Afterglow", "Onda"). Entran deslizando desde la derecha con blur (stagger .08).
-- 1.35–1.8: la pill "Fiestas" se selecciona (el relleno turquesa se desliza de "Todo" a "Fiestas"); aparece una 4.ª pill "Siguiendo" entre medias (las demás se desplazan).
-- 1.9–2.4: los tiles salen a la izquierda con blur 14 px + fade y rotateY.
-- 2.3–3.0: título "Nuevas fiestas para ti" (Inter Tight 700, 40 px) + **3 tarjetas** verticales (≈ 300×420 px de cartel + cabecera glass de 56 px con avatar circular (inicial/avatar generado), título del evento y subtítulo "Zaragoza · 142 van"): SALA NEÓN (neon.jpg), AURORA (aurora.jpg), NOIR (noir.jpg). Entran desde z-profundo/derecha con rotateY de −25° → 0 y stagger .12.
-- 3.0–3.6: mantiene (micro-deriva lenta del tablero para que no quede estático).
-- 3.6–4.4: **scroll**: el tablero sube ≈ 470 px revelando la 2.ª fila: AFTERGLOW (afterglow.jpg), TERRAZA SOL (sol.jpg), ONDA (onda.jpg) con sus cabeceras.
-- 4.6–5.2: salida: todo se desenfoca (blur 0 → 20), baja de opacidad y se desplaza ligeramente hacia atrás en z; vacío al final.
-- Datos de cabecera (invéntalos coherentes): Sala Neón · "Sáb · 23:30"; Aurora · "Club · 00:00"; Noir · "Lun–Dom"; Afterglow · "Dom · 19:00"; Terraza Sol · "Vie · 22:00"; Onda · "Sáb · 01:00".
+## Escena 3 · app real (4.0 → 9.8, local 0 → 5.8) — NUEVA
+Tablero flotante con ligera inclinación 3D (rotateY ≈ −6°, rotateX ≈ 3°, perspectiva ~1800 px) y movimiento de cámara tipo scroll hacia arriba, en el lenguaje de la referencia (psheet_1.png: pills arriba, filas de elementos entrando con blur/3D, scroll a la segunda fila, blur-out). Los elementos son **pantallas reales** de la app dentro de marcos "pantalla de móvil" (radio ≈ 44 px, borde fino 1.5 px `rgba(255,255,255,.18)`, sombra grande, sin biseles de hardware), tamaño ≈ 360×645 px cada una, 3 por fila con 40 px de separación (fila ≈ 1160 px de ancho), centradas sobre x ≈ 960. Altura de fila ≈ 645 px, paso entre filas ≈ 700 px; en cada momento se ve una fila entera y, en los cambios, un asomo de la siguiente.
+- **Pills** arriba (alto 52, radio 26, Inter Tight 600 22 px, glass; la seleccionada va rellena turquesa `#21AEC0` con texto casi negro): "Todo", "Entradas", "Social", "Experiencias". La selección se desliza de una a otra (el relleno viaja y las etiquetas cambian de color justo bajo el relleno).
+- **Fila A** (selección "Entradas"): `ciudad.jpg`, `disco.jpg`, `entradas.jpg` (buscar ciudad → locales → comprar entrada).
+- **Fila B** (selección "Social"): `feed.jpg`, `mensajes.jpg`, `actividad.jpg`.
+- **Fila C** (selección "Experiencias"): tres `<video>` reales: `clip-match.mp4`, `clip-music.mp4`, `clip-snap.mp4`, reproduciéndose a velocidad normal dentro de sus marcos (muted, playsinline; usa `data-start`/`data-duration`/`data-media-start` locales a la escena; nunca anides un `<video data-start>` dentro de un elemento con `data-start`). Elige la ventana de cada clip que más lucza (match: ≈ 0.9–2.7 s del clip tiene "Me gusta/No es para mí/Flechazo"; music: la transición de la lista de Experiencias a Party Music "Top 10"; snap: cámara).
+- Línea de tiempo local: 0.20–0.70 pills entran (blur+y, stagger .07) · 0.45–1.20 fila A entra (z-profundo/derecha, rotateY −22° → 0, blur 14 → 0, stagger .1) y la selección pasa de "Todo" a "Entradas" en 0.9 · hold hasta 1.9 con micro-deriva · 1.90–2.50 scroll a la fila B (selección → "Social" en 2.0) · hold hasta 3.2 · 3.20–3.80 scroll a la fila C (selección → "Experiencias" en 3.3; los vídeos arrancan antes de entrar en pantalla para que no haya hueco) · hold con los vídeos en marcha hasta 5.1 · 5.10–5.80 salida: todo se desenfoca (blur 0 → 20 px), baja la opacidad y se aleja en z; vacío al final.
+- Las capturas deben verse nítidas y legibles (al menos los titulares), sin deformar, con esquinas redondeadas limpias (usa `overflow:hidden` + `border-radius` en el marco, no en la imagen escalada con transform pesado).
 
-## Escena 4 · texto cinético (8.9 → 12.7, local 0 → 3.8)
-- Línea 1 centrada en (960, 520): **"Descubre dónde salir"** (Inter Tight 600, 96 px, blanco, "salir" en acento turquesa claro).
-  - 0.10–0.75: solo "Descubre" aparece con tracking muy abierto (0.45em → −0.01em), blur 18 → 0, opacity 0 → 1 (como el "L i s t e n" de la referencia).
-  - 0.45–1.1: "dónde salir" llega desde la derecha como una estela horizontal difuminada (x +220 → 0, blur horizontal 24 → 0) hasta asentarse; "salir" es la última en enfocarse.
-  - 1.1–1.7: mantiene.
-  - 1.7–2.0: sale: tracking → cerrado (−0.06em), blur 0 → 22 px, opacity → 0, scaleX .96.
-- Línea 2 centrada en (960, 540): **"con un solo toque"** (mismo estilo; "solo" en acento).
-  - 2.05–2.55: entra desde el centro con las palabras separadas que se juntan (word gap 80 px → normal) + blur 20 → 0; "solo" se ilumina al final.
-  - 2.55–3.45: mantiene; 3.45–3.8: sale con blur y tracking cerrado (como la referencia, que colapsa "witha single click" antes de la última escena).
-- Sin elementos decorativos extra: es tipografía sobre el glow. Texto siempre legible sobre el glow (comprobar contraste en snapshot a 1.3 s y 3.0 s locales).
+## Escena 4 · texto cinético (9.5 → 13.3, local 0 → 3.8) — YA HECHA, NO TOCAR
+"Descubre dónde salir" / "con un solo toque" (acento turquesa claro en "salir" y "solo").
 
-## Escena 5 · cierre (12.3 → 14.5, local 0 → 2.2)
-- 0.00–0.55: orbe turquesa brillante (círculo 110 px, degradado radial blanco-cian → #21AEC0, halo) en (960, 540), que "late" (scale 1 → 1.18 → 1) — recoge el glow del fondo (el fondo se recoge a un orbe entre global 12.1–13.0).
-- 0.55–1.15: el orbe se transforma en el squircle del logo (radio 55 → 24 % del lado, 110 → 150 px) y las dos ondas blancas se dibujan (stroke-dashoffset) dentro.
-- 1.0–1.55: el lockup se centra: el squircle se desplaza a la izquierda y el wordmark "Wave" (Inter Tight 700, 128 px) se revela saliendo desde detrás del squircle (clip/mask + x), mismo lockup que en la escena 1.
-- 1.45–1.95: debajo, `siemprewave.es` (Inter Tight 500, 34 px, tracking .08em, `rgba(255,255,255,.72)`) aparece con fade + y +14 → 0 y una línea turquesa fina que se expande.
-- 1.95–2.2: mantiene (frame final limpio y legible; sin fundido a negro).
+## Escena 5 · cierre (12.9 → 15.1, local 0 → 2.2)
+- 0.00–0.55: orbe turquesa brillante (círculo 110 px, degradado radial blanco-cian → `#21AEC0`, halo) en (960, 540), que "late" (scale 1 → 1.18 → 1) — recoge el glow del fondo (el fondo se recoge a un orbe entre global 12.7–13.6, así que el orbe debe aparecer exactamente ahí y sentirse el mismo objeto).
+- 0.55–1.15: el orbe se transforma en el **icono real** (`wave-icon-lockup.png`/`wave-icon.png`; 110 → 160 px aprox. con back.out suave; crossfade orbe → icono con un destello breve; el glifo de ola oscuro aparece con una revelación de máscara circular o con un barrido; NO redibujes el glifo).
+- 1.0–1.55: el lockup se centra: el icono se desplaza a la izquierda y el wordmark real (`wave-wordmark.png`) se revela saliendo desde detrás del icono (clip/mask + x), terminando EXACTAMENTE como el lockup de la escena 1 (misma posición (960,540), mismo tamaño, mismo espaciado).
+- 1.45–1.95: debajo, `siemprewave.es` (Inter Tight 500, 34 px, tracking .08em, `rgba(255,255,255,.85)`) aparece con fade + y +14 → 0 y una línea turquesa fina que se expande.
+- 1.95–2.2: mantiene (frame final limpio y legible; sin fundido a negro). Scrim oscuro suave tras el lockup para el contraste (como en la escena 1).
 
 ---
 
 ## Contrato técnico (resumen; todo está en `/hyperframes-core`)
-- Cada escena es un archivo con `<template>` que contiene `<style>`, el nodo raíz y `<script>`. Raíz: `<div id="<prefijo>-root" data-composition-id="scene-xxx" data-width="1920" data-height="1080">`, **estilado por `#<prefijo>-root`** (`position:absolute; inset:0; overflow:hidden`, sin fondo). Prefijos de ids: `lg-`, `ph-`, `fd-`, `tx-`, `ou-` (todos los ids únicos en la página ensamblada).
+- Cada escena es un archivo con `<template>` que contiene `<style>`, el nodo raíz y `<script>`. Raíz: `<div id="<prefijo>-root" data-composition-id="scene-xxx" data-width="1920" data-height="1080">`, **estilado por `#<prefijo>-root`** (`position:absolute; inset:0; overflow:hidden`, sin fondo). Prefijos de ids: `lg-`, `ph-`, `ap-`, `tx-`, `ou-` (todos los ids únicos en la página ensamblada).
 - Exactamente un `gsap.timeline({ paused: true })` registrado como `window.__timelines["scene-xxx"] = tl` (clave = `data-composition-id`), registrado al final y construido de forma síncrona.
-- Determinista: nada de `Date.now`, `Math.random`, `performance.now`, timers, `repeat:-1`, ni medir con `getBoundingClientRect` en tiempo de tween (precalcula constantes). Si necesitas aleatoriedad, PRNG con semilla.
-- `fromTo` en vez de `from` para las entradas; no mezcles `transform` CSS inicial con GSAP sobre la misma propiedad (usa `fromTo`/`xPercent`); centra con flex/`inset`, no con `translate(-50%,-50%)` sobre algo que GSAP mueve.
+- Determinista: nada de `Date.now`, `Math.random`, `performance.now`, timers, `repeat:-1`, ni medir con `getBoundingClientRect` en tiempo de tween (precalcula constantes).
+- `fromTo` en vez de `from` para las entradas; no mezcles `transform` CSS inicial con GSAP sobre la misma propiedad; centra con flex/`inset`, no con `translate(-50%,-50%)` sobre algo que GSAP mueve.
 - No `<br>`. No `autoAlpha`/`visibility`/`display` sobre `.clip`. Los hijos sí se pueden animar.
-- Imágenes con rutas relativas a la raíz del proyecto (`assets/posters/neon.jpg`), no a la carpeta `compositions/`.
-- 3D: `perspective` en un padre estable + `transform-style: preserve-3d` + z/rotación. Evita `backdrop-filter` (caro e inestable en captura): simula el glass con fondos semitransparentes y degradados.
-- Blur animado (`filter: blur()`) está permitido pero limítalo a pocos elementos grandes por frame (coste de render).
+- Imágenes/vídeos con rutas relativas a la raíz del proyecto (`assets/app/ciudad.jpg`), no a la carpeta `compositions/`.
+- 3D: `perspective` en un padre estable + `transform-style: preserve-3d` + z/rotación. Evita `backdrop-filter`: simula el glass con fondos semitransparentes.
+- Blur animado (`filter: blur()`) permitido pero limítalo a pocos elementos grandes por frame (coste de render).
 - Cada escena vacía/transparente al terminar su ventana.
 
 ## Flujo de trabajo y QA por escena
 1. Trabaja en una copia aislada (ver prompt de tu agente), nunca en el directorio del proyecto compartido hasta el final.
-2. Bucle: editar → `hf check` (0 errores; avisos de solape de texto contra los placeholders de OTRAS escenas son ruido: ignóralos) → `hf snapshot --at <tiempos globales>` → **mirar los PNG con Read** → corregir.
+2. Bucle: editar → `hf check` (0 errores) → `hf snapshot --at <tiempos globales>` → **mirar los PNG con Read** → corregir.
 3. Verifica como mínimo: primer frame de la escena, 3–5 poses intermedias, pico de la animación, frame final, y el solape con la escena vecina.
 4. Cuando esté bien, copia SOLO tu archivo `compositions/scene-xxx.html` al proyecto compartido.
