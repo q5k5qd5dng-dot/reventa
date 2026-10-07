@@ -6,14 +6,181 @@
       <style>
         @font-face { font-family: "Inter Tight"; src: url("assets/fonts/inter-tight-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
         #ap-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", system-ui, sans-serif; color: #fff; }
-        #ap-label { position: absolute; left: 80px; top: 80px; font-size: 48px; font-weight: 700; opacity: .5; }
+        #ap-stage { position: absolute; inset: 0; perspective: 1800px; perspective-origin: 50% 50%; }
+        #ap-board { position: absolute; inset: 0; transform-origin: 960px 540px; }
+        #ap-scroll { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+        /* ---- pills ---- */
+        #ap-pills { position: absolute; left: 646px; top: 84px; width: 628px; height: 52px; }
+        .ap-pill {
+          position: absolute; top: 0; height: 52px; border-radius: 26px;
+          background: rgba(214, 222, 228, 0.2);
+          border: 1.5px solid rgba(255, 255, 255, 0.14);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 22px; font-weight: 600; letter-spacing: 0.005em; color: rgba(255, 255, 255, 0.92);
+          white-space: nowrap;
+        }
+        #ap-p0 { left: 0; width: 112px; }
+        #ap-p1 { left: 124px; width: 156px; }
+        #ap-p2 { left: 292px; width: 128px; }
+        #ap-p3 { left: 432px; width: 196px; }
+        #ap-sel {
+          position: absolute; left: 0; top: 0; width: 112px; height: 52px; border-radius: 26px;
+          background: #21aec0; overflow: hidden;
+          box-shadow: 0 8px 28px rgba(33, 174, 192, 0.45);
+        }
+        #ap-sel-in { position: absolute; left: 0; top: 0; width: 628px; height: 52px; }
+        .ap-dk {
+          position: absolute; top: 0; height: 52px; display: flex; align-items: center; justify-content: center;
+          font-size: 22px; font-weight: 600; color: #04100f; white-space: nowrap;
+        }
+        #ap-d0 { left: 0; width: 112px; }
+        #ap-d1 { left: 124px; width: 156px; }
+        #ap-d2 { left: 292px; width: 128px; }
+        #ap-d3 { left: 432px; width: 196px; }
+
+        /* ---- phone-screen frames ---- */
+        .ap-fr {
+          position: absolute; width: 400px; height: 716px; border-radius: 44px; overflow: hidden;
+          background: #0a0b10;
+          box-shadow: 0 34px 80px rgba(0, 0, 0, 0.5), 0 6px 20px rgba(0, 0, 0, 0.35);
+          opacity: 0;
+        }
+        .ap-fr::after {
+          content: ""; position: absolute; inset: 0; border-radius: 44px; pointer-events: none;
+          border: 1.5px solid rgba(255, 255, 255, 0.18);
+        }
+        .ap-fr img, .ap-fr video {
+          position: absolute; left: 0; top: 0; width: 400px; height: 716px; object-fit: cover; object-position: 50% 0%; display: block;
+        }
+        .ap-c0 { left: 316px; } .ap-c1 { left: 760px; } .ap-c2 { left: 1204px; }
+        .ap-rA { top: 188px; } .ap-rB { top: 958px; } .ap-rC { top: 1728px; }
       </style>
+
       <div id="ap-root" data-composition-id="scene-app" data-width="1920" data-height="1080">
-        <div id="ap-label">placeholder scene-app</div>
+        <div id="ap-stage">
+          <div id="ap-board" data-layout-allow-overflow>
+            <div id="ap-pills" data-layout-allow-overlap data-layout-allow-occlusion>
+              <div class="ap-pill" data-layout-allow-overlap data-layout-allow-occlusion id="ap-p0">Todo</div>
+              <div class="ap-pill" data-layout-allow-overlap data-layout-allow-occlusion id="ap-p1">Entradas</div>
+              <div class="ap-pill" data-layout-allow-overlap data-layout-allow-occlusion id="ap-p2">Social</div>
+              <div class="ap-pill" data-layout-allow-overlap data-layout-allow-occlusion id="ap-p3">Experiencias</div>
+              <div id="ap-sel" data-layout-allow-overlap data-layout-allow-occlusion>
+                <div id="ap-sel-in">
+                  <div class="ap-dk" data-layout-allow-overlap data-layout-allow-occlusion id="ap-d0">Todo</div>
+                  <div class="ap-dk" data-layout-allow-overlap data-layout-allow-occlusion id="ap-d1">Entradas</div>
+                  <div class="ap-dk" data-layout-allow-overlap data-layout-allow-occlusion id="ap-d2">Social</div>
+                  <div class="ap-dk" data-layout-allow-overlap data-layout-allow-occlusion id="ap-d3">Experiencias</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="ap-scroll" data-layout-allow-overflow data-layout-allow-overlap>
+              <!-- Fila A -->
+              <div class="ap-fr ap-rA ap-c0" id="ap-a0" data-layout-allow-overflow><img src="assets/app/ciudad.jpg" alt="" /></div>
+              <div class="ap-fr ap-rA ap-c1" id="ap-a1" data-layout-allow-overflow><img src="assets/app/disco.jpg" alt="" /></div>
+              <div class="ap-fr ap-rA ap-c2" id="ap-a2" data-layout-allow-overflow><img src="assets/app/entradas.jpg" alt="" /></div>
+              <!-- Fila B -->
+              <div class="ap-fr ap-rB ap-c0" id="ap-b0" data-layout-allow-overflow><img src="assets/app/feed.jpg" alt="" /></div>
+              <div class="ap-fr ap-rB ap-c1" id="ap-b1" data-layout-allow-overflow><img src="assets/app/mensajes.jpg" alt="" /></div>
+              <div class="ap-fr ap-rB ap-c2" id="ap-b2" data-layout-allow-overflow><img src="assets/app/actividad.jpg" alt="" /></div>
+              <!-- Fila C: grabaciones reales -->
+              <div class="ap-fr ap-rC ap-c0" id="ap-c0" data-layout-allow-overflow>
+                <video id="ap-v-match" class="clip" src="assets/app/clip-match.mp4" muted playsinline data-start="2.9" data-duration="2.9" data-media-start="0.4" data-track-index="3"></video>
+              </div>
+              <div class="ap-fr ap-rC ap-c1" id="ap-c1" data-layout-allow-overflow>
+                <!-- Se salta el skeleton de carga y el hueco de las portadas: arranca ya con el Top 10 cargado (media 1.1 s); un segundo tramo del mismo clip (pantalla estatica) cubre la salida -->
+                <video id="ap-v-music" class="clip" src="assets/app/clip-music.mp4" muted playsinline data-start="2.9" data-duration="1.9" data-media-start="1.1" data-track-index="4"></video>
+                <video id="ap-v-music2" class="clip" src="assets/app/clip-music.mp4" muted playsinline data-start="4.8" data-duration="1.0" data-media-start="2.0" data-track-index="6"></video>
+              </div>
+              <div class="ap-fr ap-rC ap-c2" id="ap-c2" data-layout-allow-overflow>
+                <video id="ap-v-snap" class="clip" src="assets/app/clip-snap.mp4" muted playsinline data-start="3.1" data-duration="2.7" data-media-start="0" data-track-index="5"></video>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
       <script>
         const tl = gsap.timeline({ paused: true });
-        tl.fromTo("#ap-label", { opacity: 0 }, { opacity: 0.5, duration: 0.4 }, 0);
+        const P = 1400; // per-frame perspective for entry flips
+        const SCROLL = 770;
+
+        /* ---------- board: tilt + slow camera drift ---------- */
+        tl.fromTo("#ap-board", { rotationY: -7.5, y: 0 }, { rotationY: -4.5, y: -16, duration: 5.8, ease: "sine.inOut" }, 0);
+        // rotationX: sequential keyframes (camera "lean" into each scroll)
+        tl.fromTo("#ap-board", { rotationX: 3.5 }, { rotationX: 2.9, duration: 1.9, ease: "sine.inOut", immediateRender: false }, 0);
+        tl.to("#ap-board", { rotationX: 5.5, duration: 0.3, ease: "power2.out" }, 1.9);
+        tl.to("#ap-board", { rotationX: 2.8, duration: 0.5, ease: "power2.inOut" }, 2.2);
+        tl.to("#ap-board", { rotationX: 2.8, duration: 0.5, ease: "none" }, 2.7);
+        tl.to("#ap-board", { rotationX: 5.5, duration: 0.3, ease: "power2.out" }, 3.2);
+        tl.to("#ap-board", { rotationX: 2.6, duration: 0.5, ease: "power2.inOut" }, 3.5);
+
+        /* ---------- pills ---------- */
+        const pillEls = ["#ap-p0", "#ap-p1", "#ap-p2", "#ap-p3"];
+        tl.fromTo(pillEls, { opacity: 0, y: -26, filter: "blur(12px)" },
+                           { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out", stagger: 0.07 }, 0.2);
+        tl.fromTo("#ap-sel", { opacity: 0, y: -26, filter: "blur(12px)", x: 0, width: 112 },
+                             { opacity: 1, y: 0, filter: "blur(0px)", x: 0, width: 112, duration: 0.5, ease: "power3.out" }, 0.2);
+        tl.set("#ap-sel-in", { x: 0 }, 0);
+        const slide = (t, x, w) => {
+          tl.to("#ap-sel", { x: x, width: w, duration: 0.5, ease: "power3.inOut" }, t);
+          tl.to("#ap-sel-in", { x: -x, duration: 0.5, ease: "power3.inOut" }, t);
+        };
+        slide(0.9, 124, 156);   // Todo -> Entradas
+        slide(2.0, 292, 128);   // -> Social
+        slide(3.3, 432, 196);   // -> Experiencias
+
+        /* ---------- row A: in 0.45, out with scroll 1 ---------- */
+        const rowA = ["#ap-a0", "#ap-a1", "#ap-a2"];
+        tl.fromTo(rowA,
+          { opacity: 0, filter: "blur(14px)", rotationY: -22, x: 150, z: -280, transformPerspective: P },
+          { opacity: 1, filter: "blur(0px)", rotationY: 0, x: 0, z: 0, transformPerspective: P, duration: 0.75, ease: "power3.out", stagger: 0.1 }, 0.45);
+        tl.to(rowA, { opacity: 0, filter: "blur(16px)", rotationY: 12, z: -160, duration: 0.32, ease: "power1.inOut", stagger: 0.03, overwrite: "auto" }, 1.85);
+
+        /* ---------- row B: peek, then scroll in; out with scroll 2 ---------- */
+        const rowB = ["#ap-b0", "#ap-b1", "#ap-b2"];
+        tl.fromTo(rowB,
+          { opacity: 0, filter: "blur(10px)", rotationY: -16, x: 90, z: -200, transformPerspective: P },
+          { opacity: 0.55, filter: "blur(5px)", rotationY: -6, x: 0, z: -60, transformPerspective: P, duration: 0.6, ease: "power2.out", stagger: 0.08 }, 1.2);
+        tl.fromTo(rowB,
+          { opacity: 0.55, filter: "blur(5px)", rotationY: -6, x: 0, z: -60, transformPerspective: P },
+          { opacity: 1, filter: "blur(0px)", rotationY: 0, x: 0, z: 0, transformPerspective: P, duration: 0.55, ease: "power3.out", stagger: 0.06, immediateRender: false }, 2.0);
+        tl.to(rowB, { opacity: 0, filter: "blur(16px)", rotationY: 12, z: -160, duration: 0.32, ease: "power1.inOut", stagger: 0.03, overwrite: "auto" }, 3.15);
+
+        /* ---------- row C: real recordings, enters during scroll 2 ---------- */
+        tl.fromTo("#ap-c0",
+          { opacity: 0, filter: "blur(14px)", rotationY: -22, x: 150, z: -280, transformPerspective: P },
+          { opacity: 1, filter: "blur(0px)", rotationY: 0, x: 0, z: 0, transformPerspective: P, duration: 0.75, ease: "power3.out" }, 3.0);
+        tl.fromTo("#ap-c1",
+          { opacity: 0, filter: "blur(14px)", rotationY: -22, x: 150, z: -280, transformPerspective: P },
+          { opacity: 1, filter: "blur(0px)", rotationY: 0, x: 0, z: 0, transformPerspective: P, duration: 0.75, ease: "power3.out" }, 3.15);
+        tl.fromTo("#ap-c2",
+          { opacity: 0, filter: "blur(14px)", rotationY: -22, x: 150, z: -280, transformPerspective: P },
+          { opacity: 1, filter: "blur(0px)", rotationY: 0, x: 0, z: 0, transformPerspective: P, duration: 0.75, ease: "power3.out" }, 3.3);
+
+        /* ---------- parallax float during holds (each frame its own phase) ---------- */
+        tl.fromTo("#ap-a0", { y: 0 }, { y: -9, duration: 1.4, ease: "sine.inOut", immediateRender: false }, 0.5);
+        tl.fromTo("#ap-a1", { y: 0 }, { y: -4, duration: 1.4, ease: "sine.inOut", immediateRender: false }, 0.55);
+        tl.fromTo("#ap-a2", { y: 0 }, { y: -11, duration: 1.4, ease: "sine.inOut", immediateRender: false }, 0.6);
+        tl.fromTo("#ap-b0", { y: 0 }, { y: -4, duration: 1.4, ease: "sine.inOut", immediateRender: false }, 1.9);
+        tl.fromTo("#ap-b1", { y: 0 }, { y: -10, duration: 1.4, ease: "sine.inOut", immediateRender: false }, 1.9);
+        tl.fromTo("#ap-b2", { y: 0 }, { y: -5, duration: 1.4, ease: "sine.inOut", immediateRender: false }, 1.9);
+        tl.fromTo("#ap-c0", { y: 0 }, { y: -10, duration: 2.0, ease: "sine.inOut", immediateRender: false }, 3.4);
+        tl.fromTo("#ap-c1", { y: 0 }, { y: -4, duration: 2.0, ease: "sine.inOut", immediateRender: false }, 3.5);
+        tl.fromTo("#ap-c2", { y: 0 }, { y: -11, duration: 2.0, ease: "sine.inOut", immediateRender: false }, 3.6);
+
+        /* ---------- scroll camera ---------- */
+        tl.fromTo("#ap-scroll", { y: 0 }, { y: -SCROLL, duration: 0.6, ease: "power3.inOut" }, 1.9);
+        tl.to("#ap-scroll", { y: -2 * SCROLL, duration: 0.6, ease: "power3.inOut" }, 3.2);
+
+        /* ---------- exit 5.1 -> 5.8: blur, fade, recede ---------- */
+        tl.to(["#ap-c0", "#ap-c1", "#ap-c2"], { opacity: 0, filter: "blur(20px)", duration: 0.62, ease: "power2.in", stagger: 0.03 }, 5.1);
+        tl.to(pillEls, { opacity: 0, filter: "blur(14px)", y: -14, duration: 0.55, ease: "power2.in", stagger: 0.03 }, 5.1);
+        tl.to("#ap-sel", { opacity: 0, filter: "blur(14px)", y: -14, duration: 0.55, ease: "power2.in" }, 5.1);
+        tl.to("#ap-board", { z: -320, duration: 0.7, ease: "power2.in" }, 5.1);
+
         window.__timelines["scene-app"] = tl;
       </script>
     </template>

@@ -4,29 +4,14 @@
   <body>
     <template>
       <style>
-        @font-face { font-family: "Inter Tight"; src: url("assets/fonts/inter-tight-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
-
         #lg-root {
           position: absolute;
           inset: 0;
           overflow: hidden;
-          font-family: "Inter Tight", system-ui, sans-serif;
-          color: #fff;
         }
 
-        /* Lockup Wave: squircle 150 + "Wave" 128 px, gap 28, centrado en (960, 540).
-           El CSS de #lg-lockup/#lg-mark/#lg-word es identico al de la escena de cierre (#ou-*). */
-        #lg-lockup {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 28px;
-          transform-origin: 50% 50%;
-          will-change: transform, filter, opacity;
-        }
-        /* scrim: oscurece suavemente el glow tras el lockup para que el blanco lea con contraste */
+        /* Scrim: oscurece suavemente el glow turquesa tras el logo (el wordmark es cian brillante
+           y sin esto pierde contraste). Misma forma que #ou-scrim en la escena de cierre. */
         #lg-scrim {
           position: absolute;
           left: 50%;
@@ -35,77 +20,64 @@
           height: 1080px;
           margin: -540px 0 0 -780px;
           border-radius: 50%;
-          background: radial-gradient(closest-side, rgba(2, 34, 46, 0.38) 0%, rgba(2, 34, 46, 0.37) 22%, rgba(2, 34, 46, 0.33) 40%, rgba(2, 34, 46, 0.25) 56%, rgba(2, 34, 46, 0.15) 72%, rgba(2, 34, 46, 0.05) 88%, rgba(2, 34, 46, 0) 100%);
+          background: radial-gradient(
+            closest-side,
+            rgba(2, 22, 32, 0.46) 0%,
+            rgba(2, 22, 32, 0.43) 28%,
+            rgba(2, 22, 32, 0.32) 52%,
+            rgba(2, 22, 32, 0.16) 74%,
+            rgba(2, 22, 32, 0.05) 90%,
+            rgba(2, 22, 32, 0) 100%
+          );
           pointer-events: none;
         }
-        #lg-mark {
-          position: relative;
-          flex: none;
-          width: 150px;
-          height: 150px;
-          z-index: 2;
+
+        /* Lockup REAL (wave-lockup.png 1240x321) a 904x234 = escala .729, centrado en (960, 540).
+           Mismo bloque (#ou-pos / #ou-wmask) y mismas medidas en la escena de cierre. */
+        #lg-lockup {
+          position: absolute;
+          left: 508px;
+          top: 423px;
+          width: 904px;
+          height: 234px;
+          transform-origin: 50% 50%;
+          will-change: transform, filter, opacity;
         }
-        #lg-shadow {
+        /* sombra oscura sutil (no toca los pixeles del logo; solo da profundidad/contraste) */
+        #lg-shadowbox {
           position: absolute;
           inset: 0;
-          border-radius: 28.125%;
-          box-shadow: 0 18px 44px rgba(2, 38, 50, 0.42), 0 2px 8px rgba(2, 38, 50, 0.25);
+          filter: drop-shadow(0 10px 26px rgba(1, 26, 38, 0.5)) drop-shadow(0 2px 5px rgba(1, 26, 38, 0.35));
         }
-        #lg-sq {
+        .lg-layer {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          will-change: transform, filter, opacity;
+        }
+        /* mismo PNG real en dos capas, recortadas en la franja transparente entre icono (x<322) y
+           wordmark (x>391): 356 / 1240 = 28.71 %. La suma de ambas = el lockup original, pixel a pixel. */
+        .lg-img {
           position: absolute;
           left: 0;
           top: 0;
-          width: 150px;
-          height: 150px;
+          width: 904px;
+          height: 234px;
           display: block;
-          overflow: visible;
         }
-        #lg-wordbox {
-          position: relative;
-          flex: none;
-          width: 310px;
-          height: 128px;
-          z-index: 1;
-        }
-        #lg-word {
-          display: block;
-          width: 310px;
-          height: 128px;
-          font-size: 128px;
-          font-weight: 700;
-          line-height: 128px;
-          white-space: nowrap;
-          color: #fff;
-          transform-origin: 0% 50%;
-          filter: drop-shadow(0 6px 17px rgba(2, 44, 58, 0.4));
-        }
-        /* letras absolutas en las posiciones kerneadas de "Wave" (Inter Tight 700 128px, -0.04em):
-           mismas coordenadas en la escena de cierre -> lockup identico al pixel */
-        #lg-word .lg-l {
-          position: absolute;
-          top: 0;
-          display: block;
-          letter-spacing: -0.04em;
-          will-change: transform, filter, opacity;
-        }
-        #lg-l0 { left: 0px; }
-        #lg-l1 { left: 115.83px; }
-        #lg-l2 { left: 178.72px; }
-        #lg-l3 { left: 242.13px; }
+        #lg-icon-img { clip-path: inset(0 71.29% 0 0); }
+        #lg-word-img { clip-path: inset(0 0 0 28.71%); }
+        /* origen de transformacion: centro del icono / centro del wordmark (px dentro del lockup) */
+        #lg-icon-layer { transform-origin: 117px 117px; }
+        #lg-word-layer { transform-origin: 594px 117px; }
       </style>
 
       <div id="lg-root" data-composition-id="scene-logo" data-width="1920" data-height="1080">
+        <div id="lg-scrim"></div>
         <div id="lg-lockup">
-          <div id="lg-scrim"></div>
-          <div id="lg-mark">
-            <div id="lg-shadow"></div>
-            <svg id="lg-sq" viewBox="0 0 32 32" aria-hidden="true">
-              <rect width="32" height="32" rx="9" fill="#21AEC0" />
-              <path d="M5 13c3-3 5-3 8 0s5 3 8 0 4-3 6-1.5M5 20c3-3 5-3 8 0s5 3 8 0 4-3 6-1.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" />
-            </svg>
-          </div>
-          <div id="lg-wordbox">
-            <div id="lg-word"><span class="lg-l" id="lg-l0">W</span><span class="lg-l" id="lg-l1">a</span><span class="lg-l" id="lg-l2">v</span><span class="lg-l" id="lg-l3">e</span></div>
+          <div id="lg-shadowbox">
+            <div class="lg-layer" id="lg-icon-layer"><img class="lg-img" id="lg-icon-img" src="assets/brand/wave-lockup.png" alt="" /></div>
+            <div class="lg-layer" id="lg-word-layer"><img class="lg-img" id="lg-word-img" src="./assets/brand/wave-lockup.png" alt="Wave" /></div>
           </div>
         </div>
       </div>
@@ -113,30 +85,35 @@
       <script>
         const tl = gsap.timeline({ paused: true });
 
-        // ---- entrada (0.15 -> 1.05): el squircle primero, el texto ~0.1 s despues con tracking que se cierra
-        tl.fromTo("#lg-mark",
-          { opacity: 0, y: 30, scale: 0.92, filter: "blur(24px)" },
-          { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.75, ease: "power3.out" }, 0.15);
+        // ---- entrada (0.25 -> 1.1): el icono primero, la palabra ~0.1 s despues saliendo desde el icono
+        tl.fromTo("#lg-scrim", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "power2.out" }, 0.1);
 
-        tl.fromTo("#lg-word",
-          { y: 30, scale: 0.92 },
-          { y: 0, scale: 1, duration: 0.85, ease: "power3.out" }, 0.25);
-        // tracking: cada letra parte desplazada (i * 26 px) y converge a su sitio kerneado
-        [0, 1, 2, 3].forEach((i) => {
-          const t0 = 0.25 + i * 0.06;
-          tl.fromTo("#lg-l" + i,
-            { x: i * 26, opacity: 0, filter: "blur(22px)" },
-            { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }, t0);
-        });
+        tl.fromTo("#lg-icon-layer",
+          { y: 30, scale: 0.9, filter: "blur(24px)" },
+          { y: 0, scale: 1, filter: "blur(0px)", duration: 0.75, ease: "power3.out" }, 0.25);
+        tl.fromTo("#lg-icon-layer", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, 0.25);
 
-        // ---- respiracion durante el hold (nunca estatico)
-        tl.fromTo("#lg-lockup", { scale: 1 }, { scale: 1.025, duration: 0.54, ease: "sine.inOut" }, 0.9);
+        tl.fromTo("#lg-word-layer",
+          { x: -40, y: 30, scale: 0.94, filter: "blur(24px)" },
+          { x: 0, y: 0, scale: 1, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }, 0.36);
+        tl.fromTo("#lg-word-layer", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, 0.36);
 
-        // ---- salida (1.45 -> 2.1): se encoge, se desenfoca y sube mientras llega el movil
+        // en reposo los filtros desaparecen del todo (la capa queda tal cual el PNG)
+        tl.set("#lg-icon-layer", { filter: "none" }, 1.0);
+        tl.set("#lg-word-layer", { filter: "none" }, 1.16);
+
+        // ---- hold: leve empuje continuo (nunca estatico)
+        tl.fromTo("#lg-lockup", { scale: 1 }, { scale: 1.03, duration: 0.42, ease: "sine.inOut" }, 0.9);
+
+        // ---- salida (1.32 -> 1.97): se encoge, se desenfoca y sube mientras llega el movil (escena 2 arranca en 1.2).
+        // Empieza ~0.13 s antes que el guion (1.45) para que el logo ya este casi disuelto cuando el movil pasa por delante.
         tl.fromTo("#lg-lockup",
-          { scale: 1.025, y: 0, opacity: 1, filter: "blur(0px)" },
-          { scale: 0.55, y: -40, opacity: 0, filter: "blur(18px)", duration: 0.65, ease: "power2.in", immediateRender: false }, 1.45);
+          { scale: 1.03, y: 0, filter: "blur(0px)" },
+          { scale: 0.55, y: -40, filter: "blur(18px)", duration: 0.65, ease: "power2.in", immediateRender: false }, 1.32);
+        tl.fromTo("#lg-lockup", { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "power1.inOut", immediateRender: false }, 1.4);
+        tl.fromTo("#lg-scrim", { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "power2.inOut", immediateRender: false }, 1.4);
 
+        window.__timelines = window.__timelines || {};
         window.__timelines["scene-logo"] = tl;
       </script>
     </template>

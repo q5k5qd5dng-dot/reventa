@@ -22,13 +22,13 @@
         #ph-screen { position: absolute; left: 12px; top: 12px; width: 406px; height: 856px; border-radius: 52px; overflow: hidden; background: #050d15; }
         #ph-wall { position: absolute; left: 0; top: 0; width: 406px; height: 856px; display: block; }
         #ph-dim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(3,9,14,.58), rgba(3,9,14,.30) 40%, rgba(3,9,14,.46)); opacity: 0; }
-        #ph-glare { position: absolute; left: -120px; top: -40px; width: 260px; height: 960px; transform: rotate(18deg);
+        #ph-glare { z-index: 10; position: absolute; left: -120px; top: -40px; width: 260px; height: 960px; transform: rotate(18deg);
           background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.10) 45%, rgba(255,255,255,.04) 70%, rgba(255,255,255,0)); pointer-events: none; }
-        #ph-island { position: absolute; left: 143px; top: 11px; width: 120px; height: 34px; border-radius: 17px; background: #000; z-index: 6; }
+        #ph-island { position: absolute; left: 143px; top: 11px; width: 120px; height: 34px; border-radius: 17px; background: #000; z-index: 9; }
         #ph-status { position: absolute; left: 0; top: 0; width: 406px; height: 56px; z-index: 5; }
-        #ph-stime { position: absolute; left: 36px; top: 17px; font-size: 17px; font-weight: 600; letter-spacing: -.01em; line-height: 22px; }
-        #ph-sicons { position: absolute; right: 30px; top: 21px; width: 64px; height: 14px; }
-        #ph-hbar { position: absolute; left: 136px; top: 836px; width: 134px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.92); z-index: 6; }
+        #ph-stime { position: absolute; z-index: 8; left: 36px; top: 17px; font-size: 17px; font-weight: 600; letter-spacing: -.01em; line-height: 22px; }
+        #ph-sicons { position: absolute; z-index: 8; right: 30px; top: 21px; width: 64px; height: 14px; }
+        #ph-hbar { position: absolute; left: 136px; top: 836px; width: 134px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.92); z-index: 9; }
 
         /* glass */
         .ph-glass { background: linear-gradient(180deg, rgba(226,233,239,.26), rgba(206,216,224,.16)); border: 1px solid rgba(255,255,255,.18); box-shadow: 0 12px 28px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.18); }
@@ -37,10 +37,10 @@
         #ph-lock { position: absolute; inset: 0; z-index: 4; }
         #ph-date { position: absolute; left: 0; width: 406px; top: 78px; text-align: center; font-size: 22px; font-weight: 500; color: rgba(255,255,255,.88); letter-spacing: -.005em; line-height: 28px; }
         #ph-time { position: absolute; left: 0; width: 406px; top: 104px; text-align: center; font-size: 128px; font-weight: 300; letter-spacing: -.045em; line-height: 132px; color: #fff; }
-        #ph-notif { position: absolute; left: 20px; top: 540px; width: 366px; height: 88px; border-radius: 26px; padding: 14px 16px; }
+        #ph-notif { position: absolute; left: 20px; top: 540px; width: 366px; height: 88px; border-radius: 26px; padding: 14px 16px; background: linear-gradient(180deg, rgba(40,58,68,.50), rgba(30,46,56,.38)); }
         #ph-notif2 { position: absolute; left: 34px; top: 560px; width: 338px; height: 88px; border-radius: 26px; opacity: 0; }
-        #ph-nicon { position: absolute; left: 16px; top: 16px; width: 44px; height: 44px; border-radius: 11px; overflow: hidden; }
-        #ph-nicon svg { width: 44px; height: 44px; display: block; }
+        #ph-nicon { position: absolute; left: 16px; top: 16px; width: 44px; height: 44px; }
+        #ph-nicon { width: 44px; height: 44.58px; background: url("assets/brand/wave-icon.png") 0 0 / 100% 100% no-repeat; filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
         #ph-nt { position: absolute; left: 72px; top: 14px; font-size: 15px; font-weight: 700; letter-spacing: -.01em; line-height: 20px; }
         #ph-nw { position: absolute; right: 16px; top: 15px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.66); line-height: 18px; }
         #ph-nb { position: absolute; left: 72px; top: 36px; width: 282px; font-size: 15px; font-weight: 500; color: rgba(255,255,255,.94); line-height: 20px; letter-spacing: -.005em; }
@@ -48,29 +48,34 @@
           background: rgba(12,22,30,.46); border: 1px solid rgba(255,255,255,.16); }
 
         /* ---------- home ---------- */
-        #ph-home { position: absolute; inset: 0; z-index: 2; }
+        #ph-home { position: absolute; inset: 0; z-index: 2; transform-origin: 154.67px 518px; }
         #ph-widget { position: absolute; left: 22px; top: 70px; width: 362px; height: 172px; border-radius: 28px; }
-        #ph-wposter { position: absolute; left: 14px; top: 14px; width: 100px; height: 144px; border-radius: 16px; background: url("assets/posters/neon.jpg") center/cover; box-shadow: 0 6px 16px rgba(0,0,0,.35); }
-        #ph-wk { position: absolute; left: 132px; top: 20px; font-size: 12px; font-weight: 700; letter-spacing: .14em; color: #8ef4ff; line-height: 16px; }
-        #ph-wt { position: absolute; left: 132px; top: 40px; font-size: 32px; font-weight: 700; letter-spacing: -.035em; line-height: 36px; }
-        #ph-ws { position: absolute; left: 132px; top: 80px; font-size: 16px; font-weight: 500; color: rgba(255,255,255,.74); line-height: 20px; }
-        #ph-wlogo { position: absolute; right: 16px; top: 16px; width: 22px; height: 22px; border-radius: 6px; overflow: hidden; }
-        #ph-wlogo svg { width: 22px; height: 22px; display: block; }
-        #ph-wgo { position: absolute; left: 132px; top: 118px; height: 30px; padding: 0 12px 0 6px; border-radius: 15px; background: rgba(255,255,255,.18); display: flex; align-items: center; gap: 8px; }
-        .ph-av { width: 20px; height: 20px; border-radius: 10px; border: 2px solid rgba(40,56,66,.9); margin-left: -8px; }
-        #ph-avs { display: flex; padding-left: 8px; }
-        #ph-wgo span { font-size: 14px; font-weight: 600; line-height: 18px; }
+        #ph-wloc { position: absolute; left: 18px; top: 14px; font-size: 16px; font-weight: 600; letter-spacing: -.01em; line-height: 20px; display: flex; align-items: center; gap: 5px; }
+        #ph-wtemp { position: absolute; left: 17px; top: 32px; font-size: 54px; font-weight: 300; letter-spacing: -.04em; line-height: 60px; }
+        #ph-wsun { position: absolute; right: 18px; top: 16px; width: 26px; height: 26px; }
+        #ph-wcond { position: absolute; right: 18px; top: 46px; font-size: 14px; font-weight: 600; line-height: 18px; text-align: right; }
+        #ph-wmm { position: absolute; right: 18px; top: 64px; font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,.78); line-height: 18px; text-align: right; }
+        #ph-whr { position: absolute; left: 14px; right: 14px; top: 104px; height: 56px; display: flex; justify-content: space-between; padding-top: 6px; border-top: 1px solid rgba(255,255,255,.16); }
+        .ph-hr { width: 56px; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; line-height: 14px; color: rgba(255,255,255,.82); }
+        .ph-hr b { font-size: 14px; font-weight: 600; color: #fff; }
+        .ph-hr svg { width: 18px; height: 18px; display: block; }
 
         .ph-app { position: absolute; width: 72px; }
         .ph-ic { width: 72px; height: 72px; border-radius: 17.5px; overflow: hidden; box-shadow: 0 6px 14px rgba(0,0,0,.30); }
         .ph-ic svg { display: block; }
+        #ph-waveimg { width: 72px; height: auto; display: block; filter: drop-shadow(0 6px 10px rgba(0,0,0,.34)); }
+        .ph-ic-wave { overflow: visible; box-shadow: none; border-radius: 0; height: 72px; }
         .ph-lbl { margin-top: 7px; width: 96px; margin-left: -12px; text-align: center; font-size: 12.5px; font-weight: 500; letter-spacing: -.005em; line-height: 15px; color: rgba(255,255,255,.95); text-shadow: 0 1px 4px rgba(0,0,0,.45); }
         #ph-dock { position: absolute; left: 12px; top: 738px; width: 382px; height: 92px; border-radius: 34px; }
         #ph-dots { position: absolute; left: 0; width: 406px; top: 706px; height: 8px; display: flex; justify-content: center; gap: 9px; }
         #ph-dots i { display: block; width: 7px; height: 7px; border-radius: 4px; background: rgba(255,255,255,.4); }
         #ph-dots i:first-child { background: rgba(255,255,255,.95); }
-        #ph-ring { position: absolute; left: 118.67px; top: 482.00px; width: 72px; height: 72px; border-radius: 22px; border: 3px solid #7FF3FF; opacity: 0; box-shadow: 0 0 18px rgba(92,232,246,.8), inset 0 0 12px rgba(92,232,246,.5); }
-        #ph-ring2 { position: absolute; left: 118.67px; top: 482.00px; width: 72px; height: 72px; border-radius: 22px; border: 2px solid #21AEC0; opacity: 0; }
+
+        /* ---------- app opening (real screenshot) ---------- */
+        #ph-open { position: absolute; z-index: 3; left: 0; top: 0; width: 406px; height: 856px; overflow: hidden; background: #0A0B10; opacity: 0; clip-path: inset(var(--ct) var(--cr) var(--cb) var(--cl) round var(--rad)); --ct: 0px; --cr: 0px; --cb: 0px; --cl: 0px; --rad: 52px; }
+        #ph-open-in { position: absolute; left: 0; top: 0; width: 406px; height: 856px; background: #0A0B10; transform-origin: 0 0; opacity: 0; }
+        #ph-shot { position: absolute; left: 0; top: 52px; width: 406px; height: auto; display: block; }
+        #ph-open-icw { position: absolute; left: 0; top: 0; width: 72px; height: 72.94px; transform-origin: 0 0; background: url("assets/brand/wave-icon.png") 0 0 / 100% 100% no-repeat; }
 
         /* ---------- glitch flood (screen space) ---------- */
         #ph-fx { position: absolute; inset: 0; opacity: 1; pointer-events: none; isolation: isolate; }
@@ -136,13 +141,13 @@
                   <div id="ph-dim"></div>
 
                   <div id="ph-home" data-layout-allow-overlap>
-                    <div id="ph-widget" class="ph-glass">
-                      <div id="ph-wposter"></div>
-                      <div id="ph-wk">ESTA NOCHE</div>
-                      <div id="ph-wt">Sala Neón</div>
-                      <div id="ph-ws">23:30 · Zaragoza</div>
-                      <div id="ph-wlogo"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" fill="#21AEC0"/><path d="M5 13c3-3 5-3 8 0s5 3 8 0 4-3 6-1.5M5 20c3-3 5-3 8 0s5 3 8 0 4-3 6-1.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div>
-                      <div id="ph-wgo"><div id="ph-avs"><i class="ph-av" style="background:linear-gradient(135deg,#ff8ab3,#c13b7a)"></i><i class="ph-av" style="background:linear-gradient(135deg,#ffd27a,#e08a1e)"></i><i class="ph-av" style="background:linear-gradient(135deg,#8be9ff,#2a8fb0)"></i></div><span>128 van</span></div>
+                    <div id="ph-widget" class="ph-glass" data-layout-allow-overlap>
+                      <div id="ph-wloc">Zaragoza<svg width="11" height="11" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M3 11.5 21 3l-8.500 18-1.800-7.700z"/></svg></div>
+                      <div id="ph-wtemp">21°</div>
+                      <div id="ph-wsun"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5" fill="#ffd54a"/><g stroke="#ffd54a" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></g></svg></div>
+                      <div id="ph-wcond">Despejado</div>
+                      <div id="ph-wmm">Máx 24° · Mín 14°</div>
+                      <div id="ph-whr"><div class="ph-hr"><span>Ahora</span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5" fill="#ffd54a"/><g stroke="#ffd54a" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></g></svg><b>21°</b></div><div class="ph-hr"><span>22</span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5" fill="#ffd54a"/><g stroke="#ffd54a" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></g></svg><b>20°</b></div><div class="ph-hr"><span>23</span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 14.5A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z" fill="#e8ecf4"/></svg><b>18°</b></div><div class="ph-hr"><span>0</span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 14.5A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z" fill="#e8ecf4"/></svg><b>17°</b></div><div class="ph-hr"><span>1</span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 14.5A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z" fill="#e8ecf4"/></svg><b>16°</b></div></div>
                     </div>
                     <div class="ph-app" style="left:22.00px;top:266px"><div class="ph-ic" style="background:linear-gradient(160deg,#5b626b,#1d2126)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
   <rect x="48" y="14" width="11" height="5" rx="2" fill="#aab3bd"/>
@@ -190,7 +195,7 @@
                     <div class="ph-app" style="left:22.00px;top:482px"><div class="ph-ic" style="background:linear-gradient(170deg,#2f78e4,#7fc6ff)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
   <circle cx="26" cy="27" r="11" fill="#ffd54a"/>
   <path d="M25 52c-7 0-12-4-12-9.4 0-5 4.2-9 9.6-9.4 1.6-5.4 6.8-9.2 13-9.2 7.4 0 13.4 5 14 11.6 4.4.8 7.4 4 7.4 7.8 0 4.4-4 8.6-9.6 8.6z" fill="#fff"/></svg></div><div class="ph-lbl">Tiempo</div></div>
-                    <div class="ph-app" style="left:118.67px;top:482px"><div class="ph-ic ph-ic-wave" id="ph-waveicon"><svg viewBox="0 0 32 32" width="72" height="72" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" fill="#21AEC0"/><path d="M5 13c3-3 5-3 8 0s5 3 8 0 4-3 6-1.5M5 20c3-3 5-3 8 0s5 3 8 0 4-3 6-1.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="ph-lbl">Wave</div></div>
+                    <div class="ph-app" id="ph-waveapp" style="left:118.67px;top:482px"><div class="ph-ic ph-ic-wave" id="ph-waveicon"><img id="ph-waveimg" src="assets/brand/wave-icon.png" alt="" /></div><div class="ph-lbl">Wave</div></div>
                     <div class="ph-app" style="left:215.34px;top:482px"><div class="ph-ic" style="background:#0d0e11"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
   <rect x="10" y="17" width="52" height="14" rx="5" fill="#ff5a5a"/>
   <rect x="10" y="26" width="52" height="14" rx="5" fill="#ffc83d"/>
@@ -227,9 +232,13 @@
                     <div class="ph-app ph-dockapp" style="left:303.2px;top:748px"><div class="ph-ic" style="background:linear-gradient(160deg,#c3c8cf,#848b94)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
   <circle cx="36" cy="28" r="10" fill="#fff"/>
   <path d="M15 58c1-12 10-18 21-18s20 6 21 18z" fill="#fff"/></svg></div></div>
-                    <div id="ph-ring"></div>
-                    <div id="ph-ring2"></div>
-                    <div id="ph-stime">9:41</div>
+                  </div>
+
+                  <div id="ph-open" data-layout-allow-overlap>
+                    <div id="ph-open-in" data-layout-allow-overlap>
+                      <img id="ph-shot" src="assets/app/ciudad.jpg" alt="" />
+                    </div>
+                    <div id="ph-open-icw"></div>
                   </div>
 
                   <div id="ph-lock" data-layout-allow-overlap>
@@ -237,15 +246,16 @@
                     <div id="ph-time" data-layout-allow-overlap>9:41</div>
                     <div id="ph-notif2" class="ph-glass"></div>
                     <div id="ph-notif" class="ph-glass">
-                      <div id="ph-nicon"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" fill="#21AEC0"/><path d="M5 13c3-3 5-3 8 0s5 3 8 0 4-3 6-1.5M5 20c3-3 5-3 8 0s5 3 8 0 4-3 6-1.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+                      <div id="ph-nicon"></div>
                       <div id="ph-nt">Wave</div>
                       <div id="ph-nw">ahora</div>
-                      <div id="ph-nb">Tu entrada para Sala Neón está lista</div>
+                      <div id="ph-nb">Match confirmado. Ya podéis hablar.</div>
                     </div>
                     <div class="ph-qbtn" style="left:38px" id="ph-q1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><path d="M8 3h8l-1.600 5H9.600z"/><path d="M9.600 8h4.800v4.500l-1 1.200V21h-2.800v-7.300l-1-1.200z" fill="#fff" fill-opacity=".9"/></svg></div>
                     <div class="ph-qbtn" style="left:314px" id="ph-q2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><path d="M3.500 8.500c0-1.100.9-2 2-2h2l1.300-1.800h6.400l1.300 1.800h2c1.100 0 2 .9 2 2v9c0 1.100-.9 2-2 2h-13c-1.100 0-2-.9-2-2z"/><circle cx="12" cy="13" r="3.800"/></svg></div>
                   </div>
 
+                  <div id="ph-stime" data-layout-allow-overlap>9:41</div>
                   <div id="ph-sicons">
 <svg width="64" height="14" viewBox="0 0 64 14" xmlns="http://www.w3.org/2000/svg">
  <g fill="#fff"><rect x="0" y="9" width="3.4" height="4.5" rx="1"/><rect x="5" y="6.5" width="3.4" height="7" rx="1"/><rect x="10" y="3.5" width="3.4" height="10" rx="1"/><rect x="15" y="0.5" width="3.4" height="13" rx="1"/></g>
@@ -295,10 +305,10 @@
       <script>
         const tl = gsap.timeline({ paused: true });
         const P = "#ph-phone";
-        const S_PUSH = 2.4;                    // scale at the end of the push-in
         const IC_X = -48.33, IC_Y = 90;        // Wave icon offset from the phone centre (body px)
-        const pushX = (s) => -IC_X * s;        // keeps the icon centred on the canvas
-        const pushY = (s) => -IC_Y * s;
+        const S_TAP = 1.55;                    // camera scale at the moment of the tap (centred on the icon)
+        const S_END = 3.0;                     // final push-in scale (native 1206 px screenshot ~ 1218 px on screen)
+        const CT_X = 0, CT_Y = -262;           // point of the opened screen the push-in settles on (offset from phone centre)
 
         // ---------- 0.00 - 1.00  flight in (one object: z + rotations, no scale-only depth)
         tl.fromTo(P, { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "none" }, 0);
@@ -313,9 +323,9 @@
         tl.fromTo("#ph-glare", { x: -140 }, { x: 560, duration: 1.0, ease: "power1.inOut" }, 0.05);
         tl.fromTo("#ph-glare", { x: -140 }, { x: 560, duration: 0.9, ease: "power1.inOut", immediateRender: false }, 1.75);
 
-        // ---------- 1.00 - 1.92  breathe on the lock screen -> swipe-up -> home
+        // ---------- 1.00 - 1.95  breathe on the lock screen -> swipe-up -> home
         tl.to(P, { rotationX: 6, duration: 0.92, ease: "power2.inOut" }, 1.0);
-        tl.to(P, { scale: 1.12, duration: 0.92, ease: "power2.inOut" }, 1.0);
+        tl.to(P, { scale: 1.12, duration: 0.55, ease: "power2.inOut" }, 1.0);
         tl.to(P, { rotationY: -4, duration: 0.45, ease: "sine.inOut" }, 1.0);
         tl.to(P, { rotationY: 2, duration: 0.47, ease: "sine.inOut" }, 1.45);
 
@@ -333,44 +343,55 @@
 
         // home: widget + icons enter with stagger
         tl.fromTo("#ph-widget", { opacity: 0, scale: 0.9, y: 16 }, { opacity: 1, scale: 1, y: 0, duration: 0.42, ease: "power3.out" }, 1.46);
-        tl.fromTo(".ph-app", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out", stagger: 0.015 }, 1.5);
+        tl.fromTo(".ph-app:not(#ph-waveapp)", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out", stagger: 0.015 }, 1.5);
+        tl.fromTo("#ph-waveapp", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 1.52);
         tl.fromTo("#ph-dock, #ph-dots", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 1.68);
 
-        // ---------- 1.92 - 2.35  push-in onto the Wave icon
-        tl.to(P, { scale: S_PUSH, x: pushX(S_PUSH), y: pushY(S_PUSH), duration: 0.45, ease: "power2.inOut" }, 1.92);
-        tl.to(P, { rotationX: 3, duration: 0.45, ease: "power2.inOut" }, 1.92);
-        tl.to(P, { rotationY: -3, duration: 0.45, ease: "power2.inOut" }, 1.92);
-        tl.to(P, { rotationZ: -2.5, duration: 0.45, ease: "power2.inOut" }, 1.92);
+        // ---------- 1.55 - 2.00  camera drifts onto the Wave icon (the home screen is still settling)
+        tl.to(P, { scale: S_TAP, x: -S_TAP * IC_X, y: -S_TAP * IC_Y, duration: 0.45, ease: "power1.in" }, 1.55);
 
-        // tap on the Wave icon + expanding ring
-        tl.fromTo("#ph-waveicon", { scale: 1 }, { scale: 0.92, duration: 0.1, ease: "power2.out" }, 1.98);
-        tl.to("#ph-waveicon", { scale: 1.07, duration: 0.17, ease: "back.out(2.4)" }, 2.08);
-        tl.to("#ph-waveicon", { scale: 1.0, duration: 0.16, ease: "power2.out" }, 2.25);
-        tl.fromTo("#ph-waveicon", { boxShadow: "0 6px 14px rgba(0,0,0,0.3), 0 0 0 0 rgba(92,232,246,0)" },
-                                  { boxShadow: "0 6px 14px rgba(0,0,0,0.3), 0 0 34px 8px rgba(92,232,246,0.85)", duration: 0.22, ease: "power2.out", immediateRender: false }, 2.04);
-        tl.fromTo("#ph-ring", { scale: 0.92 }, { scale: 2.7, duration: 0.6, ease: "power2.out" }, 2.06);
-        tl.fromTo("#ph-ring", { opacity: 0 }, { immediateRender: false, keyframes: [{ opacity: 0.95, duration: 0.02, ease: "none" }, { opacity: 0, duration: 0.58, ease: "power2.out" }] }, 2.06);
-        tl.fromTo("#ph-ring2", { scale: 0.92 }, { scale: 3.8, duration: 0.66, ease: "power2.out" }, 2.16);
-        tl.fromTo("#ph-ring2", { opacity: 0 }, { immediateRender: false, keyframes: [{ opacity: 0.8, duration: 0.02, ease: "none" }, { opacity: 0, duration: 0.64, ease: "power2.out" }] }, 2.16);
+        // ---------- 1.88 - 2.30  tap on the real Wave icon -> iOS-style zoom into the real app screen
+        const PR = 0.92;                                   // pressed scale of the icon
+        const OW = 72 * PR, OH = 72.94 * PR;
+        const OL = 154.67 - OW / 2, OT = 518.45 - OH / 2;  // pressed icon rect (screen px)
+        const OPEN = { duration: 0.4, ease: "power3.out" };
+        tl.fromTo("#ph-waveicon", { scale: 1 }, { scale: PR, duration: 0.09, ease: "power2.out" }, 1.85);
+        tl.set("#ph-waveicon", { opacity: 0 }, 1.94);       // the opening layer takes over, pixel for pixel
+        tl.set("#ph-open", { opacity: 1 }, 1.94);
+        // the reveal window: clip-path from the icon rect to the whole screen, corner radius 16 -> 52 (sub-pixel smooth, no layout)
+        // (CSS variables so the bottom edge can lag: the window stays icon-shaped before it stretches to the full screen)
+        const LAG = (t) => Math.pow(1 - Math.pow(1 - t, 3), 1.6);   // bottom edge: same power3.out, lagged
+        tl.fromTo("#ph-open",
+          { "--ct": OT + "px", "--cr": (406 - OL - OW) + "px", "--cl": OL + "px", "--cb": (856 - OT - OH) + "px", "--rad": "16px" },
+          { "--ct": "0px", "--cr": "0px", "--cl": "0px", "--rad": "52px", immediateRender: false, duration: OPEN.duration, ease: OPEN.ease }, 1.94);
+        tl.fromTo("#ph-open", { "--cb": (856 - OT - OH) + "px" }, { "--cb": "0px", immediateRender: false, duration: OPEN.duration, ease: LAG }, 1.94);
+        // the content grows with it: icon -> screen (scale from the icon size up, anchored at the window's top-left)
+        tl.fromTo("#ph-open-in", { x: OL, y: OT, scale: OW / 406 }, Object.assign({ x: 0, y: 0, scale: 1, immediateRender: false }, OPEN), 1.94);
+        tl.fromTo("#ph-open-icw", { x: OL, y: OT, scale: PR }, Object.assign({ x: 0, y: 0, scale: 406 / 72, immediateRender: false }, OPEN), 1.94);
+        tl.fromTo("#ph-open-in", { opacity: 0 }, { opacity: 1, duration: 0.06, ease: "none", immediateRender: false }, 1.945);
+        tl.fromTo("#ph-open-icw", { opacity: 1 }, { opacity: 0, duration: 0.07, ease: "none", immediateRender: false }, 1.955);
+        // the home screen recedes behind it
+        tl.fromTo("#ph-home", { scale: 1, opacity: 1 }, { scale: 1.16, opacity: 0.25, duration: 0.34, ease: "power2.out", immediateRender: false }, 1.94);
 
-        // ---------- 2.35 - 3.10  keeps creeping into the glitch, then leaves under the flood
-        const S_END = 3.0;
-        tl.to(P, { scale: S_END, x: pushX(S_END), y: pushY(S_END), duration: 0.75, ease: "power1.in" }, 2.35);
-        tl.to(P, { rotationZ: -7, rotationX: 5, duration: 0.75, ease: "power1.in" }, 2.35);
-        tl.to("#ph-stage", { filter: "blur(14px)", duration: 0.35, ease: "power2.in" }, 2.3);
-        tl.to(P, { opacity: 0, duration: 0.12, ease: "none" }, 2.56);
+        // ---------- 1.97 - 2.62  push-in over the opened app (screen stays native-sharp)
+        tl.to(P, { scale: S_END, x: -S_END * CT_X, y: -S_END * CT_Y, duration: 0.62, ease: "power2.out" }, 1.97);
+        tl.to(P, { rotationX: 3, rotationY: -3, rotationZ: -5, duration: 0.62, ease: "power1.inOut" }, 1.97);
+        tl.to("#ph-stage", { filter: "blur(12px)", duration: 0.2, ease: "power2.in" }, 2.45);
+        tl.to(P, { opacity: 0, duration: 0.1, ease: "none" }, 2.6);
 
-        // ---------- 2.10 - 3.10  violet glitch flood
+        // ---------- 2.27 - 3.10  violet glitch flood (original choreography, compressed to start under the push-in)
+        const T = (t) => 2.31 + (t - 2.12) * 0.65;
+        const D = (d) => d * 0.65;
         // screen jitters: stepped x offsets + skew on the camera
         const jit = [[2.17, 16, -5], [2.21, -14, 4], [2.25, 8, -2], [2.29, 0, 0], [2.4, 26, -7], [2.43, -10, 3], [2.46, 0, 0]];
-        jit.forEach(([t, x, sk]) => tl.set("#ph-cam", { x: x, skewX: sk }, t));
-        tl.set("#ph-cam", { opacity: 0.4 }, 2.27); tl.set("#ph-cam", { opacity: 1 }, 2.3);
-        tl.set("#ph-cam", { opacity: 0.55 }, 2.44); tl.set("#ph-cam", { opacity: 1 }, 2.47);
+        jit.forEach(([t, x, sk]) => tl.set("#ph-cam", { x: x, skewX: sk }, T(t)));
+        tl.set("#ph-cam", { opacity: 0.4 }, T(2.27)); tl.set("#ph-cam", { opacity: 1 }, T(2.3));
+        tl.set("#ph-cam", { opacity: 0.55 }, T(2.44)); tl.set("#ph-cam", { opacity: 1 }, T(2.47));
 
-        // blobs grow from the icon (canvas centre)
+        // blobs grow from the screen centre
         const grow = (sel, t0, d, s1, ease, extra) => {
-          tl.fromTo(sel, { scale: 0.02 }, Object.assign({ scale: s1, duration: d, ease: ease }, extra || {}), t0);
-          tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.02, ease: "none", immediateRender: false }, t0);
+          tl.fromTo(sel, { scale: 0.02 }, Object.assign({ scale: s1, duration: D(d), ease: ease }, extra || {}), T(t0));
+          tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.02, ease: "none", immediateRender: false }, T(t0));
         };
         grow("#ph-b-base", 2.14, 0.42, 3.6, "power2.in");
         grow("#ph-b-cy", 2.16, 0.42, 3.7, "power2.in", { x: -26 });
@@ -379,13 +400,13 @@
         grow("#ph-b-wh", 2.26, 0.34, 1.1, "power3.in", { x: 20, y: -10 });
         const arms = [["#ph-arm1", -14, 2.18, 1.25], ["#ph-arm2", 30, 2.22, 1.15], ["#ph-arm3", -58, 2.26, 1.0]];
         arms.forEach(([sel, rot, t, s]) => {
-          tl.fromTo(sel, { scale: 0.05, rotation: rot - 24 }, { scale: s, rotation: rot, duration: 0.4, ease: "power2.out" }, t);
-          tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.03, ease: "none", immediateRender: false }, t);
+          tl.fromTo(sel, { scale: 0.05, rotation: rot - 24 }, { scale: s, rotation: rot, duration: D(0.4), ease: "power2.out" }, T(t));
+          tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.03, ease: "none", immediateRender: false }, T(t));
         });
-        tl.to(["#ph-b-wh", "#ph-arm1", "#ph-arm2", "#ph-arm3", "#ph-b-mg"], { rotation: "+=18", duration: 0.5, ease: "none" }, 2.55);
+        tl.to(["#ph-b-wh", "#ph-arm1", "#ph-arm2", "#ph-arm3", "#ph-b-mg"], { rotation: "+=18", duration: 0.5, ease: "none" }, T(2.55));
 
-        tl.fromTo("#ph-veins", { scale: 0.35, rotation: -6 }, { scale: 1.2, rotation: 4, duration: 0.55, ease: "power2.out" }, 2.22);
-        tl.fromTo("#ph-veins", { opacity: 0 }, { opacity: 0.32, duration: 0.2, ease: "power1.out", immediateRender: false }, 2.26);
+        tl.fromTo("#ph-veins", { scale: 0.35, rotation: -6 }, { scale: 1.2, rotation: 4, duration: D(0.55), ease: "power2.out" }, T(2.22));
+        tl.fromTo("#ph-veins", { opacity: 0 }, { opacity: 0.32, duration: 0.15, ease: "power1.out", immediateRender: false }, T(2.26));
 
         // horizontal glitch bars: stepped offsets / skew / opacity
         const bars = {
@@ -396,19 +417,19 @@
           "#ph-bar5": [[2.26, -160, 10, 0.9], [2.32, 200, -20, 1], [2.39, -100, 12, 1], [2.47, 140, -6, 0.8], [2.58, 0, 0, 0]],
           "#ph-bar6": [[2.18, 140, -14, 0.9], [2.27, -220, 18, 1], [2.37, 100, -8, 1], [2.43, 0, 0, 0]],
         };
-        Object.keys(bars).forEach((sel) => bars[sel].forEach(([t, x, sk, o]) => tl.set(sel, { x: x, skewX: sk, opacity: o * 0.8 }, t)));
+        Object.keys(bars).forEach((sel) => bars[sel].forEach(([t, x, sk, o]) => tl.set(sel, { x: x, skewX: sk, opacity: o * 0.8 }, T(t))));
 
         // white flash flickers (stepped)
-        [[2.12, 0.5], [2.15, 0], [2.34, 0.45], [2.37, 0.1], [2.4, 0], [2.5, 0.35], [2.53, 0]].forEach(([t, o]) => tl.set("#ph-flash", { opacity: o }, t));
+        [[2.12, 0.5], [2.15, 0], [2.34, 0.45], [2.37, 0.1], [2.4, 0], [2.5, 0.35], [2.53, 0]].forEach(([t, o]) => tl.set("#ph-flash", { opacity: o }, T(t)));
 
         // after the peak the flood settles into deeper violet (white core and veins pull back)
-        tl.to("#ph-b-wh", { opacity: 0.7, duration: 0.2, ease: "power1.out" }, 2.5);
-        tl.to("#ph-veins", { opacity: 0.2, duration: 0.2, ease: "power1.out" }, 2.5);
-        tl.to(["#ph-arm1", "#ph-arm3"], { opacity: 0.55, duration: 0.2, ease: "power1.out" }, 2.5);
+        tl.to("#ph-b-wh", { opacity: 0.7, duration: 0.2, ease: "power1.out" }, 2.55);
+        tl.to("#ph-veins", { opacity: 0.2, duration: 0.2, ease: "power1.out" }, 2.55);
+        tl.to(["#ph-arm1", "#ph-arm3"], { opacity: 0.55, duration: 0.2, ease: "power1.out" }, 2.55);
 
         // dissolve to transparent (glow underneath stays clean)
-        tl.to("#ph-fx", { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 2.7);
-        tl.to("#ph-fx", { filter: "blur(16px)", duration: 0.4, ease: "power1.in" }, 2.7);
+        tl.to("#ph-fx", { opacity: 0, duration: 0.38, ease: "power2.inOut" }, 2.72);
+        tl.to("#ph-fx", { filter: "blur(16px)", duration: 0.38, ease: "power1.in" }, 2.72);
         tl.set("#ph-fx", { filter: "blur(0px)" }, 0);
 
         window.__timelines["scene-phone"] = tl;
