@@ -125,10 +125,14 @@ El vídeo ahora lleva audio: SFX sincronizados con cada animación + una cama mu
   - Música: cama ambiente cálida (pad de síntesis + sub suave + pulso muy discreto) en una tonalidad coherente, que arranca baja con el logo, crece con el móvil/la app, se aligera durante el texto y resuelve en un acorde limpio con cola en el logo final (termina en silencio antes de 15.9 s, sin corte seco).
 - **Mezcla**: SFX picos ≈ −6 dBFS, música ≈ 10–14 dB por debajo de los SFX, sidechain/ducking suave de la música bajo los impactos grandes; master ≈ −16 LUFS integrado (±1.5) con true-peak ≤ −1 dBTP; sin clipping; fade-in 0.15 s y fade-out final 0.8 s. Verifica con `ffmpeg -af ebur128`/`astats` y con un espectrograma (`showspectrumpic`) que cada evento está en su sitio.
 
-## Locución (voz de chica en la escena 4)
-La escena del texto lleva una voz femenina en español que lee lo que sale escrito: "Descubre dónde salir," (entra a 10.40 s, `vo-1`) y "y compra tu entrada" (entra a 12.33 s, `vo-2`).
-- Voz generada en local con el TTS de HyperFrames (Kokoro-82M, voz `ef_dora`), tomas crudas en `assets/audio/raw/`, tratadas de forma determinista con `scripts/make-voice.py` (EQ, compresión suave, reverb de placa corta, estéreo, pico −3 dBFS) → `assets/audio/vo-1.wav`, `vo-2.wav`.
-- `index.html`: `<audio id="vo-1">` y `<audio id="vo-2">` en las pistas 12 y 13; la música baja ≈ −3 dB y los SFX ≈ −6 dB durante la locución (carriles `data-automation` de volumen en `#music` y `#sfx`, 10.1–14.2 s).
+## Locución (voz de chica, español + "Wave" en inglés)
+Narración continua con voz femenina, en cinco piezas sincronizadas con lo que se ve (colocación en s globales):
+- `vo-1` 4.05 — "La app que junta venta de entradas online" (se abre la app y entran las pantallas de entradas).
+- `vo-2` 7.15 — "con red social para los asistentes de las fiestas." (pantallas sociales y experiencias).
+- `vo-3` 10.40 — "Descubre dónde salir," y `vo-4` 12.33 — "y compra tu entrada." (leen el texto de la escena 4).
+- `vo-5` 14.80 — "Wave." con pronunciación inglesa /weɪv/ (cierre, cuando el wordmark sale de detrás del icono).
+Voz: Kokoro-82M (TTS local de HyperFrames) con una mezcla de estilos 0.45 `ef_dora` + 0.55 `if_sara` (chica joven, más aguda que la voz anterior), fonemas dados a mano para que "app", "online" y "Wave" suenen bien. Receta completa en la cabecera de `scripts/make-voice.py`; tomas crudas en `assets/audio/raw/`.
+`scripts/make-voice.py` (determinista) limpia y da sala a las tomas → `assets/audio/vo-1..5.wav`, calcula el ducking real a partir de la envolvente de la voz (música ≈ −4.4 dB, SFX ≈ −4.2 dB mientras habla; vuelven a subir en el hueco del orbe/icono, 13.7–14.8 s) y regenera el bloque `<audio>` de `index.html` entre `AUDIO:begin` y `AUDIO:end`.
 
 ## Contrato técnico (resumen; todo está en `/hyperframes-core`)
 - Cada escena es un archivo con `<template>` que contiene `<style>`, el nodo raíz y `<script>`. Raíz: `<div id="<prefijo>-root" data-composition-id="scene-xxx" data-width="1920" data-height="1080">`, **estilado por `#<prefijo>-root`** (`position:absolute; inset:0; overflow:hidden`, sin fondo). Prefijos de ids: `lg-`, `ph-`, `ap-`, `tx-`, `ou-` (todos los ids únicos en la página ensamblada).
