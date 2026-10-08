@@ -170,8 +170,11 @@
       ></div>
 
       <!-- Sonido (sintetizado por scripts/make-audio.py; fades de entrada 0.15 s y salida 0.8 s ya horneados) -->
-      <audio id="music" src="assets/audio/music.wav" data-start="0" data-duration="15.9" data-track-index="10" data-volume="1"></audio>
-      <audio id="sfx" src="assets/audio/sfx.wav" data-start="0" data-duration="15.9" data-track-index="11" data-volume="1"></audio>
+      <audio id="music" src="assets/audio/music.wav" data-start="0" data-duration="15.9" data-track-index="10" data-volume="1" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:1},{&quot;t&quot;:10.1,&quot;v&quot;:1},{&quot;t&quot;:10.5,&quot;v&quot;:0.72},{&quot;t&quot;:13.5,&quot;v&quot;:0.72},{&quot;t&quot;:14.2,&quot;v&quot;:1}]}]}"></audio>
+      <audio id="sfx" src="assets/audio/sfx.wav" data-start="0" data-duration="15.9" data-track-index="11" data-volume="1" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:1},{&quot;t&quot;:10.25,&quot;v&quot;:1},{&quot;t&quot;:10.5,&quot;v&quot;:0.5},{&quot;t&quot;:13.6,&quot;v&quot;:0.5},{&quot;t&quot;:13.95,&quot;v&quot;:1}]}]}"></audio>
+      <!-- Locución (voz de chica): lee lo que sale escrito en la escena 4. Ver scripts/make-voice.py -->
+      <audio id="vo-1" src="assets/audio/vo-1.wav" data-start="10.4" data-duration="2.472" data-track-index="12" data-volume="1"></audio>
+      <audio id="vo-2" src="assets/audio/vo-2.wav" data-start="12.33" data-duration="2.28" data-track-index="13" data-volume="1"></audio>
     </div>
 
     <script>

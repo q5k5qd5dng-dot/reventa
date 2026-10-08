@@ -125,6 +125,11 @@ El vídeo ahora lleva audio: SFX sincronizados con cada animación + una cama mu
   - Música: cama ambiente cálida (pad de síntesis + sub suave + pulso muy discreto) en una tonalidad coherente, que arranca baja con el logo, crece con el móvil/la app, se aligera durante el texto y resuelve en un acorde limpio con cola en el logo final (termina en silencio antes de 15.9 s, sin corte seco).
 - **Mezcla**: SFX picos ≈ −6 dBFS, música ≈ 10–14 dB por debajo de los SFX, sidechain/ducking suave de la música bajo los impactos grandes; master ≈ −16 LUFS integrado (±1.5) con true-peak ≤ −1 dBTP; sin clipping; fade-in 0.15 s y fade-out final 0.8 s. Verifica con `ffmpeg -af ebur128`/`astats` y con un espectrograma (`showspectrumpic`) que cada evento está en su sitio.
 
+## Locución (voz de chica en la escena 4)
+La escena del texto lleva una voz femenina en español que lee lo que sale escrito: "Descubre dónde salir," (entra a 10.40 s, `vo-1`) y "y compra tu entrada" (entra a 12.33 s, `vo-2`).
+- Voz generada en local con el TTS de HyperFrames (Kokoro-82M, voz `ef_dora`), tomas crudas en `assets/audio/raw/`, tratadas de forma determinista con `scripts/make-voice.py` (EQ, compresión suave, reverb de placa corta, estéreo, pico −3 dBFS) → `assets/audio/vo-1.wav`, `vo-2.wav`.
+- `index.html`: `<audio id="vo-1">` y `<audio id="vo-2">` en las pistas 12 y 13; la música baja ≈ −3 dB y los SFX ≈ −6 dB durante la locución (carriles `data-automation` de volumen en `#music` y `#sfx`, 10.1–14.2 s).
+
 ## Contrato técnico (resumen; todo está en `/hyperframes-core`)
 - Cada escena es un archivo con `<template>` que contiene `<style>`, el nodo raíz y `<script>`. Raíz: `<div id="<prefijo>-root" data-composition-id="scene-xxx" data-width="1920" data-height="1080">`, **estilado por `#<prefijo>-root`** (`position:absolute; inset:0; overflow:hidden`, sin fondo). Prefijos de ids: `lg-`, `ph-`, `ap-`, `tx-`, `ou-` (todos los ids únicos en la página ensamblada).
 - Exactamente un `gsap.timeline({ paused: true })` registrado como `window.__timelines["scene-xxx"] = tl` (clave = `data-composition-id`), registrado al final y construido de forma síncrona.
