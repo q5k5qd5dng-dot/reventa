@@ -71,26 +71,37 @@
         #ph-dots i { display: block; width: 7px; height: 7px; border-radius: 4px; background: rgba(255,255,255,.4); }
         #ph-dots i:first-child { background: rgba(255,255,255,.95); }
 
+        /* ---------- tap + press ---------- */
+        #ph-tap { position: absolute; z-index: 6; left: 128.67px; top: 492.47px; width: 52px; height: 52px; border-radius: 50%; opacity: 0; pointer-events: none;
+          background: radial-gradient(circle, rgba(255,255,255,.34) 0, rgba(255,255,255,.26) 62%, rgba(255,255,255,.18) 100%); border: 1.5px solid rgba(255,255,255,.5); box-shadow: 0 0 22px rgba(255,255,255,.22), inset 0 0 10px rgba(255,255,255,.18); }
+        .ph-shade { position: absolute; left: 0; top: 0; width: 72px; height: 72.94px; background: #fff; opacity: 0; pointer-events: none;
+          -webkit-mask: url("assets/brand/wave-icon.png") 0 0 / 100% 100% no-repeat; mask: url("assets/brand/wave-icon.png") 0 0 / 100% 100% no-repeat; }
+
         /* ---------- app opening (real screenshot) ---------- */
-        #ph-open { position: absolute; z-index: 3; left: 0; top: 0; width: 406px; height: 856px; overflow: hidden; background: #0A0B10; opacity: 0; clip-path: inset(var(--ct) var(--cr) var(--cb) var(--cl) round var(--rad)); --ct: 0px; --cr: 0px; --cb: 0px; --cl: 0px; --rad: 52px; }
-        #ph-open-in { position: absolute; left: 0; top: 0; width: 406px; height: 856px; background: #0A0B10; transform-origin: 0 0; opacity: 0; }
-        #ph-shot { position: absolute; left: 0; top: 52px; width: 406px; height: auto; display: block; }
+        #ph-open { position: absolute; z-index: 3; left: 0; top: 0; width: 406px; height: 856px; overflow: hidden; opacity: 0; clip-path: inset(var(--ct) var(--cr) var(--cb) var(--cl) round var(--rad)); --ct: 0px; --cr: 0px; --cb: 0px; --cl: 0px; --rad: 52px; }
+        #ph-open-in { position: absolute; left: 0; top: 0; width: 406px; height: 856px; background: #0A0B10; transform-origin: 0 0; opacity: 0; overflow: hidden; }
+        #ph-scroll { position: absolute; left: 0; top: 0; width: 406px; height: 856px; }
+        #ph-shot { position: absolute; left: 0; top: 62px; width: 406px; height: auto; display: block; }
+        #ph-pillcover { position: absolute; left: 33px; top: 720.5px; width: 340px; height: 66px; border-radius: 33px; background: #0B0C12; }
+        #ph-scrollfade { position: absolute; left: 0; top: 590px; width: 406px; height: 132px; opacity: 0; background: linear-gradient(180deg, rgba(10,11,16,0), rgba(10,11,16,.5) 38%, rgba(10,11,16,.92) 72%, #0A0B10 100%); }
+        #ph-safe { position: absolute; left: 0; top: 785px; width: 406px; height: 71px; background: #0A0B10; }
+        #ph-tabbar { position: absolute; left: 35.2px; top: 721.5px; width: 335.8px; height: 63.5px; border-radius: 31.8px; overflow: hidden; background: url("assets/app/ciudad.jpg") -35.2px -659.5px / 406px auto no-repeat; }
+        #ph-topscrim { position: absolute; left: 0; top: 0; width: 406px; height: 96px; opacity: 0; background: linear-gradient(180deg, #0A0B10 0, #0A0B10 46%, rgba(10,11,16,.55) 72%, rgba(10,11,16,0)); }
         #ph-open-icw { position: absolute; left: 0; top: 0; width: 72px; height: 72.94px; transform-origin: 0 0; background: url("assets/brand/wave-icon.png") 0 0 / 100% 100% no-repeat; }
 
-        /* ---------- glitch flood (screen space) ---------- */
+        /* ---------- violet / white light entry (screen space) ---------- */
         #ph-fx { position: absolute; inset: 0; opacity: 1; pointer-events: none; isolation: isolate; }
-        #ph-fxw { position: absolute; inset: 0; }
-        .ph-blob { position: absolute; left: 360px; top: -60px; width: 1200px; height: 1200px; border-radius: 50%; opacity: 0; }
-        #ph-b-base { background: radial-gradient(circle, #8b4bf5 0, #7C3AED 30%, #6a2fd6 58%, rgba(106,47,214,0) 74%); }
-        #ph-b-cy { background: radial-gradient(circle, rgba(0,229,255,0) 0, rgba(0,229,255,0) 40%, rgba(0,229,255,.55) 54%, rgba(0,229,255,0) 66%); mix-blend-mode: screen; }
-        #ph-b-rd { background: radial-gradient(circle, rgba(255,40,120,0) 0, rgba(255,40,120,0) 40%, rgba(255,40,120,.5) 54%, rgba(255,40,120,0) 66%); mix-blend-mode: screen; }
-        #ph-b-mg { background: radial-gradient(circle, rgba(217,70,239,.34) 0, rgba(217,70,239,.2) 40%, rgba(217,70,239,0) 66%); mix-blend-mode: screen; }
-        #ph-b-wh { background: radial-gradient(circle, #fff 0, rgba(255,255,255,.85) 12%, rgba(176,140,255,.38) 34%, rgba(124,58,237,0) 62%); mix-blend-mode: screen; }
-        .ph-arm { position: absolute; left: 160px; top: 405px; width: 1600px; height: 270px; border-radius: 50%; opacity: 0; mix-blend-mode: screen; }
+        .ph-blob { position: absolute; left: 360px; top: -60px; width: 1200px; height: 1200px; border-radius: 50%; opacity: 0; will-change: transform, opacity; }
+        #ph-b-base { background: radial-gradient(circle closest-side, rgba(136,120,245,1.000) 0.0%, rgba(136,120,245,1.000) 8.3%, rgba(136,120,245,0.997) 16.7%, rgba(136,120,245,0.955) 25.0%, rgba(136,120,245,0.871) 33.3%, rgba(136,120,245,0.756) 41.7%, rgba(136,120,245,0.621) 50.0%, rgba(136,120,245,0.477) 58.3%, rgba(136,120,245,0.334) 66.7%, rgba(136,120,245,0.204) 75.0%, rgba(136,120,245,0.098) 83.3%, rgba(136,120,245,0.026) 91.7%, rgba(136,120,245,0.000) 100.0%); }
+        #ph-b-mg { background: radial-gradient(circle closest-side, rgba(217,70,239,0.550) 0.0%, rgba(217,70,239,0.537) 8.3%, rgba(217,70,239,0.501) 16.7%, rgba(217,70,239,0.449) 25.0%, rgba(217,70,239,0.384) 33.3%, rgba(217,70,239,0.312) 41.7%, rgba(217,70,239,0.239) 50.0%, rgba(217,70,239,0.170) 58.3%, rgba(217,70,239,0.109) 66.7%, rgba(217,70,239,0.059) 75.0%, rgba(217,70,239,0.024) 83.3%, rgba(217,70,239,0.005) 91.7%, rgba(217,70,239,0.000) 100.0%); mix-blend-mode: screen; }
+        #ph-b-lav { background: radial-gradient(circle closest-side, rgba(190,176,255,1.000) 0.0%, rgba(190,176,255,0.996) 8.3%, rgba(190,176,255,0.954) 16.7%, rgba(190,176,255,0.875) 25.0%, rgba(190,176,255,0.768) 33.3%, rgba(190,176,255,0.642) 41.7%, rgba(190,176,255,0.507) 50.0%, rgba(190,176,255,0.373) 58.3%, rgba(190,176,255,0.249) 66.7%, rgba(190,176,255,0.144) 75.0%, rgba(190,176,255,0.063) 83.3%, rgba(190,176,255,0.015) 91.7%, rgba(190,176,255,0.000) 100.0%); mix-blend-mode: screen; }
+        #ph-b-wh { background: radial-gradient(circle closest-side, rgba(255,255,255,1.000) 0.0%, rgba(255,255,255,0.971) 8.3%, rgba(255,255,255,0.891) 16.7%, rgba(255,255,255,0.775) 25.0%, rgba(255,255,255,0.638) 33.3%, rgba(255,255,255,0.493) 41.7%, rgba(255,255,255,0.354) 50.0%, rgba(255,255,255,0.231) 58.3%, rgba(255,255,255,0.132) 66.7%, rgba(255,255,255,0.062) 75.0%, rgba(255,255,255,0.020) 83.3%, rgba(255,255,255,0.003) 91.7%, rgba(255,255,255,0.000) 100.0%); mix-blend-mode: screen; }
+        #ph-ring { position: absolute; left: 360px; top: -60px; width: 1200px; height: 1200px; border-radius: 50%; opacity: 0;
+          background: radial-gradient(circle closest-side, rgba(255,255,255,0) 0, rgba(255,255,255,0) 58%, rgba(160,146,255,.22) 70%, rgba(235,230,255,.7) 77%, rgba(160,146,255,.3) 84%, rgba(136,120,245,0) 92%); mix-blend-mode: screen; }
+        #ph-streak { position: absolute; left: -200px; top: 530px; width: 2320px; height: 20px; opacity: 0; mix-blend-mode: screen; border-radius: 10px;
+          background: linear-gradient(90deg, rgba(136,120,245,0), rgba(136,120,245,.85) 22%, #fff 50%, rgba(136,120,245,.85) 78%, rgba(136,120,245,0)); box-shadow: 0 0 46px 12px rgba(150,132,255,.55); }
         .ph-bar { position: absolute; left: -200px; width: 2320px; opacity: 0; mix-blend-mode: screen; }
-        #ph-veins { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; opacity: 0; mix-blend-mode: screen; }
-        #ph-plasma { position: absolute; inset: 0; filter: url(#ph-disp); }
-        #ph-flash { position: absolute; inset: 0; background: #cdb0ff; opacity: 0; mix-blend-mode: screen; }
+        #ph-flash { position: absolute; inset: 0; background: #d9d0ff; opacity: 0; mix-blend-mode: screen; }
       </style>
 
       <div id="ph-root" data-composition-id="scene-phone" data-width="1920" data-height="1080">
@@ -195,7 +206,7 @@
                     <div class="ph-app" style="left:22.00px;top:482px"><div class="ph-ic" style="background:linear-gradient(170deg,#2f78e4,#7fc6ff)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
   <circle cx="26" cy="27" r="11" fill="#ffd54a"/>
   <path d="M25 52c-7 0-12-4-12-9.4 0-5 4.2-9 9.6-9.4 1.6-5.4 6.8-9.2 13-9.2 7.4 0 13.4 5 14 11.6 4.4.8 7.4 4 7.4 7.8 0 4.4-4 8.6-9.6 8.6z" fill="#fff"/></svg></div><div class="ph-lbl">Tiempo</div></div>
-                    <div class="ph-app" id="ph-waveapp" style="left:118.67px;top:482px"><div class="ph-ic ph-ic-wave" id="ph-waveicon"><img id="ph-waveimg" src="assets/brand/wave-icon.png" alt="" /></div><div class="ph-lbl">Wave</div></div>
+                    <div class="ph-app" id="ph-waveapp" style="left:118.67px;top:482px"><div class="ph-ic ph-ic-wave" id="ph-waveicon"><img id="ph-waveimg" src="assets/brand/wave-icon.png" alt="" /><i class="ph-shade" id="ph-waveshade"></i></div><div class="ph-lbl">Wave</div></div>
                     <div class="ph-app" style="left:215.34px;top:482px"><div class="ph-ic" style="background:#0d0e11"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
   <rect x="10" y="17" width="52" height="14" rx="5" fill="#ff5a5a"/>
   <rect x="10" y="26" width="52" height="14" rx="5" fill="#ffc83d"/>
@@ -236,10 +247,18 @@
 
                   <div id="ph-open" data-layout-allow-overlap>
                     <div id="ph-open-in" data-layout-allow-overlap>
-                      <img id="ph-shot" src="assets/app/ciudad.jpg" alt="" />
+                      <div id="ph-scroll" data-layout-allow-overlap>
+                        <img id="ph-shot" src="assets/app/ciudad.jpg" alt="" />
+                        <div id="ph-pillcover"></div>
+                      </div>
+                      <div id="ph-scrollfade"></div>
+                      <div id="ph-safe"></div>
+                      <div id="ph-tabbar"></div>
+                      <div id="ph-topscrim"></div>
                     </div>
-                    <div id="ph-open-icw"></div>
+                    <div id="ph-open-icw"><i class="ph-shade" id="ph-open-shade"></i></div>
                   </div>
+                  <div id="ph-tap"></div>
 
                   <div id="ph-lock" data-layout-allow-overlap>
                     <div id="ph-date" data-layout-allow-overlap>Sábado, 11 de octubre</div>
@@ -273,42 +292,22 @@
         </div>
 
         <div id="ph-fx" data-layout-allow-overflow data-layout-allow-overlap>
-          <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-              <filter id="ph-disp" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.0042 0.0072" numOctaves="3" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="260" xChannelSelector="R" yChannelSelector="G"/></filter>
-              <filter id="ph-vein" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.0055 0.0105" numOctaves="4" seed="5" result="n"/>
-                <feColorMatrix in="n" type="matrix" values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1"/>
-                <feComponentTransfer><feFuncR type="table" tableValues="0 0 0 0 0 0 0 0 .15 .65 1 .65 .15 0 0 0 0 0 0 0 0"/><feFuncG type="table" tableValues="0 0 0 0 0 0 0 0 .15 .65 1 .65 .15 0 0 0 0 0 0 0 0"/><feFuncB type="table" tableValues="0 0 0 0 0 0 0 0 .15 .65 1 .65 .15 0 0 0 0 0 0 0 0"/></feComponentTransfer>
-                <feColorMatrix type="matrix" values="0 0 0 0 .72  0 0 0 0 .55  0 0 0 0 1  1.5 0 0 0 0"/></filter></defs></svg>
-          <div id="ph-fxw" data-layout-allow-overflow>
-            <div id="ph-plasma" data-layout-allow-overflow>
-            <div class="ph-blob" id="ph-b-base"></div>
-            <div class="ph-blob" id="ph-b-cy"></div>
-            <div class="ph-blob" id="ph-b-rd"></div>
-            <div class="ph-blob" id="ph-b-mg"></div>
-            <div id="ph-veins"><svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"><rect width="1920" height="1080" filter="url(#ph-vein)"/></svg></div>
-            <div class="ph-arm" id="ph-arm1" style="background:radial-gradient(ellipse, #fff 0, rgba(215,190,255,.7) 20%, rgba(124,58,237,.4) 48%, rgba(124,58,237,0) 70%)"></div>
-            <div class="ph-arm" id="ph-arm2" style="background:radial-gradient(ellipse, #f6c6ff 0, rgba(217,70,239,.85) 28%, rgba(124,58,237,.4) 52%, rgba(124,58,237,0) 70%)"></div>
-            <div class="ph-arm" id="ph-arm3" style="background:radial-gradient(ellipse, #fff 0, rgba(255,255,255,.7) 18%, rgba(140,90,255,.5) 46%, rgba(124,58,237,0) 70%)"></div>
-            <div class="ph-blob" id="ph-b-wh"></div>
-            </div>
-            <div class="ph-bar" id="ph-bar1" style="top:300px;height:46px;background:linear-gradient(90deg,rgba(124,58,237,0),#A78BFA 20%,#fff 50%,#D946EF 80%,rgba(217,70,239,0))"></div>
-            <div class="ph-bar" id="ph-bar2" style="top:452px;height:22px;background:linear-gradient(90deg,rgba(0,229,255,0),#7FF3FF 25%,#fff 55%,#8b5cf6 85%,rgba(139,92,246,0))"></div>
-            <div class="ph-bar" id="ph-bar3" style="top:560px;height:78px;background:linear-gradient(90deg,rgba(217,70,239,0),#D946EF 18%,#c4b5fd 55%,#fff 78%,rgba(255,255,255,0))"></div>
-            <div class="ph-bar" id="ph-bar4" style="top:688px;height:30px;background:linear-gradient(90deg,rgba(255,255,255,0),#fff 30%,#7C3AED 60%,rgba(124,58,237,0))"></div>
-            <div class="ph-bar" id="ph-bar5" style="top:812px;height:54px;background:linear-gradient(90deg,rgba(124,58,237,0),#8b5cf6 30%,#e9d5ff 62%,#D946EF 90%,rgba(217,70,239,0))"></div>
-            <div class="ph-bar" id="ph-bar6" style="top:148px;height:34px;background:linear-gradient(90deg,rgba(217,70,239,0),#c4b5fd 24%,#fff 52%,#7C3AED 88%,rgba(124,58,237,0))"></div>
-            <div id="ph-flash"></div>
-          </div>
+          <div class="ph-blob" id="ph-b-base"></div>
+          <div class="ph-blob" id="ph-b-mg"></div>
+          <div class="ph-blob" id="ph-b-lav"></div>
+          <div id="ph-ring"></div>
+          <div class="ph-blob" id="ph-b-wh"></div>
+          <div id="ph-streak"></div>
+          <div class="ph-bar" id="ph-bar1" style="top:318px;height:30px;background:linear-gradient(90deg,rgba(136,120,245,0),#8878F5 22%,#fff 52%,#b4a8ff 80%,rgba(136,120,245,0))"></div>
+          <div class="ph-bar" id="ph-bar2" style="top:640px;height:16px;background:linear-gradient(90deg,rgba(255,255,255,0),#fff 28%,#8878F5 62%,rgba(136,120,245,0))"></div>
+          <div class="ph-bar" id="ph-bar3" style="top:452px;height:52px;background:linear-gradient(90deg,rgba(217,70,239,0),#c9a6ff 25%,#fff 55%,#8878F5 85%,rgba(136,120,245,0))"></div>
+          <div id="ph-flash"></div>
         </div>
       </div>
 
       <script>
         const tl = gsap.timeline({ paused: true });
         const P = "#ph-phone";
-        const IC_X = -48.33, IC_Y = 90;        // Wave icon offset from the phone centre (body px)
-        const S_TAP = 1.55;                    // camera scale at the moment of the tap (centred on the icon)
-        const S_END = 3.0;                     // final push-in scale (native 1206 px screenshot ~ 1218 px on screen)
-        const CT_X = 0, CT_Y = -262;           // point of the opened screen the push-in settles on (offset from phone centre)
 
         // ---------- 0.00 - 1.00  flight in (one object: z + rotations, no scale-only depth)
         tl.fromTo(P, { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "none" }, 0);
@@ -319,15 +318,17 @@
         tl.to(P, { rotationX: 16, duration: 0.2, ease: "sine.inOut" }, 0.8);
         tl.fromTo("#ph-stage", { filter: "blur(9px)" }, { filter: "blur(0px)", duration: 0.7, ease: "power2.out" }, 0);
 
-        // specular sweep across the glass while it flies in / when it pushes
+        // specular sweep across the glass while it flies in / over the opened app
         tl.fromTo("#ph-glare", { x: -140 }, { x: 560, duration: 1.0, ease: "power1.inOut" }, 0.05);
-        tl.fromTo("#ph-glare", { x: -140 }, { x: 560, duration: 0.9, ease: "power1.inOut", immediateRender: false }, 1.75);
+        tl.fromTo("#ph-glare", { x: -140 }, { x: 560, duration: 0.8, ease: "power1.inOut", immediateRender: false }, 2.95);
 
-        // ---------- 1.00 - 1.95  breathe on the lock screen -> swipe-up -> home
+        // ---------- 1.00 - 1.95  breathe on the lock screen -> swipe-up -> home (unchanged look)
         tl.to(P, { rotationX: 6, duration: 0.92, ease: "power2.inOut" }, 1.0);
         tl.to(P, { scale: 1.12, duration: 0.55, ease: "power2.inOut" }, 1.0);
         tl.to(P, { rotationY: -4, duration: 0.45, ease: "sine.inOut" }, 1.0);
-        tl.to(P, { rotationY: 2, duration: 0.47, ease: "sine.inOut" }, 1.45);
+        tl.to(P, { rotationY: 0, duration: 0.5, ease: "sine.inOut" }, 1.45);
+        // settle: whole phone, centred, uncropped, slowly easing back for the home-screen rest
+        tl.to(P, { scale: 1.06, duration: 0.75, ease: "sine.out" }, 1.55);
 
         // notification: drops from the top with a soft rebound
         tl.fromTo("#ph-notif", { y: -600 }, { y: 0, duration: 0.62, ease: "back.out(1.35)" }, 1.0);
@@ -347,90 +348,91 @@
         tl.fromTo("#ph-waveapp", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 1.52);
         tl.fromTo("#ph-dock, #ph-dots", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 1.68);
 
-        // ---------- 1.55 - 2.00  camera drifts onto the Wave icon (the home screen is still settling)
-        tl.to(P, { scale: S_TAP, x: -S_TAP * IC_X, y: -S_TAP * IC_Y, duration: 0.45, ease: "power1.in" }, 1.55);
-
-        // ---------- 1.88 - 2.30  tap on the real Wave icon -> iOS-style zoom into the real app screen
+        // ---------- 1.95 - 2.30  home at rest: touch indicator on the real Wave icon + press
         const PR = 0.92;                                   // pressed scale of the icon
         const OW = 72 * PR, OH = 72.94 * PR;
-        const OL = 154.67 - OW / 2, OT = 518.45 - OH / 2;  // pressed icon rect (screen px)
-        const OPEN = { duration: 0.4, ease: "power3.out" };
-        tl.fromTo("#ph-waveicon", { scale: 1 }, { scale: PR, duration: 0.09, ease: "power2.out" }, 1.85);
-        tl.set("#ph-waveicon", { opacity: 0 }, 1.94);       // the opening layer takes over, pixel for pixel
-        tl.set("#ph-open", { opacity: 1 }, 1.94);
-        // the reveal window: clip-path from the icon rect to the whole screen, corner radius 16 -> 52 (sub-pixel smooth, no layout)
-        // (CSS variables so the bottom edge can lag: the window stays icon-shaped before it stretches to the full screen)
-        const LAG = (t) => Math.pow(1 - Math.pow(1 - t, 3), 1.6);   // bottom edge: same power3.out, lagged
+        const OL = 154.67 - OW / 2, OT = 518.47 - OH / 2;  // pressed icon rect (screen px)
+        tl.fromTo("#ph-tap", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power2.out" }, 1.97);
+        tl.fromTo("#ph-tap", { scale: 1 }, { scale: 0.86, duration: 0.1, ease: "power2.out", immediateRender: false }, 2.14);
+        tl.fromTo("#ph-waveicon", { scale: 1 }, { scale: PR, duration: 0.1, ease: "power2.out" }, 2.14);
+        tl.fromTo("#ph-waveshade", { opacity: 0 }, { opacity: 0.2, duration: 0.1, ease: "power2.out" }, 2.14);
+
+        // ---------- 2.30 - 2.95  iOS-style opening: the icon rect becomes the screen (spring), home recedes
+        const T0 = 2.3, OD = 0.62, SPRING = "back.out(0.8)";
+        tl.set("#ph-open", { opacity: 1 }, T0);
+        // reveal window: clip-path from the pressed icon rect to the whole screen, corner radius 16 -> 52
         tl.fromTo("#ph-open",
-          { "--ct": OT + "px", "--cr": (406 - OL - OW) + "px", "--cl": OL + "px", "--cb": (856 - OT - OH) + "px", "--rad": "16px" },
-          { "--ct": "0px", "--cr": "0px", "--cl": "0px", "--rad": "52px", immediateRender: false, duration: OPEN.duration, ease: OPEN.ease }, 1.94);
-        tl.fromTo("#ph-open", { "--cb": (856 - OT - OH) + "px" }, { "--cb": "0px", immediateRender: false, duration: OPEN.duration, ease: LAG }, 1.94);
-        // the content grows with it: icon -> screen (scale from the icon size up, anchored at the window's top-left)
-        tl.fromTo("#ph-open-in", { x: OL, y: OT, scale: OW / 406 }, Object.assign({ x: 0, y: 0, scale: 1, immediateRender: false }, OPEN), 1.94);
-        tl.fromTo("#ph-open-icw", { x: OL, y: OT, scale: PR }, Object.assign({ x: 0, y: 0, scale: 406 / 72, immediateRender: false }, OPEN), 1.94);
-        tl.fromTo("#ph-open-in", { opacity: 0 }, { opacity: 1, duration: 0.06, ease: "none", immediateRender: false }, 1.945);
-        tl.fromTo("#ph-open-icw", { opacity: 1 }, { opacity: 0, duration: 0.07, ease: "none", immediateRender: false }, 1.955);
-        // the home screen recedes behind it
-        tl.fromTo("#ph-home", { scale: 1, opacity: 1 }, { scale: 1.16, opacity: 0.25, duration: 0.34, ease: "power2.out", immediateRender: false }, 1.94);
+          { "--ct": OT + "px", "--cr": (406 - OL - OW) + "px", "--cl": OL + "px", "--cb": (856 - OT - OH) + "px", "--rad": "18px" },
+          { "--ct": "0px", "--cr": "0px", "--cl": "0px", "--cb": "0px", "--rad": "52px", immediateRender: false, duration: OD, ease: SPRING }, T0);
+        // the real screen grows with the window (anchored top-left; width = window width)
+        tl.fromTo("#ph-open-in", { x: OL, y: OT, scale: OW / 406 }, { x: 0, y: 0, scale: 1, immediateRender: false, duration: OD, ease: SPRING }, T0);
+        tl.set("#ph-open-in", { opacity: 1 }, T0);
+        // the icon layer rides the window centre and dissolves almost at once (no big ghost icon)
+        tl.fromTo("#ph-open-icw", { x: OL, y: OT, scale: PR }, { x: 203 - 54, y: 428 - 54.7, scale: 1.5, immediateRender: false, duration: OD, ease: "power3.out" }, T0);
+        tl.fromTo("#ph-open-icw", { opacity: 1 }, { opacity: 0, duration: 0.07, ease: "none", immediateRender: false }, T0);
+        // touch indicator releases, home screen recedes (iOS: it zooms toward the viewer, softens, fades)
+        tl.fromTo("#ph-tap", { opacity: 1 }, { opacity: 0, duration: 0.18, ease: "power1.out", immediateRender: false }, T0);
+        tl.fromTo("#ph-tap", { scale: 0.86 }, { scale: 1.4, duration: 0.2, ease: "power2.out", immediateRender: false }, T0);
+        tl.fromTo("#ph-home", { scale: 1, opacity: 1, filter: "blur(0px)" }, { scale: 1.14, opacity: 0, filter: "blur(5px)", duration: 0.5, ease: "power2.out", immediateRender: false }, T0 + 0.03);
+        tl.fromTo("#ph-waveshade", { opacity: 0.2 }, { opacity: 0, duration: 0.1, ease: "none", immediateRender: false }, T0);
+        tl.fromTo("#ph-open-shade", { opacity: 0.2 }, { opacity: 0, duration: 0.08, ease: "none", immediateRender: false }, T0);
 
-        // ---------- 1.97 - 2.62  push-in over the opened app (screen stays native-sharp)
-        tl.to(P, { scale: S_END, x: -S_END * CT_X, y: -S_END * CT_Y, duration: 0.62, ease: "power2.out" }, 1.97);
-        tl.to(P, { rotationX: 3, rotationY: -3, rotationZ: -5, duration: 0.62, ease: "power1.inOut" }, 1.97);
-        tl.to("#ph-stage", { filter: "blur(12px)", duration: 0.2, ease: "power2.in" }, 2.45);
-        tl.to(P, { opacity: 0, duration: 0.1, ease: "none" }, 2.6);
+        // ---------- camera
+        // opening: gentle push toward the screen while it grows
+        tl.to(P, { scale: 1.12, rotationX: 4, rotationY: -3, duration: 0.67, ease: "power2.out" }, 2.28);
+        // app in view: slow dolly-in, still the whole phone (island and status bar stay clear)
+        tl.to(P, { scale: 1.17, y: 2, rotationX: 3, rotationY: -5, duration: 0.5, ease: "sine.inOut" }, 2.95);
 
-        // ---------- 2.27 - 3.10  violet glitch flood (original choreography, compressed to start under the push-in)
-        const T = (t) => 2.31 + (t - 2.12) * 0.65;
-        const D = (d) => d * 0.65;
-        // screen jitters: stepped x offsets + skew on the camera
-        const jit = [[2.17, 16, -5], [2.21, -14, 4], [2.25, 8, -2], [2.29, 0, 0], [2.4, 26, -7], [2.43, -10, 3], [2.46, 0, 0]];
-        jit.forEach(([t, x, sk]) => tl.set("#ph-cam", { x: x, skewX: sk }, T(t)));
-        tl.set("#ph-cam", { opacity: 0.4 }, T(2.27)); tl.set("#ph-cam", { opacity: 1 }, T(2.3));
-        tl.set("#ph-cam", { opacity: 0.55 }, T(2.44)); tl.set("#ph-cam", { opacity: 1 }, T(2.47));
+        // ---------- 2.92 - 3.55  the app lives: a small fling-scroll (tab bar stays fixed, content fades under it)
+        tl.fromTo("#ph-scroll", { y: 0 }, { y: -72, duration: 0.7, ease: "power2.out" }, 2.92);
+        tl.fromTo("#ph-topscrim", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 2.92);
+        tl.fromTo("#ph-scrollfade", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "power2.out" }, 2.92);
 
-        // blobs grow from the screen centre
-        const grow = (sel, t0, d, s1, ease, extra) => {
-          tl.fromTo(sel, { scale: 0.02 }, Object.assign({ scale: s1, duration: D(d), ease: ease }, extra || {}), T(t0));
-          tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.02, ease: "none", immediateRender: false }, T(t0));
+        // ---------- 3.42 - 4.00  violet / white light entry: the camera passes through the screen
+        tl.to(P, { scale: 3.3, y: 40, rotationX: 0, rotationY: -1, duration: 0.4, ease: "power3.in" }, 3.42);
+        tl.to("#ph-stage", { filter: "blur(14px)", duration: 0.36, ease: "power2.in" }, 3.46);
+        tl.to(P, { opacity: 0, duration: 0.06, ease: "none" }, 3.74);
+
+        // short stepped jitter + RGB split on the screen (a few frames only)
+        tl.set("#ph-cam", { filter: "none" }, 0);
+        [[3.46, 12, -3], [3.49, -10, 2], [3.52, 7, -2], [3.55, 0, 0], [3.58, -14, 4], [3.61, 0, 0]]
+          .forEach(([t, x, sk]) => tl.set("#ph-cam", { x: x, skewX: sk }, t));
+        const split = (px) => "drop-shadow(" + px + "px 0 0 rgba(255,45,115,.6)) drop-shadow(" + (-px) + "px 0 0 rgba(0,225,255,.6))";
+        tl.set("#ph-cam", { filter: split(6) }, 3.46);
+        tl.set("#ph-cam", { filter: split(3) }, 3.52);
+        tl.set("#ph-cam", { filter: split(9) }, 3.58);
+        tl.set("#ph-cam", { filter: "none" }, 3.63);
+
+        // light born at the screen centre
+        const grow = (sel, t0, d, s0, s1, ease, o1) => {
+          tl.fromTo(sel, { scale: s0 }, { scale: s1, duration: d, ease: ease }, t0);
+          tl.fromTo(sel, { opacity: 0 }, { opacity: o1, duration: Math.min(0.12, d), ease: "power1.out", immediateRender: false }, t0);
         };
-        grow("#ph-b-base", 2.14, 0.42, 3.6, "power2.in");
-        grow("#ph-b-cy", 2.16, 0.42, 3.7, "power2.in", { x: -26 });
-        grow("#ph-b-rd", 2.12, 0.42, 3.5, "power2.in", { x: 26 });
-        grow("#ph-b-mg", 2.2, 0.4, 2.9, "power2.in", { x: -90, y: 40 });
-        grow("#ph-b-wh", 2.26, 0.34, 1.1, "power3.in", { x: 20, y: -10 });
-        const arms = [["#ph-arm1", -14, 2.18, 1.25], ["#ph-arm2", 30, 2.22, 1.15], ["#ph-arm3", -58, 2.26, 1.0]];
-        arms.forEach(([sel, rot, t, s]) => {
-          tl.fromTo(sel, { scale: 0.05, rotation: rot - 24 }, { scale: s, rotation: rot, duration: D(0.4), ease: "power2.out" }, T(t));
-          tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.03, ease: "none", immediateRender: false }, T(t));
-        });
-        tl.to(["#ph-b-wh", "#ph-arm1", "#ph-arm2", "#ph-arm3", "#ph-b-mg"], { rotation: "+=18", duration: 0.5, ease: "none" }, T(2.55));
+        grow("#ph-b-lav", 3.48, 0.30, 0.06, 2.4, "power2.in", 0.9);
+        grow("#ph-b-base", 3.50, 0.30, 0.05, 4.8, "power2.in", 0.96);
+        grow("#ph-b-mg", 3.52, 0.28, 0.05, 3.0, "power2.in", 0.75);
+        grow("#ph-b-wh", 3.54, 0.22, 0.05, 1.8, "power3.in", 0.6);
+        // shock ring
+        tl.fromTo("#ph-ring", { scale: 0.08 }, { scale: 2.4, duration: 0.34, ease: "power2.out" }, 3.50);
+        tl.fromTo("#ph-ring", { opacity: 0 }, { opacity: 0.8, duration: 0.06, ease: "none", immediateRender: false }, 3.50);
+        tl.to("#ph-ring", { opacity: 0, duration: 0.2, ease: "power1.in" }, 3.64);
+        // anamorphic light streak through the centre
+        tl.fromTo("#ph-streak", { scaleX: 0.05, scaleY: 1, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.14, ease: "power3.out", immediateRender: false }, 3.58);
+        tl.to("#ph-streak", { scaleY: 0.2, opacity: 0, duration: 0.2, ease: "power2.in" }, 3.72);
 
-        tl.fromTo("#ph-veins", { scale: 0.35, rotation: -6 }, { scale: 1.2, rotation: 4, duration: D(0.55), ease: "power2.out" }, T(2.22));
-        tl.fromTo("#ph-veins", { opacity: 0 }, { opacity: 0.32, duration: 0.15, ease: "power1.out", immediateRender: false }, T(2.26));
-
-        // horizontal glitch bars: stepped offsets / skew / opacity
+        // three short glitch bars (a few frames each)
         const bars = {
-          "#ph-bar1": [[2.13, -120, 18, 1], [2.17, 160, -22, 1], [2.21, -40, 8, 1], [2.3, 220, -14, 1], [2.36, -180, 20, 0.85], [2.46, 60, 0, 0]],
-          "#ph-bar2": [[2.15, 200, -16, 1], [2.19, -260, 12, 1], [2.24, 90, 0, 1], [2.33, -140, 24, 1], [2.41, 120, -10, 0.8], [2.5, 0, 0, 0]],
-          "#ph-bar3": [[2.2, -200, 14, 0.9], [2.25, 120, -18, 1], [2.31, -80, 6, 1], [2.38, 260, -26, 1], [2.45, -60, 0, 0.8], [2.56, 0, 0, 0]],
-          "#ph-bar4": [[2.23, 240, -12, 1], [2.28, -120, 16, 1], [2.34, 180, -8, 1], [2.42, -220, 20, 0.9], [2.52, 0, 0, 0]],
-          "#ph-bar5": [[2.26, -160, 10, 0.9], [2.32, 200, -20, 1], [2.39, -100, 12, 1], [2.47, 140, -6, 0.8], [2.58, 0, 0, 0]],
-          "#ph-bar6": [[2.18, 140, -14, 0.9], [2.27, -220, 18, 1], [2.37, 100, -8, 1], [2.43, 0, 0, 0]],
+          "#ph-bar1": [[3.47, -160, 14, 0.9], [3.51, 140, -16, 1], [3.56, -60, 8, 0.8], [3.61, 0, 0, 0]],
+          "#ph-bar2": [[3.49, 220, -10, 1], [3.54, -200, 12, 1], [3.59, 90, -6, 0.8], [3.64, 0, 0, 0]],
+          "#ph-bar3": [[3.52, -120, 10, 0.85], [3.57, 180, -14, 1], [3.62, -40, 4, 0.7], [3.67, 0, 0, 0]],
         };
-        Object.keys(bars).forEach((sel) => bars[sel].forEach(([t, x, sk, o]) => tl.set(sel, { x: x, skewX: sk, opacity: o * 0.8 }, T(t))));
+        Object.keys(bars).forEach((sel) => bars[sel].forEach(([t, x, sk, o]) => tl.set(sel, { x: x, skewX: sk, opacity: o * 0.85 }, t)));
+        tl.set("#ph-flash", { opacity: 0.4 }, 3.47); tl.set("#ph-flash", { opacity: 0 }, 3.5);
+        tl.set("#ph-flash", { opacity: 0.3 }, 3.6); tl.set("#ph-flash", { opacity: 0 }, 3.63);
 
-        // white flash flickers (stepped)
-        [[2.12, 0.5], [2.15, 0], [2.34, 0.45], [2.37, 0.1], [2.4, 0], [2.5, 0.35], [2.53, 0]].forEach(([t, o]) => tl.set("#ph-flash", { opacity: o }, T(t)));
-
-        // after the peak the flood settles into deeper violet (white core and veins pull back)
-        tl.to("#ph-b-wh", { opacity: 0.7, duration: 0.2, ease: "power1.out" }, 2.55);
-        tl.to("#ph-veins", { opacity: 0.2, duration: 0.2, ease: "power1.out" }, 2.55);
-        tl.to(["#ph-arm1", "#ph-arm3"], { opacity: 0.55, duration: 0.2, ease: "power1.out" }, 2.55);
-
-        // dissolve to transparent (glow underneath stays clean)
-        tl.to("#ph-fx", { opacity: 0, duration: 0.38, ease: "power2.inOut" }, 2.72);
-        tl.to("#ph-fx", { filter: "blur(16px)", duration: 0.38, ease: "power1.in" }, 2.72);
-        tl.set("#ph-fx", { filter: "blur(0px)" }, 0);
+        // peak ~3.72 (frame is bright lavender), then everything dissolves to transparent by 4.0
+        tl.to("#ph-fx", { opacity: 0, duration: 0.28, ease: "power2.inOut" }, 3.72);
+        tl.fromTo("#ph-fx", { filter: "blur(0px)" }, { filter: "blur(16px)", duration: 0.28, ease: "power1.in", immediateRender: false }, 3.72);
 
         window.__timelines["scene-phone"] = tl;
 

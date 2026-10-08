@@ -14,28 +14,6 @@
           color: #fff;
         }
 
-        /* Scrim: misma forma que #lg-scrim (escena 1); el glow final es algo menos brillante. */
-        #ou-scrim {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          width: 1560px;
-          height: 1080px;
-          margin: -540px 0 0 -780px;
-          border-radius: 50%;
-          background: radial-gradient(
-            closest-side,
-            rgba(2, 22, 32, 0.46) 0%,
-            rgba(2, 22, 32, 0.43) 28%,
-            rgba(2, 22, 32, 0.32) 52%,
-            rgba(2, 22, 32, 0.16) 74%,
-            rgba(2, 22, 32, 0.05) 90%,
-            rgba(2, 22, 32, 0) 100%
-          );
-          opacity: 0;
-          pointer-events: none;
-        }
-
         /* Halo del orbe: estacionario en (960, 540), recoge el glow del fondo */
         #ou-halo {
           position: absolute;
@@ -47,10 +25,29 @@
           border-radius: 50%;
           background: radial-gradient(
             closest-side,
-            rgba(190, 252, 255, 0.78) 0%,
-            rgba(100, 228, 242, 0.4) 30%,
-            rgba(33, 174, 192, 0.14) 62%,
-            rgba(33, 174, 192, 0) 100%
+            rgba(190, 252, 255, 0.7800) 0.0%,
+            rgba(180, 247, 251, 0.7719) 4.5%,
+            rgba(170, 242, 247, 0.7482) 9.1%,
+            rgba(159, 237, 243, 0.7103) 13.6%,
+            rgba(149, 232, 239, 0.6604) 18.2%,
+            rgba(139, 227, 235, 0.6013) 22.7%,
+            rgba(129, 222, 230, 0.5361) 27.3%,
+            rgba(119, 217, 226, 0.4681) 31.8%,
+            rgba(108, 211, 222, 0.4001) 36.4%,
+            rgba(98, 206, 218, 0.3348) 40.9%,
+            rgba(88, 201, 214, 0.2742) 45.5%,
+            rgba(78, 196, 210, 0.2197) 50.0%,
+            rgba(68, 191, 206, 0.1721) 54.5%,
+            rgba(57, 186, 202, 0.1317) 59.1%,
+            rgba(47, 181, 198, 0.0984) 63.6%,
+            rgba(37, 176, 194, 0.0715) 68.2%,
+            rgba(33, 174, 192, 0.0505) 72.7%,
+            rgba(33, 174, 192, 0.0344) 77.3%,
+            rgba(33, 174, 192, 0.0223) 81.8%,
+            rgba(33, 174, 192, 0.0136) 86.4%,
+            rgba(33, 174, 192, 0.0073) 90.9%,
+            rgba(33, 174, 192, 0.0030) 95.5%,
+            rgba(33, 174, 192, 0.0000) 100.0%
           );
           opacity: 0;
           will-change: transform, opacity;
@@ -181,7 +178,6 @@
       </style>
 
       <div id="ou-root" data-composition-id="scene-outro" data-width="1920" data-height="1080">
-        <div id="ou-scrim"></div>
         <div id="ou-halo"></div>
         <div id="ou-lockup">
           <div id="ou-orb-pos">
@@ -252,8 +248,6 @@
         // en reposo no queda ningun filtro/recorte activo sobre el lockup: es el PNG real
         tl.set("#ou-wblur", { filter: "none" }, S0 + 0.55);
         tl.set("#ou-wmask", { clipPath: "none" }, S0 + 0.63);
-
-        tl.fromTo("#ou-scrim", { opacity: 0 }, { opacity: 1, duration: 0.65, ease: "power2.out" }, 1.0);
 
         // ---- 1.42-2.0: siemprewave.es + linea turquesa fina
         tl.fromTo("#ou-url",

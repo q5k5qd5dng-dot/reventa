@@ -10,28 +10,6 @@
           overflow: hidden;
         }
 
-        /* Scrim: oscurece suavemente el glow turquesa tras el logo (el wordmark es cian brillante
-           y sin esto pierde contraste). Misma forma que #ou-scrim en la escena de cierre. */
-        #lg-scrim {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          width: 1560px;
-          height: 1080px;
-          margin: -540px 0 0 -780px;
-          border-radius: 50%;
-          background: radial-gradient(
-            closest-side,
-            rgba(2, 22, 32, 0.46) 0%,
-            rgba(2, 22, 32, 0.43) 28%,
-            rgba(2, 22, 32, 0.32) 52%,
-            rgba(2, 22, 32, 0.16) 74%,
-            rgba(2, 22, 32, 0.05) 90%,
-            rgba(2, 22, 32, 0) 100%
-          );
-          pointer-events: none;
-        }
-
         /* Lockup REAL (wave-lockup.png 1240x321) a 904x234 = escala .729, centrado en (960, 540).
            Mismo bloque (#ou-pos / #ou-wmask) y mismas medidas en la escena de cierre. */
         #lg-lockup {
@@ -73,7 +51,6 @@
       </style>
 
       <div id="lg-root" data-composition-id="scene-logo" data-width="1920" data-height="1080">
-        <div id="lg-scrim"></div>
         <div id="lg-lockup">
           <div id="lg-shadowbox">
             <div class="lg-layer" id="lg-icon-layer"><img class="lg-img" id="lg-icon-img" src="assets/brand/wave-lockup.png" alt="" /></div>
@@ -86,8 +63,6 @@
         const tl = gsap.timeline({ paused: true });
 
         // ---- entrada (0.25 -> 1.1): el icono primero, la palabra ~0.1 s despues saliendo desde el icono
-        tl.fromTo("#lg-scrim", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "power2.out" }, 0.1);
-
         tl.fromTo("#lg-icon-layer",
           { y: 30, scale: 0.9, filter: "blur(24px)" },
           { y: 0, scale: 1, filter: "blur(0px)", duration: 0.75, ease: "power3.out" }, 0.25);
@@ -111,7 +86,6 @@
           { scale: 1.03, y: 0, filter: "blur(0px)" },
           { scale: 0.55, y: -40, filter: "blur(18px)", duration: 0.65, ease: "power2.in", immediateRender: false }, 1.32);
         tl.fromTo("#lg-lockup", { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "power1.inOut", immediateRender: false }, 1.4);
-        tl.fromTo("#lg-scrim", { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "power2.inOut", immediateRender: false }, 1.4);
 
         window.__timelines = window.__timelines || {};
         window.__timelines["scene-logo"] = tl;

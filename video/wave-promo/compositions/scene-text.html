@@ -44,10 +44,10 @@
         #tx-l1w2 { left: 940.46px; top: 462px; width: 270.2px; }
         #tx-l1w3 { left: 1229.66px; top: 462px; width: 173.2px; }
         /* line 2 · centre y = 540 -> box top 482 */
-        #tx-l2w1 { left: 586.72px; top: 482px; width: 159.12px; }
-        #tx-l2w2 { left: 764.84px; top: 482px; width: 108.08px; }
-        #tx-l2w3 { left: 891.92px; top: 482px; width: 176.16px; }
-        #tx-l2w4 { left: 1087.08px; top: 482px; width: 246.2px; }
+        #tx-l2w1 { left: 537.18px; top: 482px; width: 51.04px; }
+        #tx-l2w2 { left: 607.22px; top: 482px; width: 326.24px; }
+        #tx-l2w3 { left: 952.46px; top: 482px; width: 86.08px; }
+        #tx-l2w4 { left: 1057.54px; top: 482px; width: 328.28px; }
 
         /* soft dark-teal haze behind each line: keeps white/accent type >= 3:1 over the brightest part of the glow */
         #tx-root .tx-scrim {
@@ -85,10 +85,10 @@
         </div>
 
         <div id="tx-l2" class="tx-line" data-layout-allow-overflow>
-          <div id="tx-l2w1" class="tx-w" data-layout-allow-overflow><span id="tx-l2s1" class="tx-s"><span class="tx-c">c</span><span class="tx-c">o</span><span class="tx-c">n</span></span></div>
-          <div id="tx-l2w2" class="tx-w" data-layout-allow-overflow><span id="tx-l2s2" class="tx-s"><span class="tx-c">u</span><span class="tx-c">n</span></span></div>
-          <div id="tx-l2w3" class="tx-w" data-layout-allow-overflow><span id="tx-l2s3" class="tx-s"><span class="tx-c">s</span><span class="tx-c">o</span><span class="tx-c">l</span><span class="tx-c">o</span></span></div>
-          <div id="tx-l2w4" class="tx-w" data-layout-allow-overflow><span id="tx-l2s4" class="tx-s"><span class="tx-c">t</span><span class="tx-c" style="margin-left:-1.02px">o</span><span class="tx-c">q</span><span class="tx-c">u</span><span class="tx-c">e</span></span></div>
+          <div id="tx-l2w1" class="tx-w" data-layout-allow-overflow><span id="tx-l2s1" class="tx-s"><span class="tx-c">y</span></span></div>
+          <div id="tx-l2w2" class="tx-w" data-layout-allow-overflow><span id="tx-l2s2" class="tx-s"><span class="tx-c">c</span><span class="tx-c">o</span><span class="tx-c">m</span><span class="tx-c">p</span><span class="tx-c">r</span><span class="tx-c" style="margin-left:-1.02px">a</span></span></div>
+          <div id="tx-l2w3" class="tx-w" data-layout-allow-overflow><span id="tx-l2s3" class="tx-s"><span class="tx-c">t</span><span class="tx-c">u</span></span></div>
+          <div id="tx-l2w4" class="tx-w" data-layout-allow-overflow><span id="tx-l2s4" class="tx-s"><span class="tx-c">e</span><span class="tx-c">n</span><span class="tx-c">t</span><span class="tx-c">r</span><span class="tx-c" style="margin-left:-1.02px">a</span><span class="tx-c">d</span><span class="tx-c">a</span></span></div>
         </div>
       </div>
 
@@ -106,7 +106,7 @@
           const DESCUBRE_START_X = 243.2;                   // starts at screen centre (x 960) and glides into its slot
           const L1_COLLAPSE_X = [37, -7.2, -44.2];          // line 1 words pull together on exit
           const L2_SPREAD_X = [-91.5, -30.5, 30.5, 91.5];   // 80 px word gaps -> 19 px
-          const L2_COLLAPSE_X = [45.9, 20.9, -6.5, -41.1];  // line 2 words pull together on exit
+          const L2_COLLAPSE_X = [55.5, 25.7, -6.5, -41.1];  // line 2 words pull together on exit
 
           /* glyph spread around the word centre: glyph i of n moves by k * (i - (n-1)/2) */
           const spreadFn = (k, n) => (i) => k * (i - (n - 1) / 2);
@@ -114,7 +114,7 @@
           /* ======================= LINE 1 · "Descubre dónde salir" ======================= */
           // slow drift so the held line is never dead still
           tl.fromTo("#tx-l1", { scale: 1 }, { scale: 1.035, duration: 2.0, ease: "none" }, 0.1);
-          // soft haze behind the type (in with line 1, out with line 2)
+          // soft haze behind the type (in with line 1, held through line 2, out with it at 3.55-3.8)
           tl.fromTo("#tx-scrim", { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, 0.05);
           tl.fromTo("#tx-scrim", { opacity: 1 }, { opacity: 0, duration: 0.25, ease: "power2.in", immediateRender: false }, 3.55);
           // 0.10-0.75 "Descubre": wide tracking -> tight, blur 18 -> 0, fades in at screen centre
@@ -147,14 +147,14 @@
             tl.fromTo(chars, { x: 0 }, { x: spreadFn(TRACK_EXIT, n), duration: 0.3, ease: "power2.inOut", immediateRender: false }, 1.7);
           });
 
-          /* ======================= LINE 2 · "con un solo toque" ======================= */
-          tl.fromTo("#tx-l2", { scale: 1 }, { scale: 1.035, duration: 1.85, ease: "none" }, 2.0);
+          /* ======================= LINE 2 · "y compra tu entrada" ======================= */
+          tl.fromTo("#tx-l2", { scale: 1 }, { scale: 1.035, duration: 1.8, ease: "none" }, 2.0);
           // 2.05-2.55 words start 80 px apart, close in to the resting gap, blur 20 -> 0
           const L2_WORDS = [
-            ["#tx-l2w1", "#tx-l2w1 .tx-c", 3],
-            ["#tx-l2w2", "#tx-l2w2 .tx-c", 2],
-            ["#tx-l2w3", "#tx-l2w3 .tx-c", 4],
-            ["#tx-l2w4", "#tx-l2w4 .tx-c", 5],
+            ["#tx-l2w1", "#tx-l2w1 .tx-c", 1],
+            ["#tx-l2w2", "#tx-l2w2 .tx-c", 6],
+            ["#tx-l2w3", "#tx-l2w3 .tx-c", 2],
+            ["#tx-l2w4", "#tx-l2w4 .tx-c", 7],
           ];
           L2_WORDS.forEach(([w, chars, n], i) => {
             const st = 2.05 + (i === 0 || i === 3 ? 0.03 : 0);
@@ -168,10 +168,12 @@
             tl.fromTo(chars, { x: 0 }, { x: spreadFn(TRACK_EXIT, n), duration: 0.29, ease: "power2.inOut", immediateRender: false }, 3.45);
           });
 
-          // 2.45-2.90 "solo" lights up at the end of the entrance
-          tl.fromTo("#tx-l2s3", { color: "#ffffff" }, { color: ACCENT, duration: 0.3, ease: "power2.out" }, 2.45);
-          tl.fromTo("#tx-l2s3", { scale: 1 }, { scale: 1.045, duration: 0.15, ease: "power2.out", immediateRender: false }, 2.45);
-          tl.to("#tx-l2s3", { scale: 1, duration: 0.3, ease: "power2.inOut" }, 2.6);
+          // 2.45-2.90 "entrada" lights up at the end of the entrance
+          tl.fromTo("#tx-l2s4", { color: "#ffffff" }, { color: ACCENT, duration: 0.3, ease: "power2.out" }, 2.45);
+          // (pop is 1.03 here: "entrada" is ~2x wider than the old accent word, so 1.03 grows it as many px as the old 1.045 did and
+          //  never crowds the 19 px gap to "tu")
+          tl.fromTo("#tx-l2s4", { scale: 1 }, { scale: 1.03, duration: 0.15, ease: "power2.out", immediateRender: false }, 2.45);
+          tl.to("#tx-l2s4", { scale: 1, duration: 0.3, ease: "power2.inOut" }, 2.6);
 
           window.__timelines = window.__timelines || {};
           window.__timelines["scene-text"] = tl;
