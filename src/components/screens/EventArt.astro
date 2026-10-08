@@ -1,6 +1,7 @@
 ---
-// Cartel de evento generado por código: luces, bokeh, público y rótulo de neón. Usa el color de resalte de la marca.
-const { l1 = "Sala Neón", l2 = "Sábado noche", sub = "Abrimos a las 23:30", id = "a" } = Astro.props;
+// Portada GENÉRICA de ejemplo (luces y siluetas), solo para las maquetas de ejemplo y la demo de marca blanca.
+// No es un cartel real de ningún evento ni de Wave. Usa el color de resalte de la marca.
+const { l1 = "Tu evento", l2 = "Tu noche", sub = "Portada de ejemplo", id = "a" } = Astro.props;
 let seed = 11;
 const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 const crowd = Array.from({ length: 30 }, (_, i) => {
@@ -39,10 +40,10 @@ const bokeh = Array.from({ length: 20 }, () => ({ x: rnd() * 400, y: rnd() * 150
     ))}
   </g>
   <g text-anchor="middle" font-family="Inter Tight, system-ui, sans-serif" font-weight="800" filter={`url(#ne-${id})`}>
-    <text x="200" y="98" font-size="50" fill="none" stroke="currentColor" stroke-width="1.4" letter-spacing="-1.5" transform="translate(-1.6 -1.6)">{l1.toUpperCase()}</text>
-    <text x="200" y="98" font-size="50" fill="#fff" letter-spacing="-1.5">{l1.toUpperCase()}</text>
-    <text x="200" y="130" font-size="22" fill="#fff" letter-spacing="2">{l2.toUpperCase()}</text>
+    <text x="200" y="72" font-size="44" fill="none" stroke="currentColor" stroke-width="1.4" letter-spacing="-1.5" transform="translate(-1.6 -1.6)">{l1.toUpperCase()}</text>
+    <text x="200" y="72" font-size="44" fill="#fff" letter-spacing="-1.5">{l1.toUpperCase()}</text>
+    <text x="200" y="97" font-size="20" fill="#fff" letter-spacing="2">{l2.toUpperCase()}</text>
   </g>
-  <text x="200" y="152" text-anchor="middle" font-family="Inter Tight, system-ui, sans-serif" font-weight="600" font-size="8.5" letter-spacing="3" fill="#ffffff" opacity=".78">{sub.toUpperCase()}</text>
+  <text x="200" y="114" text-anchor="middle" font-family="Inter Tight, system-ui, sans-serif" font-weight="600" font-size="8.5" letter-spacing="3" fill="#ffffff" opacity=".78">{sub.toUpperCase()}</text>
   <rect width="400" height="240" filter={`url(#gr-${id})`} opacity=".16" style="mix-blend-mode: overlay" />
 </svg>

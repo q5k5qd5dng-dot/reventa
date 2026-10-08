@@ -1,0 +1,18 @@
+---
+// Captura real de la app (public/app). srcset con la variante de 640 px; width/height reales para evitar saltos.
+import { appScreens, type AppScreenName } from "../data/app";
+const { name, sizes = "(max-width: 700px) 60vw, 320px", loading = "lazy", fetchpriority, class: cls = "", alt } = Astro.props as { name: AppScreenName; sizes?: string; loading?: "lazy" | "eager"; fetchpriority?: "high" | "low" | "auto"; class?: string; alt?: string };
+const s = appScreens[name];
+---
+<img
+  class={`app-shot ${cls}`}
+  src={`/app/${name}.webp`}
+  srcset={`/app/${name}-640.webp ${s.w640}w, /app/${name}.webp ${s.w}w`}
+  sizes={sizes}
+  width={s.w} height={s.h}
+  alt={alt ?? s.alt}
+  loading={loading}
+  decoding="async"
+  fetchpriority={fetchpriority}
+  data-bg={s.bg} data-fg={s.fg}
+/>

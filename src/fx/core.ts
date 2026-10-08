@@ -124,7 +124,7 @@ export function initNavTheme() {
     nav.classList.toggle("on-light", light);
     document.body.classList.toggle("on-light", light);
     const rgb = parse(getComputedStyle(hit).backgroundColor) ?? "10, 10, 10";
-    if (rgb !== lastBg) { lastBg = rgb; nav.style.setProperty("--nav-bg", `rgba(${rgb}, .9)`); }
+    if (rgb !== lastBg) { lastBg = rgb; nav.style.setProperty("--nav-bg", `rgba(${rgb}, .95)`); }
     spy.forEach((a) => a.classList.toggle("is-active", !!hit.id && a.dataset.spy === hit.id));
   };
   addEventListener("scroll", update, { passive: true });

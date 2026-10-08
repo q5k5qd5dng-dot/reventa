@@ -2,6 +2,7 @@
 // fases fijadas al scroll y marquesinas.
 import { gsap, ScrollTrigger, reduceMotion } from "./core";
 import { confetti } from "./motion";
+import { sfx } from "./sound";
 
 export function initFeatures() {
   const items = document.querySelectorAll<HTMLElement>(".svc-item");
@@ -129,6 +130,7 @@ export function initWhiteLabel() {
   const toast = root.querySelector<HTMLElement>(".wl-toast");
   root.querySelector("[data-buy]")?.addEventListener("click", (e) => {
     const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    sfx.play("chime");
     confetti({ x: r.left + r.width / 2, y: r.top }, [st.accent, "#ffffff", "#facc15", "#6366f1"]);
     toast?.classList.add("is-on");
     setTimeout(() => toast?.classList.remove("is-on"), 2200);
@@ -217,7 +219,9 @@ export function initPhases() {
   let cur = -1;
   const show = (i: number) => {
     if (i === cur) return;
+    const prev = cur;
     cur = i;
+    if (prev !== -1) sfx.play("pop");
     words.forEach((w, j) => gsap.to(w, { opacity: j === i ? 1 : 0.18, x: j === i && innerWidth > 1000 ? 24 : 0, duration: 0.5, ease: "power3.out" }));
     cards.forEach((c, j) => {
       gsap.to(c, { autoAlpha: j === i ? 1 : 0, yPercent: j === i ? 0 : j < i ? -12 : 12, duration: 0.6, ease: "power3.out" });

@@ -1,5 +1,6 @@
 ---
 import "../styles/fx.css";
+import BrandHead from "../components/BrandHead.astro";
 const { title, description } = Astro.props;
 ---
 <!doctype html>
@@ -9,8 +10,7 @@ const { title, description } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#21aec0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <BrandHead title={title} description={description} themeColor="#21aec0" />
     <!-- Marca la página como "con JS" y respeta reducir movimiento ANTES de pintar: evita parpadeos al animar. -->
     <script is:inline>
       (function () {
@@ -23,6 +23,7 @@ const { title, description } = Astro.props;
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <slot name="head" />
     <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
   <body>

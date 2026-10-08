@@ -1,0 +1,13 @@
+---
+// Móvil con capturas reales de la app. Con varias pantallas se apilan y se van cambiando con GSAP (fx/app.ts).
+import PhoneFrame from "./screens/PhoneFrame.astro";
+import AppScreen from "./AppScreen.astro";
+import { appScreens, type AppScreenName } from "../data/app";
+const { screens, sizes, eager = false, class: cls = "", label, stack = false } = Astro.props as { screens: AppScreenName[]; sizes?: string; eager?: boolean; class?: string; label?: string; stack?: boolean };
+const first = appScreens[screens[0]];
+---
+<PhoneFrame app bg={first.bg} fg={first.fg} class={cls} label={label}>
+  <div class={`pf-app${stack ? " is-stack" : ""}`} data-app-stack={stack ? "" : undefined}>
+    {screens.map((n, i) => <AppScreen name={n} sizes={sizes} loading={eager && i === 0 ? "eager" : "lazy"} fetchpriority={eager && i === 0 ? "high" : undefined} class={i === 0 ? "is-on" : ""} />)}
+  </div>
+</PhoneFrame>

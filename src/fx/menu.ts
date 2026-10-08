@@ -1,5 +1,6 @@
 // Menú a pantalla completa con enlaces que se deslizan y resaltador.
 import { gsap, lenis, reduceMotion } from "./core";
+import { sfx } from "./sound";
 
 export function initMenu() {
   const togglers = [...document.querySelectorAll<HTMLElement>("[data-menu-toggle]")];
@@ -26,6 +27,7 @@ export function initMenu() {
     if (busy || next === open) return;
     busy = true;
     open = next;
+    sfx.play(open ? "whoosh" : "close");
     togglers.forEach((t) => { t.setAttribute("aria-expanded", String(open)); t.classList.toggle("is-open", open); });
     document.querySelector(".fx-nav")?.classList.toggle("menu-open", open);
     if (open) { lenis?.stop(); overlay.style.visibility = "visible"; }

@@ -1,0 +1,27 @@
+---
+// Iconos, imagen social y metadatos de marca (todo con el logo real de Wave). Se usa en los dos layouts.
+const { title, description, themeColor = "#21aec0" } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site ?? "https://siemprewave.es").href;
+const og = new URL("/og.jpg", Astro.site ?? "https://siemprewave.es").href;
+---
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="theme-color" content={themeColor} />
+<link rel="canonical" href={url} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Wave" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={og} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Logotipo de Wave" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={og} />

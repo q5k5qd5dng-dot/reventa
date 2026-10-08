@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import BrandHead from "../components/BrandHead.astro";
 const { title, description, bodyClass = "" } = Astro.props;
 ---
 <!doctype html>
@@ -9,7 +10,7 @@ const { title, description, bodyClass = "" } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <BrandHead title={title} description={description} themeColor="#000000" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600&family=Bebas+Neue&family=Cinzel:wght@600&family=Pacifico&family=Syne:wght@700&family=Oswald:wght@500&family=Archivo+Black&display=swap" rel="stylesheet" />

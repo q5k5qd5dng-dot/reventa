@@ -1,15 +1,14 @@
 ---
 import Qr from "./Qr.astro";
+import AppPhone from "./AppPhone.astro";
 const { kind } = Astro.props;
 const tableState = ["ok", "res", "res", "ok", "sold", "ok", "res", "sold", "ok", "ok", "res", "ok"];
 ---
-<div class="fm">
+<div class={`fm${kind === "tickets" ? " fm--app" : ""}`}>
   {kind === "tickets" && (
-    <div class="fm-col">
-      {[["Anticipada", "10 €", 100, "Agotada"], ["Fase 2", "12 €", 62, "62 %"], ["Puerta", "15 €", 0, "Pronto"]].map(([n, p, w, s]) => (
-        <div class="fm-row"><div><b>{n}</b><small>{p}</small></div><div class="fm-bar"><i style={`width:${w}%`}></i></div><span class="mono">{s}</span></div>
-      ))}
-      <div class="fm-chips"><span class="mono">Cuenta atrás 02:14:09</span><span class="mono">Código WAVE10</span><span class="mono">Quedan pocas</span></div>
+    <div class="fm-app">
+      <AppPhone screens={["entradas"]} sizes="(max-width: 700px) 46vw, 220px" label="Tienda de entradas real de un evento en la app" />
+      <p class="fm-app-cap mono">Tienda de entradas real, con el tema del organizador</p>
     </div>
   )}
   {kind === "lists" && (
@@ -26,7 +25,7 @@ const tableState = ["ok", "res", "res", "ok", "sold", "ok", "res", "sold", "ok",
     </div>
   )}
   {kind === "vip" && (
-    <div class="fm-vip"><div><span class="mono">Pase de temporada</span><b>WAVE VIP</b><small>Tu nombre · Nº 0042</small></div><Qr class="fm-qr" /></div>
+    <div class="fm-vip"><div><span class="mono">Pase de temporada</span><b>Pase VIP</b><small>Tu nombre · Nº 0042</small></div><Qr class="fm-qr" /></div>
   )}
   {kind === "rrpp" && (
     <div class="fm-col">
@@ -54,4 +53,5 @@ const tableState = ["ok", "res", "res", "ok", "sold", "ok", "res", "sold", "ok",
       <div class="fm-bars">{[30, 44, 38, 58, 50, 72, 64, 88].map((h) => <i style={`height:${h}%`}></i>)}</div>
     </div>
   )}
+  {kind !== "tickets" && <p class="fm-ex mono">Datos de ejemplo</p>}
 </div>

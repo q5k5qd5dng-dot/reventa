@@ -12,6 +12,8 @@ import EmailMock from "../components/screens/EmailMock.astro";
 import WalletPass from "../components/screens/WalletPass.astro";
 import DashboardUI from "../components/screens/DashboardUI.astro";
 import PhoneFrame from "../components/screens/PhoneFrame.astro";
+import AppPhone from "../components/AppPhone.astro";
+import { experiences } from "../data/app";
 
 const services = [
   ["Entradas", "Vende antes, vende más", "Tipos de entrada, precios por fases y códigos promocionales.", ["Tipos de entrada con precios por fases", "Hora límite de acceso y códigos de desbloqueo", "Cuenta atrás y avisos de pocas entradas"], "tickets"],
@@ -39,10 +41,12 @@ const phases = [
   ["Durante", "Controla con la sala llena", [["Accesos escaneados", "en directo"], ["Aforo", "por zona"], ["Taquilla", "sincronizada"], ["Incidencias", "en el móvil"]]],
   ["Después", "Aprende de cada noche", [["Informe de ventas", "al cerrar"], ["Rendimiento RRPP", "por persona"], ["Clientes nuevos", "a tu CRM"], ["Siguiente fiesta", "con tu público"]]],
 ];
+const showcase = [["ciudad", "Busca tu ciudad"], ["disco", "Zaragoza · Discotecas"], ["feed", "Para ti"], ["mensajes", "Mensajes"], ["actividad", "Actividad"]];
 const words = ["Discotecas", "Promotoras", "Beach Clubs", "Festivales", "Lounges", "Pubs"];
 const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "Naranja"], ["#a3e635", "Lima"], ["#f43f5e", "Coral"]];
 ---
 <Fx title="Wave · Software para locales de ocio nocturno" description="Entradas, listas, reservados, RRPP, CRM y check-in con tu marca. Wave para discotecas, promotoras, beach clubs y festivales.">
+  <link slot="head" rel="preload" as="image" href="/app/ciudad-640.webp" imagesrcset="/app/ciudad-640.webp 640w, /app/ciudad.webp 1206w" imagesizes="(max-width: 700px) 38vw, 240px" fetchpriority="high" />
   <FxChrome />
 
   <main>
@@ -73,7 +77,8 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
 
     <!-- Partículas -->
     <section class="fx-particles" data-nav="light">
-      <canvas id="fx-particle-canvas" aria-label="Logotipo de Wave hecho de partículas"></canvas>
+      <canvas id="fx-particle-canvas" role="img" aria-label="Logotipo de Wave hecho de partículas"></canvas>
+      <img class="fx-particles-static" src="/brand/wave-lockup.png" width="1240" height="321" alt="Logotipo de Wave" loading="lazy" decoding="async" />
       <div class="fx-particles-copy">
         <h2 class="fx-particles-title" data-split="lines" data-scroll="true">Más que un software de <em>gestión</em></h2>
         <p class="fx-particles-lead mono" data-split="lines" data-scroll="true" data-delay="0.2">Una ticketera con comunidad: tu público descubre, compra y vuelve.</p>
@@ -254,6 +259,62 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
       ))}
     </section>
 
+    <!-- App y comunidad: capturas y clips reales -->
+    <section class="app" id="app" data-nav="light" aria-labelledby="app-t">
+      <div class="wrap">
+        <div class="app-head">
+          <div>
+            <p class="mono" style="color:var(--l)" data-reveal>La app de Wave</p>
+            <h2 id="app-t" data-split="lines" data-scroll="true" style="margin-top:.8rem">Una app y una <em>comunidad</em></h2>
+          </div>
+          <div class="app-lead">
+            <p class="big" data-reading>Tu público ve qué planes hay, quién va y compra la entrada sin salir de la app.</p>
+            <p class="sm" data-reveal>Para ti, mensajes y actividad: la comunidad de Wave ayuda a promocionar tus eventos y a vender antes.</p>
+          </div>
+        </div>
+
+        <div class="app-row" data-app-row>
+          {showcase.map(([name, cap], i) => (
+            <figure class={`app-phone${i === 2 ? " is-mid" : ""}`} data-app-phone>
+              <div data-app-in><div data-app-tilt>
+                <AppPhone screens={[name as any]} sizes="(max-width: 759px) 44vw, 20vw" />
+              </div></div>
+              <figcaption class="mono">{cap}</figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <div class="exp" id="experiencias">
+          <div class="exp-intro">
+            <p class="mono" style="color:var(--l)" data-reveal>Experiencias</p>
+            <h3 data-split="lines" data-scroll="true" style="margin-top:.8rem">Party Music, Instantáneas y <em>Match</em></h3>
+            <p class="sm" data-reveal>Tres experiencias dentro de la app para quien va al evento.</p>
+            <img class="exp-list" data-reveal src="/app/exp-lista.jpg" width="588" height="984" alt="Experiencias en la app: tarjetas de Party Music, Instantáneas y Match" loading="lazy" decoding="async" />
+          </div>
+          <div class="exp-cards">
+            {experiences.map((x) => (
+              <article class="exp-card" data-reveal>
+                <div class="exp-media" style={`aspect-ratio:${x.w}/${x.h}`}>
+                  <img class="exp-poster" src={x.poster} width={x.w} height={x.h} alt={x.alt} loading="lazy" decoding="async" />
+                  <video muted loop playsinline preload="none" width={x.w} height={x.h} data-src={x.video} data-poster={x.poster} aria-hidden="true" tabindex="-1"></video>
+                  <button type="button" class="exp-ctl" aria-pressed="false" aria-label="Reproducir vídeo">
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path class="pl" d="M5 3.2l8 4.8-8 4.8z" /><path class="pa" d="M4.5 3h2.6v10H4.500zM8.900 3h2.600v10H8.900z" /></svg>
+                  </button>
+                </div>
+                <div class="exp-body">
+                  <span class="exp-badge mono">{x.badge}</span>
+                  <h4>{x.title}</h4>
+                  <p>{x.text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div class="links" data-reveal><span class="mono">Wave para</span><a href="/discotecas">Discotecas</a><a href="/promotores">Promotores</a><a href="/beach-clubs">Beach Clubs</a><a href="/festivales">Festivales</a></div>
+      </div>
+    </section>
+
     <!-- Soporte -->
     <section class="sup" id="soporte" data-nav="dark">
       <div class="wrap sup-grid">
@@ -261,12 +322,6 @@ const swatches = [["#21aec0", "Turquesa"], ["#8b5cf6", "Violeta"], ["#f97316", "
         <div>
           <p class="big" data-reading>Estamos contigo cuando lo necesites: en el montaje, en la formación de tu equipo y la noche del evento.</p>
           <p class="sm" data-reveal>Wave no es solo un software de gestión. Detrás hay un equipo de la noche que te acompaña, resuelve dudas y te ayuda a sacar partido a cada herramienta.</p>
-        </div>
-        <h2 data-split="lines" data-scroll="true">Una app y una <em>comunidad</em></h2>
-        <div>
-          <p class="big" data-reading>Tu público ve qué planes hay, quién va y compra la entrada sin salir de la app.</p>
-          <p class="sm" data-reveal>Zona Fiesta, Match, música y fotos de cada noche: la comunidad de Wave ayuda a promocionar tus eventos y a vender antes.</p>
-          <div class="links" data-reveal><a href="/discotecas">Discotecas</a><a href="/promotores">Promotores</a><a href="/beach-clubs">Beach Clubs</a><a href="/festivales">Festivales</a></div>
         </div>
       </div>
     </section>

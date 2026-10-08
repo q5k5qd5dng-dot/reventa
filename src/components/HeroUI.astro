@@ -1,13 +1,17 @@
 ---
 import DashboardUI from "./screens/DashboardUI.astro";
-import PhoneFrame from "./screens/PhoneFrame.astro";
-import AppEvent from "./screens/AppEvent.astro";
+import AppPhone from "./AppPhone.astro";
 const feed = [["Entrada vendida", "Marta · 2 × Normal", "ahora"], ["Acceso correcto", "Puerta 1 · Lista RRPP", "hace 1 min"], ["Mesa reservada", "Mesa 4 · 150 €", "hace 3 min"]];
 ---
-<div class="hui" aria-hidden="true">
-  <div class="hui-dash" data-hero-in data-depth="6"><DashboardUI id="hd" /></div>
-  <div class="hui-ph" data-hero-in data-depth="16"><PhoneFrame><AppEvent id="hp" /></PhoneFrame></div>
-  <div class="hui-feed" data-hero-in data-depth="24">
+<div class="hui">
+  <div class="hui-dash" data-hero-in data-depth="6" aria-hidden="true">
+    <DashboardUI id="hd" />
+    <p class="hui-ex mono">Panel de ejemplo · datos de ejemplo</p>
+  </div>
+  <div class="hui-ph" data-hero-in data-depth="16">
+    <AppPhone screens={["ciudad", "disco", "entradas"]} stack eager sizes="(max-width: 700px) 38vw, 240px" label="La app de Wave: Busca tu ciudad, discotecas de Zaragoza y tienda de entradas" />
+  </div>
+  <div class="hui-feed" data-hero-in data-depth="24" aria-hidden="true">
     {feed.map(([a, b, c], i) => (
       <div class="hui-toast" style={`--i:${i}`}><span class="ic"></span><div><b>{a}</b><small>{b}</small></div><em class="mono">{c}</em></div>
     ))}
