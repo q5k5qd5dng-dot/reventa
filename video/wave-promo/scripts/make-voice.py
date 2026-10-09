@@ -25,12 +25,13 @@ quedaron en scratch; la alternativa recomendada es la mezcla 0.5 ef_dora + 0.5 f
 Este script es determinista (numpy + ffmpeg): limpia cada toma (EQ, compresión suave), le da una sala corta (reverb de placa ≈ 12 % húmedo),
 la pasa a estéreo 48 kHz, pico −3 dBFS, y calcula el ducking (carriles de volumen de #music y #sfx) a partir de la envolvente real de la voz.
 """
-import json, re, subprocess, wave
+import json, os, re, subprocess, wave
 from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
-RAW = ROOT / "assets/audio/raw"
+# VOICE_RAW=raw (por defecto: mezcla "brillante") | raw-clara (alternativa: 0.5 ef_dora + 0.5 ff_siwis)
+RAW = ROOT / "assets/audio" / os.environ.get("VOICE_RAW", "raw")
 OUT = ROOT / "assets/audio"
 SR = 48000
 TOTAL = 15.9
