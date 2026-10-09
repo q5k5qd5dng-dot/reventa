@@ -25,7 +25,7 @@ quedaron en scratch; la alternativa recomendada es la mezcla 0.5 ef_dora + 0.5 f
 Modos de sonido de la voz (variable de entorno VOICE_FX):
     dry    (por defecto)  voz limpia con una sala corta
     space  voz "espacial": algo más grave y cercana, sala amplia (hall ≈ 1.9 s), eco ping-pong que florece en los huecos de la voz
-    ether  voz "espacial etérea": aún más grave, sala larga (≈ 3 s), eco más presente y reverb "shimmer" (octava arriba)
+    ether  voz "espacial etérea": sala larga (≈ 3 s), eco más presente y un hilo de reverb "shimmer" (octava arriba)
 
 Este script es determinista (numpy + ffmpeg): limpia cada toma (EQ, compresión suave), le da una sala corta (reverb de placa ≈ 12 % húmedo),
 la pasa a estéreo 48 kHz, pico −3 dBFS, y calcula el ducking (carriles de volumen de #music y #sfx) a partir de la envolvente real de la voz.
@@ -56,12 +56,15 @@ FX = os.environ.get("VOICE_FX", "dry")
 SPACE = {
     "dry":   dict(pitch_st=0.0,  tail=1.0, rt60=0.85, pre=0.020, wet_db=-17.0, lp=5200, delay_db=None, shimmer_db=None),
     "space": dict(pitch_st=-1.0, tail=2.0, rt60=1.9,  pre=0.030, wet_db=-11.0, lp=6500, delay_db=-15.0, shimmer_db=None),
-    "ether": dict(pitch_st=-2.0, tail=3.0, rt60=3.0,  pre=0.045, wet_db=-8.0,  lp=7500, delay_db=-11.0, shimmer_db=-20.0),
+    "ether": dict(pitch_st=-1.0, tail=3.0, rt60=3.0,  pre=0.045, wet_db=-8.0,  lp=7500, delay_db=-11.0, shimmer_db=-20.0),
 }[FX]
 
+# la cola de reverb de la frase anterior no debe emborronar «Wave» (14.80 s)
+MAX_END = {"vo-4": 14.75}
+
 # ducking: la música y los SFX bajan mientras habla la voz (volumen lineal 0..1)
-DUCK_MUSIC = 0.60
-DUCK_SFX = 0.62
+DUCK_MUSIC = 0.55
+DUCK_SFX = 0.55
 BRIDGE_S = 0.52      # huecos de voz más cortos que esto no suben el volumen (evita "bombeo")
 ATTACK_S = 0.07
 RELEASE_S = 0.32
@@ -169,17 +172,18 @@ def process(name, tail_s):
     dry = load(RAW / f"{name}-raw.wav")
     n_dry = len(dry)
     dry = np.concatenate([dry, np.zeros(int(SR * tail_s))])
-    # nivel homogéneo entre piezas: RMS de la parte hablada (frames con voz) a −19.5 dBFS
+    # nivel homogéneo entre piezas: RMS de la parte hablada (frames con voz) a −16.5 dBFS
     fr = dry[:n_dry]
     act = np.abs(fr) > 0.05 * np.abs(fr).max()
-    dry *= 10 ** (-19.5 / 20) / np.sqrt(np.mean(fr[act] ** 2))
+    dry *= 10 ** (-16.5 / 20) / np.sqrt(np.mean(fr[act] ** 2))
     rms = np.sqrt(np.mean(dry[:n_dry][act] ** 2))
     ir_l = hall_ir(11, SPACE["rt60"], SPACE["lp"], SPACE["pre"], SPACE["rt60"] * 1.3 + 0.2)
     ir_r = hall_ir(23, SPACE["rt60"], SPACE["lp"], SPACE["pre"], SPACE["rt60"] * 1.3 + 0.2)
     wet = np.stack([convolve(dry, ir_l)[: len(dry)], convolve(dry, ir_r)[: len(dry)]], axis=1)
-    wet *= 10 ** (SPACE["wet_db"] / 20) * rms / (np.sqrt(np.mean(wet[:n_dry] ** 2)) + 1e-12)  # sala a wet_db respecto a la voz
+    wet_db = SPACE["wet_db"] - (5.0 if name == "vo-5" else 0.0)   # la marca, más seca para que se entienda
+    wet *= 10 ** (wet_db / 20) * rms / (np.sqrt(np.mean(wet[:n_dry] ** 2)) + 1e-12)  # sala a wet_db respecto a la voz
     y = np.stack([dry, dry], axis=1) + wet
-    if SPACE["shimmer_db"] is not None:
+    if SPACE["shimmer_db"] is not None and name != "vo-5":
         sh = rubberband(wet, 2.0)[: len(dry)]
         spec = np.fft.rfft(sh, axis=0)
         f = np.fft.rfftfreq(len(sh), 1 / SR)[:, None]
@@ -188,9 +192,9 @@ def process(name, tail_s):
     if SPACE["delay_db"] is not None:
         env = smooth_env(dry[:n_dry], 0.02, 0.35)
         env = np.concatenate([env, np.zeros(len(dry) - n_dry)])
-        y += pingpong(dry, SPACE["delay_db"], env)
+        y += pingpong(dry, SPACE["delay_db"] - (7.0 if name == "vo-5" else 0.0), env)
     # recorte a lo que cabe en el vídeo y fundidos
-    y = y[: int((TOTAL - start) * SR)]
+    y = y[: int((min(TOTAL, MAX_END.get(name, TOTAL)) - start) * SR)]
     fi, fo = int(0.008 * SR), int(min(0.6, tail_s * 0.6) * SR)
     y[:fi] *= np.linspace(0, 1, fi)[:, None]
     y[-fo:] *= np.linspace(1, 0, fo)[:, None]
@@ -252,8 +256,15 @@ def rdp(points, eps):
     return rdp(points[: bi + 1], eps)[:-1] + rdp(points[bi:], eps)
 
 
+BRAND_WINDOW = (14.70, 15.75)   # mientras se dice «Wave»: la locución manda sobre los efectos del logo
+BRAND_DUCK = 0.36
+
+
 def lane(g, depth):
-    pts = [(round(i * 0.02, 3), round(1.0 - (1.0 - depth) * float(g[i]), 4)) for i in range(len(g))]
+    def d(i):
+        t = i * 0.02
+        return min(depth, BRAND_DUCK) if BRAND_WINDOW[0] <= t <= BRAND_WINDOW[1] else depth
+    pts = [(round(i * 0.02, 3), round(1.0 - (1.0 - d(i)) * float(g[i]), 4)) for i in range(len(g))]
     pts = rdp(pts, 0.012)
     return {"version": 1, "lanes": [{"target": "volume", "points": [{"t": t, "v": v} for t, v in pts]}]}
 
