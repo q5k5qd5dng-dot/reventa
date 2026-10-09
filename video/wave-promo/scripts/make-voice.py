@@ -9,22 +9,16 @@ Texto y colocación (segundos globales):
     vo-4  12.33  "y compra tu entrada."                               (escena de texto, línea 2)
     vo-5  14.80  "Wave."                                              (cierre; pronunciación inglesa /weɪv/)
 
-Las tomas crudas (assets/audio/raw/vo-N-raw.wav, 24 kHz mono) se generaron con Kokoro-82M (kokoro-onnx 0.6.1, kokoro-v1.0.onnx +
-voices-v1.0.bin; el TTS local de `npx hyperframes tts`) mezclando los vectores de estilo de dos voces femeninas:
-    voz = 0.45 · ef_dora + 0.55 · if_sara            (mezcla "brillante": joven, más aguda, F0 mediana ≈ 205 Hz)
-con fonemas espeak-ng dados a mano (is_phonemes=True) para que las palabras salgan bien:
-    vo-1  "la ˈap ke xˈunta βˈɛnta ðe entɾˈaðas onlˈaɪn"            velocidad 0.81
-    vo-2  "kon rˈed soθjˈal pˌaɾa los ˌasistˈɛntes ðe las fjˈestas."  velocidad 0.95
-    vo-3  "deskˈuβɾe ðˈonde salˈiɾ,"  (+ subida de la última sílaba, 2.5 semitonos, para que suene a frase que continúa)  velocidad 1.00
-    vo-4  "y compra tu entrada." (fonemas espeak es)                   velocidad 1.03
-    vo-5  "wˈeɪv."   → /weɪv/ inglés con LA MISMA mezcla de voz        velocidad 0.90
-Cada toma se normalizó (−19 dBFS RMS), se recortó (20 ms al inicio, 35 ms al final) y se verificó (ASR faster-whisper: texto exacto;
-reconocedores de fonemas: "Wave" termina en /v/). Todas las demás voces probadas (blends ef_dora+ff_siwis / af_aoede, Piper, Chatterbox)
-quedaron en scratch; la alternativa recomendada es la mezcla 0.5 ef_dora + 0.5 ff_siwis ("clara").
+Voz actual: Chatterbox Multilingual (MIT) con una voz de referencia SINTÉTICA propia (una toma de su voz por defecto, sin audio de ninguna persona real),
+estilo de lectura de anuncio: cercana, cálida, con sonrisa, ritmo sin prisa y entonación viva. Se imitó solo el ESTILO de una locución de ejemplo
+(ritmo, pausas, forma de las frases, cercanía), no la identidad de su locutora. «Wave.» se genera con language_id='en' y la misma voz (/weɪv/).
+Tomas crudas en assets/audio/raw-cb-b/ (preparadas con scripts/prep-voice-raw.py: p1 con tempo 0.958, p3 con subida final +2.5 st).
+Tomas anteriores (Kokoro) siguen en assets/audio/raw/ y raw-clara/ por si se quiere volver (VOICE_RAW=raw, VOICE_FX=dry).
 
 Modos de sonido de la voz (variable de entorno VOICE_FX):
     dry    (por defecto)  voz limpia con una sala corta
     space  voz "espacial": algo más grave y cercana, sala amplia (hall ≈ 1.9 s), eco ping-pong que florece en los huecos de la voz
+    pro    (por defecto) locución de anuncio «cercana»: voz seca, cálida y brillante (presencia, aire, de-esser), apenas sala — la de las tomas Chatterbox
     ether  voz "espacial etérea": sala larga (≈ 3 s), eco más presente y un hilo de reverb "shimmer" (octava arriba)
 
 Este script es determinista (numpy + ffmpeg): limpia cada toma (EQ, compresión suave), le da una sala corta (reverb de placa ≈ 12 % húmedo),
@@ -35,8 +29,8 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
-# VOICE_RAW=raw (por defecto: mezcla "brillante") | raw-clara (alternativa: 0.5 ef_dora + 0.5 ff_siwis)
-RAW = ROOT / "assets/audio" / os.environ.get("VOICE_RAW", "raw")
+# VOICE_RAW=raw-cb-b (por defecto: voz Chatterbox «cb-b») | raw-cb-a (Chatterbox «cb-a», más calmada) | raw (Kokoro «brillante») | raw-clara (Kokoro 0.5 ef_dora + 0.5 ff_siwis)
+RAW = ROOT / "assets/audio" / os.environ.get("VOICE_RAW", "raw-cb-b")
 OUT = ROOT / "assets/audio"
 SR = 48000
 TOTAL = 15.9
@@ -51,11 +45,12 @@ PIECES = {
     "vo-5": (14.80, 0.45),  # termina antes del final del vídeo (15.9 s)
 }
 
-FX = os.environ.get("VOICE_FX", "dry")
+FX = os.environ.get("VOICE_FX", "pro")
 # modo -> parámetros del tratamiento espacial
 SPACE = {
     "dry":   dict(pitch_st=0.0,  tail=1.0, rt60=0.85, pre=0.020, wet_db=-17.0, lp=5200, delay_db=None, shimmer_db=None),
     "space": dict(pitch_st=-1.0, tail=2.0, rt60=1.9,  pre=0.030, wet_db=-11.0, lp=6500, delay_db=-15.0, shimmer_db=None),
+    "pro":   dict(pitch_st=0.0,  tail=0.9, rt60=0.45, pre=0.010, wet_db=-21.0, lp=6500, delay_db=None, shimmer_db=None),
     "ether": dict(pitch_st=-1.0, tail=3.0, rt60=3.0,  pre=0.045, wet_db=-8.0,  lp=7500, delay_db=-11.0, shimmer_db=-20.0),
 }[FX]
 
@@ -80,8 +75,22 @@ CHAIN = ",".join([
 ])
 
 
+CHAIN_PRO = ",".join([
+    "aresample=48000:resampler=soxr",
+    "highpass=f=75:poles=2",
+    "equalizer=f=180:t=q:w=0.9:g=1.5",       # calidez
+    "equalizer=f=330:t=q:w=1.1:g=-1.5",      # barro
+    "equalizer=f=3500:t=q:w=0.8:g=2.2",      # presencia
+    "deesser=i=0.4:m=0.5:f=0.5:s=o",
+    "acompressor=threshold=-24dB:ratio=3:attack=8:release=90:makeup=3:knee=4",
+    "acompressor=threshold=-14dB:ratio=2:attack=3:release=60:makeup=1",
+    "highshelf=f=9000:g=1.5",                 # aire
+    "alimiter=limit=0.9:attack=2:release=40",
+])
+
+
 def load(path):
-    chain = CHAIN
+    chain = CHAIN_PRO if FX == "pro" else CHAIN
     if SPACE["pitch_st"]:
         chain = "rubberband=pitch=%.5f:formant=preserved:pitchq=quality," % (2 ** (SPACE["pitch_st"] / 12)) + CHAIN
     out = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-af", chain, "-ac", "1", "-f", "f32le", "-ar", str(SR), "-"],
