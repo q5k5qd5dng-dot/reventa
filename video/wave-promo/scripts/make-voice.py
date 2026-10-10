@@ -9,16 +9,21 @@ Texto y colocación (segundos globales):
     vo-4  12.33  "y compra tu entrada."                               (escena de texto, línea 2)
     vo-5  14.80  "Wave."                                              (cierre; pronunciación inglesa /weɪv/)
 
-Voz actual: Chatterbox Multilingual (MIT) con una voz de referencia SINTÉTICA propia (una toma de su voz por defecto, sin audio de ninguna persona real),
-estilo de lectura de anuncio: cercana, cálida, con sonrisa, ritmo sin prisa y entonación viva. Se imitó solo el ESTILO de una locución de ejemplo
-(ritmo, pausas, forma de las frases, cercanía), no la identidad de su locutora. «Wave.» se genera con language_id='en' y la misma voz (/weɪv/).
-Tomas crudas en assets/audio/raw-cb-b/ (preparadas con scripts/prep-voice-raw.py: p1 con tempo 0.958, p3 con subida final +2.5 st).
-Tomas anteriores (Kokoro) siguen en assets/audio/raw/ y raw-clara/ por si se quiere volver (VOICE_RAW=raw, VOICE_FX=dry).
+Voz actual (v4, «notoria»): Chatterbox Multilingual (MIT) con una voz de referencia SINTÉTICA propia: ~8 s de Kokoro-82M (mezcla de voces de serie, sin
+audio de ninguna persona real) -> assets/audio/ref/ref-sintetica-kokoro.wav. Esa referencia aporta una fonación firme (no «soplada»): las tomas anteriores
+(referencia = la propia voz por defecto de Chatterbox, subida de tono) tenían el primer armónico muy dominante (H1−H2 ≈ 10–13 dB) y mucho ruido entre
+armónicos (HNR ≈ 10–13 dB) y sonaban a susurro; las nuevas dan H1−H2 ≈ 2–4 dB y HNR ≈ 12–15 dB. Además las tomas antiguas pasaban DOS veces por EQ
+(+1.5 dB @180 Hz y +1.5 dB de aire, dos veces); ahora las tomas «cb-c» llegan crudas (solo recorte) y el EQ se aplica una sola vez, aquí.
+Estilo de lectura de anuncio: cercana, con sonrisa, ritmo sin prisa y entonación viva. Se imitó solo el ESTILO de una locución de ejemplo
+(ritmo, pausas, forma de las frases), no la identidad de su locutora. «Wave.» se genera con language_id='en' y la misma voz (/weɪv/).
+Tomas crudas en assets/audio/raw-cb-c/ (scripts/prep-voice-raw.py --trim --tempo-p5 0.88).
+Tomas anteriores siguen en assets/audio/raw-cb-b/ (Chatterbox «susurrante», VOICE_FX=pro), raw/ y raw-clara/ (Kokoro; VOICE_RAW=raw, VOICE_FX=dry).
 
 Modos de sonido de la voz (variable de entorno VOICE_FX):
     dry    (por defecto)  voz limpia con una sala corta
     space  voz "espacial": algo más grave y cercana, sala amplia (hall ≈ 1.9 s), eco ping-pong que florece en los huecos de la voz
-    pro    (por defecto) locución de anuncio «cercana»: voz seca, cálida y brillante (presencia, aire, de-esser), apenas sala — la de las tomas Chatterbox
+    notoria (por defecto) voz presente y proyectada: menos «soplo» de la fundamental, cuerpo (380 Hz) y presencia (2.8 kHz), compresión 3:1, nivel +1.5 dB, apenas sala
+    pro    locución de anuncio «cercana» de la ronda anterior (tomas cb-b): voz seca, cálida y con aire — sonaba a susurro
     ether  voz "espacial etérea": sala larga (≈ 3 s), eco más presente y un hilo de reverb "shimmer" (octava arriba)
 
 Este script es determinista (numpy + ffmpeg): limpia cada toma (EQ, compresión suave), le da una sala corta (reverb de placa ≈ 12 % húmedo),
@@ -29,8 +34,8 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
-# VOICE_RAW=raw-cb-b (por defecto: voz Chatterbox «cb-b») | raw-cb-a (Chatterbox «cb-a», más calmada) | raw (Kokoro «brillante») | raw-clara (Kokoro 0.5 ef_dora + 0.5 ff_siwis)
-RAW = ROOT / "assets/audio" / os.environ.get("VOICE_RAW", "raw-cb-b")
+# VOICE_RAW=raw-cb-c (por defecto: Chatterbox con referencia sintética firme) | raw-cb-b (Chatterbox «susurrante», con VOICE_FX=pro) | raw-cb-a (Chatterbox calmada) | raw (Kokoro «brillante») | raw-clara (Kokoro)
+RAW = ROOT / "assets/audio" / os.environ.get("VOICE_RAW", "raw-cb-c")
 OUT = ROOT / "assets/audio"
 SR = 48000
 TOTAL = 15.9
@@ -45,12 +50,13 @@ PIECES = {
     "vo-5": (14.80, 0.45),  # termina antes del final del vídeo (15.9 s)
 }
 
-FX = os.environ.get("VOICE_FX", "pro")
+FX = os.environ.get("VOICE_FX", "notoria")
 # modo -> parámetros del tratamiento espacial
 SPACE = {
     "dry":   dict(pitch_st=0.0,  tail=1.0, rt60=0.85, pre=0.020, wet_db=-17.0, lp=5200, delay_db=None, shimmer_db=None),
     "space": dict(pitch_st=-1.0, tail=2.0, rt60=1.9,  pre=0.030, wet_db=-11.0, lp=6500, delay_db=-15.0, shimmer_db=None),
     "pro":   dict(pitch_st=0.0,  tail=0.9, rt60=0.45, pre=0.010, wet_db=-21.0, lp=6500, delay_db=None, shimmer_db=None),
+    "notoria": dict(pitch_st=0.0, tail=0.9, rt60=0.40, pre=0.008, wet_db=-23.0, lp=6500, delay_db=None, shimmer_db=None),
     "ether": dict(pitch_st=-1.0, tail=3.0, rt60=3.0,  pre=0.045, wet_db=-8.0,  lp=7500, delay_db=-11.0, shimmer_db=-20.0),
 }[FX]
 
@@ -59,7 +65,8 @@ MAX_END = {"vo-4": 14.75}
 
 # ducking: la música y los SFX bajan mientras habla la voz (volumen lineal 0..1)
 DUCK_MUSIC = 0.55
-DUCK_SFX = 0.55
+DUCK_SFX = 0.45 if FX == "notoria" else 0.55
+SPEECH_RMS_DB = -13.5 if FX == "notoria" else -16.5   # nivel RMS de la parte hablada de cada pieza (dBFS)
 BRIDGE_S = 0.52      # huecos de voz más cortos que esto no suben el volumen (evita "bombeo")
 ATTACK_S = 0.07
 RELEASE_S = 0.32
@@ -89,10 +96,31 @@ CHAIN_PRO = ",".join([
 ])
 
 
+# voz «notoria»: una sola pasada de EQ — fundamental -1.5 dB, cuerpo +2 dB @380, presencia +2.5 dB @2.8 kHz, sin realce de aire, compresión lenta (poca distorsión)
+CHAIN_NOTORIA = ",".join([
+    "aresample=48000:resampler=soxr",
+    "highpass=f=85:poles=2",
+    "equalizer=f=200:t=q:w=0.9:g=-1.5",
+    "equalizer=f=380:t=q:w=1.0:g=2.0",
+    "equalizer=f=2800:t=q:w=0.8:g=2.5",
+    "deesser=i=0.4:m=0.5:f=0.5:s=o",
+    "acompressor=threshold=-22dB:ratio=2:attack=20:release=200:makeup=2:knee=6",   # suave: menos modulación = menos ruido; los picos los doma soft_limit()
+])
+
+
+def soft_limit(x, knee=0.38, top=0.75):
+    """Doma picos por encima de `knee` hacia `top` (tanh): baja el factor de cresta ≈ 3 dB y permite subir el nivel medio sin pasar de `top`."""
+    a = np.abs(x)
+    y = a.copy()
+    over = a > knee
+    y[over] = knee + (top - knee) * np.tanh((a[over] - knee) / (top - knee))
+    return np.sign(x) * y
+
+
 def load(path):
-    chain = CHAIN_PRO if FX == "pro" else CHAIN
+    chain = CHAIN_NOTORIA if FX == "notoria" else CHAIN_PRO if FX == "pro" else CHAIN
     if SPACE["pitch_st"]:
-        chain = "rubberband=pitch=%.5f:formant=preserved:pitchq=quality," % (2 ** (SPACE["pitch_st"] / 12)) + CHAIN
+        chain = "rubberband=pitch=%.5f:formant=preserved:pitchq=quality," % (2 ** (SPACE["pitch_st"] / 12)) + chain
     out = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-af", chain, "-ac", "1", "-f", "f32le", "-ar", str(SR), "-"],
                          check=True, capture_output=True).stdout
     return np.frombuffer(out, dtype="<f4").astype(np.float64)
@@ -181,10 +209,14 @@ def process(name, tail_s):
     dry = load(RAW / f"{name}-raw.wav")
     n_dry = len(dry)
     dry = np.concatenate([dry, np.zeros(int(SR * tail_s))])
-    # nivel homogéneo entre piezas: RMS de la parte hablada (frames con voz) a −16.5 dBFS
+    # nivel homogéneo entre piezas: RMS de la parte hablada (frames con voz) a SPEECH_RMS_DB dBFS
     fr = dry[:n_dry]
     act = np.abs(fr) > 0.05 * np.abs(fr).max()
-    dry *= 10 ** (-16.5 / 20) / np.sqrt(np.mean(fr[act] ** 2))
+    dry *= 10 ** (SPEECH_RMS_DB / 20) / np.sqrt(np.mean(fr[act] ** 2))
+    if FX == "notoria":
+        dry = soft_limit(dry)
+        dry *= 10 ** (SPEECH_RMS_DB / 20) / np.sqrt(np.mean(dry[:n_dry][act] ** 2))   # recupera el RMS que quitó el limitador
+        dry = soft_limit(dry)
     rms = np.sqrt(np.mean(dry[:n_dry][act] ** 2))
     ir_l = hall_ir(11, SPACE["rt60"], SPACE["lp"], SPACE["pre"], SPACE["rt60"] * 1.3 + 0.2)
     ir_r = hall_ir(23, SPACE["rt60"], SPACE["lp"], SPACE["pre"], SPACE["rt60"] * 1.3 + 0.2)
@@ -208,8 +240,9 @@ def process(name, tail_s):
     y[:fi] *= np.linspace(0, 1, fi)[:, None]
     y[-fo:] *= np.linspace(1, 0, fo)[:, None]
     pk = np.abs(y).max()
-    if pk > 0.9:
-        y *= 0.9 / pk
+    top = 0.75 if FX == "notoria" else 0.9   # con música y SFX debajo, la suma debe quedar bajo −1.5 dBFS
+    if pk > top:
+        y *= top / pk
     pcm = np.clip(y * 32767, -32768, 32767).astype("<i2")
     with wave.open(str(OUT / f"{name}.wav"), "wb") as w:
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
