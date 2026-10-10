@@ -7,20 +7,22 @@ Texto y colocación (segundos globales):
     vo-2  7.15   "con red social para los asistentes de las fiestas." (pantallas sociales y experiencias)
     vo-3  10.40  "Descubre dónde salir,"                              (escena de texto, línea 1)
     vo-4  12.33  "y compra tu entrada."                               (escena de texto, línea 2)
-    vo-5  14.80  "Wave."                                              (cierre; pronunciación inglesa /weɪv/)
+    vo-5  14.70  "Wave."                                              (cierre; pronunciación inglesa /weɪv/)
 
-Voz actual (v4, «notoria»): Chatterbox Multilingual (MIT) con una voz de referencia SINTÉTICA propia: ~8 s de Kokoro-82M (mezcla de voces de serie, sin
-audio de ninguna persona real) -> assets/audio/ref/ref-sintetica-kokoro.wav. Esa referencia aporta una fonación firme (no «soplada»): las tomas anteriores
-(referencia = la propia voz por defecto de Chatterbox, subida de tono) tenían el primer armónico muy dominante (H1−H2 ≈ 10–13 dB) y mucho ruido entre
-armónicos (HNR ≈ 10–13 dB) y sonaban a susurro; las nuevas dan H1−H2 ≈ 2–4 dB y HNR ≈ 12–15 dB. Además las tomas antiguas pasaban DOS veces por EQ
-(+1.5 dB @180 Hz y +1.5 dB de aire, dos veces); ahora las tomas «cb-c» llegan crudas (solo recorte) y el EQ se aplica una sola vez, aquí.
-Estilo de lectura de anuncio: cercana, con sonrisa, ritmo sin prisa y entonación viva. Se imitó solo el ESTILO de una locución de ejemplo
-(ritmo, pausas, forma de las frases), no la identidad de su locutora. «Wave.» se genera con language_id='en' y la misma voz (/weɪv/).
-Tomas crudas en assets/audio/raw-cb-c/ (scripts/prep-voice-raw.py --trim --tempo-p5 0.88).
-Tomas anteriores siguen en assets/audio/raw-cb-b/ (Chatterbox «susurrante», VOICE_FX=pro), raw/ y raw-clara/ (Kokoro; VOICE_RAW=raw, VOICE_FX=dry).
+Voz actual (v6, castellana y notoria): acento de España («español neutral», no latino) y «Wave» con una /w/ marcada y una /v/ final clara.
+  · Por qué no solo Chatterbox: con cualquier referencia, Chatterbox (T3 multilingüe) habla un español con seseo (el reconocedor de fonemas oye «social» como
+    /s o s j a l/ en las 24 tomas de prueba; ninguna con /θ/). El inglés de «Wave» tampoco salía bien: la /w/ casi no existía (F2 ya en 1200–1800 Hz a los 20 ms).
+  · Solución: el CONTENIDO (fonemas castellanos, /θ/ para z/c, jota /x/) lo da Kokoro-82M (ef_dora, voz de serie, escrito en IPA: scripts/make-castilian-sources.py) y
+    Chatterbox solo cambia el TIMBRE con su conversión de voz (S3Gen): scripts/convert-voice.py → referencia sintética firme (assets/audio/ref/ref-sintetica-kokoro.wav).
+    El tokenizador de voz conserva el acento: /θ/ de «social» y «jota» salen en la conversión (comprobado con el reconocedor de fonemas).
+  · «Wave.»: IPA «wwˈeɪvv» (w larga, diptongo, v larga) a velocidad 0.95 → F2 inicial ≈ 550–800 Hz durante ≈ 100 ms (glide «u-w») y /v/ final sonora; en la mezcla se
+    sube la /w/ y la /v/ (compresión ascendente), el SFX del logo baja ≈ −18 dB de 14.62 a 15.38 s y la palabra entra a 14.70 s.
+  · Tratamiento «notoria» (de la versión anterior): una sola pasada de EQ, compresión suave + limitador de picos, habla a −13.5 dBFS RMS.
+Tomas crudas: assets/audio/raw-es/ (scripts/prep-voice-raw.py --clean -6 --trim --stretch-p1 0.92 --rise-p1 2.0 --rise-p3).
+Tomas anteriores: raw-cb-c/ (Chatterbox directo, firme pero con acento latino), raw-cb-b/ (Chatterbox «susurrante», VOICE_FX=pro), raw/ y raw-clara/ (Kokoro; VOICE_RAW=raw, VOICE_FX=dry).
 
 Modos de sonido de la voz (variable de entorno VOICE_FX):
-    dry    (por defecto)  voz limpia con una sala corta
+    dry    voz limpia con una sala corta
     space  voz "espacial": algo más grave y cercana, sala amplia (hall ≈ 1.9 s), eco ping-pong que florece en los huecos de la voz
     notoria (por defecto) voz presente y proyectada: menos «soplo» de la fundamental, cuerpo (380 Hz) y presencia (2.8 kHz), compresión 3:1, nivel +1.5 dB, apenas sala
     pro    locución de anuncio «cercana» de la ronda anterior (tomas cb-b): voz seca, cálida y con aire — sonaba a susurro
@@ -34,8 +36,8 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
-# VOICE_RAW=raw-cb-c (por defecto: Chatterbox con referencia sintética firme) | raw-cb-b (Chatterbox «susurrante», con VOICE_FX=pro) | raw-cb-a (Chatterbox calmada) | raw (Kokoro «brillante») | raw-clara (Kokoro)
-RAW = ROOT / "assets/audio" / os.environ.get("VOICE_RAW", "raw-cb-c")
+# VOICE_RAW=raw-es (por defecto: castellano, Kokoro IPA + conversión de timbre) | raw-cb-c (Chatterbox directo, firme) | raw-cb-b (Chatterbox «susurrante», con VOICE_FX=pro) | raw-cb-a (Chatterbox calmada) | raw (Kokoro «brillante») | raw-clara (Kokoro)
+RAW = ROOT / "assets/audio" / os.environ.get("VOICE_RAW", "raw-es")
 OUT = ROOT / "assets/audio"
 SR = 48000
 TOTAL = 15.9
@@ -47,7 +49,7 @@ PIECES = {
     "vo-2": (7.15, 1.0),
     "vo-3": (10.40, 1.0),
     "vo-4": (12.33, 1.0),
-    "vo-5": (14.80, 0.45),  # termina antes del final del vídeo (15.9 s)
+    "vo-5": (14.70, 0.45),  # termina antes del final del vídeo (15.9 s)
 }
 
 FX = os.environ.get("VOICE_FX", "notoria")
@@ -60,8 +62,8 @@ SPACE = {
     "ether": dict(pitch_st=-1.0, tail=3.0, rt60=3.0,  pre=0.045, wet_db=-8.0,  lp=7500, delay_db=-11.0, shimmer_db=-20.0),
 }[FX]
 
-# la cola de reverb de la frase anterior no debe emborronar «Wave» (14.80 s)
-MAX_END = {"vo-4": 14.75}
+# la cola de reverb de la frase anterior no debe emborronar «Wave» (14.70 s)
+MAX_END = {"vo-4": 14.65}
 
 # ducking: la música y los SFX bajan mientras habla la voz (volumen lineal 0..1)
 DUCK_MUSIC = 0.55
@@ -115,6 +117,21 @@ def soft_limit(x, knee=0.38, top=0.75):
     over = a > knee
     y[over] = knee + (top - knee) * np.tanh((a[over] - knee) / (top - knee))
     return np.sign(x) * y
+
+
+def upward(x, ref_db=-22.0, k=0.55, max_gain_db=9.0, floor_db=-50.0):
+    """Compresión ascendente: sube lo que queda por debajo de ref_db (k dB por dB), hasta max_gain_db, sin tocar el silencio (floor_db).
+    Se usa en «Wave.»: la /w/ inicial y la /v/ final son 15–20 dB más flojas que la vocal y los SFX del logo las tapan."""
+    h = int(SR * 0.01)
+    n = len(x) // h
+    env = 20 * np.log10(np.array([np.sqrt(np.mean(x[i * h:(i + 1) * h] ** 2)) for i in range(n)]) + 1e-9)
+    # envolvente respecto al pico del habla: nivel relativo
+    rel = env - env.max()
+    gain = np.clip(k * (ref_db - rel - 0.0) * (rel < ref_db), 0, max_gain_db)
+    gain = np.where(rel > floor_db + 0.0, gain, 0.0)
+    gain = np.convolve(np.pad(gain, 3, mode="edge"), np.ones(7) / 7, mode="valid")           # suaviza ≈ 70 ms
+    g = 10 ** (np.interp(np.arange(len(x)) / h, np.arange(n) + 0.5, gain) / 20)
+    return x * g
 
 
 def load(path):
@@ -207,6 +224,8 @@ def process(name, tail_s):
     tail_s = SPACE["tail"] if name != "vo-5" else min(SPACE["tail"], TOTAL - PIECES[name][0] - 0.05)
     start = PIECES[name][0]
     dry = load(RAW / f"{name}-raw.wav")
+    if name == "vo-5" and FX == "notoria":
+        dry = upward(dry)
     n_dry = len(dry)
     dry = np.concatenate([dry, np.zeros(int(SR * tail_s))])
     # nivel homogéneo entre piezas: RMS de la parte hablada (frames con voz) a SPEECH_RMS_DB dBFS
@@ -298,15 +317,31 @@ def rdp(points, eps):
     return rdp(points[: bi + 1], eps)[:-1] + rdp(points[bi:], eps)
 
 
-BRAND_WINDOW = (14.70, 15.75)   # mientras se dice «Wave»: la locución manda sobre los efectos del logo
+BRAND_WINDOW = (14.60, 15.75)   # mientras se dice «Wave»: la locución manda sobre los efectos del logo
 BRAND_DUCK = 0.36
+# la «w» y la «v» de «Wave» son débiles y los efectos del logo (anillo 14.68, deslizamiento 14.75, zip 15.12) las tapan: los SFX bajan ≈ −15 dB de 14.62 a 15.38 s
+BRAND_SFX_CORE = (14.62, 15.38)
+BRAND_SFX_DUCK = 0.13
 
 
-def lane(g, depth):
+def _ramp(t, a, b, fade_in=0.06, fade_out=0.15):
+    """1 entre a y b con rampas lineales (fade_in antes de a, fade_out después de b), 0 fuera."""
+    return float(np.clip((t - (a - fade_in)) / fade_in, 0, 1) * np.clip(((b + fade_out) - t) / fade_out, 0, 1))
+
+
+def lane(g, depth, sfx=False):
     def d(i):
         t = i * 0.02
         return min(depth, BRAND_DUCK) if BRAND_WINDOW[0] <= t <= BRAND_WINDOW[1] else depth
-    pts = [(round(i * 0.02, 3), round(1.0 - (1.0 - d(i)) * float(g[i]), 4)) for i in range(len(g))]
+    pts = []
+    for i in range(len(g)):
+        t = i * 0.02
+        gi, di = float(g[i]), d(i)
+        if sfx:
+            w = _ramp(t, *BRAND_SFX_CORE)      # el hueco para «Wave» no espera a que la voz suba: se abre antes
+            if w > 0:
+                gi, di = max(gi, w), min(di, BRAND_SFX_DUCK)
+        pts.append((round(t, 3), round(1.0 - (1.0 - di) * gi, 4)))
     pts = rdp(pts, 0.012)
     return {"version": 1, "lanes": [{"target": "volume", "points": [{"t": t, "v": v} for t, v in pts]}]}
 
@@ -320,7 +355,7 @@ def audio_block(durations, g):
         "      <!-- AUDIO:begin (generado por scripts/make-voice.py; sonido sintetizado por scripts/make-audio.py) -->",
         "      <!-- Sonido (fades de entrada 0.15 s y salida 0.8 s ya horneados en los WAV). El volumen sigue a la voz (ducking). -->",
         f'      <audio id="music" src="assets/audio/music.wav" data-start="0" data-duration="{TOTAL}" data-track-index="10" data-volume="1" data-automation="{attr(lane(g, DUCK_MUSIC))}"></audio>',
-        f'      <audio id="sfx" src="assets/audio/sfx.wav" data-start="0" data-duration="{TOTAL}" data-track-index="11" data-volume="1" data-automation="{attr(lane(g, DUCK_SFX))}"></audio>',
+        f'      <audio id="sfx" src="assets/audio/sfx.wav" data-start="0" data-duration="{TOTAL}" data-track-index="11" data-volume="1" data-automation="{attr(lane(g, DUCK_SFX, sfx=True))}"></audio>',
         "      <!-- Locución (voz de chica): 1-2 mientras se abre la app y se ven las pantallas, 3-4 lee la escena de texto, 5 dice «Wave» (inglés) en el cierre -->",
     ]
     for i, (name, (start, _)) in enumerate(PIECES.items()):

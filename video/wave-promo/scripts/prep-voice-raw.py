@@ -10,8 +10,9 @@ nada de ninguna persona real), español en p1–p4 y language_id='en' para «Wav
     (las tomas «cb-c» llegan crudas de Chatterbox; el único tratamiento de tono/ecualización es el de make-voice.py).
   · --clean DB: limpieza armónica (por defecto −6 dB): en los tramos con voz, atenúa DB dB lo que hay ENTRE los armónicos (máscara en peine siguiendo la F0
     de Praat, hasta 5.5 kHz); sube la relación armónicos/ruido ≈ +1.5 dB (menos «soplo») sin tocar las consonantes sordas ni la F0.
+  · --rise-p1 ST: igual que p3 pero sobre la última sílaba de p1 (frase que continúa).
   · --tempo-p5 X: cambia la duración de «Wave.» con rubberband (X<1 = más lenta).
-Uso: python prep-voice-raw.py <carpeta con p1..p5.wav> <carpeta de salida (assets/audio/raw-xx)> [--clean [DB]] [--trim] [--rise-p3] [--stretch-p1 0.958] [--tempo-p5 X] [--lift-p5 DB]
+Uso: python prep-voice-raw.py <carpeta con p1..p5.wav> <carpeta de salida (assets/audio/raw-xx)> [--clean [DB]] [--trim] [--rise-p1 ST] [--rise-p3] [--stretch-p1 0.958] [--tempo-p5 X] [--lift-p5 DB]
 (necesita numpy, scipy, praat-parselmouth, ffmpeg)
 """
 import sys, subprocess, wave
@@ -111,6 +112,7 @@ if __name__ == "__main__":
     tempo = float(sys.argv[sys.argv.index("--stretch-p1") + 1]) if "--stretch-p1" in sys.argv else None
     tempo5 = float(sys.argv[sys.argv.index("--tempo-p5") + 1]) if "--tempo-p5" in sys.argv else None
     do_trim = "--trim" in sys.argv
+    rise1 = float(sys.argv[sys.argv.index("--rise-p1") + 1]) if "--rise-p1" in sys.argv else None
     clean = None
     if "--clean" in sys.argv:
         k = sys.argv.index("--clean") + 1
@@ -122,6 +124,7 @@ if __name__ == "__main__":
         if do_trim: x = trim_norm(x, sr, tail_ms=60 if i == 5 else 50)
         if i == 1 and tempo: x = stretch(x, sr, tempo)
         if i == 5 and tempo5: x = stretch(x, sr, tempo5)
+        if i == 1 and rise1: x = tail_rise(x, sr, rise_st=rise1)
         if i == 3 and rise: x = tail_rise(x, sr)
         if i == 5 and lift: x = lift_tail(x, sr, db=lift)
         write(f"{dst}/vo-{i}-raw.wav", x, sr)
