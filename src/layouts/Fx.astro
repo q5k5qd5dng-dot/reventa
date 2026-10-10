@@ -1,0 +1,35 @@
+---
+import "../styles/fx.css";
+import BrandHead from "../components/BrandHead.astro";
+const { title, description } = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <BrandHead title={title} description={description} themeColor="#21aec0" />
+    <!-- Marca la página como "con JS" y respeta reducir movimiento ANTES de pintar: evita parpadeos al animar. -->
+    <script is:inline>
+      (function () {
+        var r = document.documentElement;
+        r.classList.add("js");
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) r.classList.add("rm");
+        // Si el JS no arranca, se muestra todo igualmente.
+        setTimeout(function () { if (!r.classList.contains("fx-ready")) r.classList.remove("js"); }, 6000);
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <slot name="head" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <slot />
+    <script>
+      import "../fx/main";
+    </script>
+  </body>
+</html>

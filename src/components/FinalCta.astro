@@ -1,0 +1,14 @@
+---
+const { title = ["La flexibilidad que te ", "permite", "trabajar a tu ", "manera."] } = Astro.props;
+---
+<section id="cta" class="relative mt-32 overflow-hidden px-5 pb-36 pt-24 text-center">
+  <div class="absolute inset-0 bg-[radial-gradient(60%_90%_at_95%_55%,rgba(129,140,248,0.95),rgba(79,70,229,0.55)_40%,transparent_70%),radial-gradient(70%_80%_at_20%_40%,rgba(49,46,129,0.75),transparent_70%)]"></div>
+  <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-b from-transparent to-black"></div>
+  <div class="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-black to-transparent"></div>
+  <div class="relative mx-auto max-w-[820px]">
+    <p class="flex items-center justify-center"><img src="/brand/wave-lockup.png" alt="Wave" width="108" height="28" class="h-7 w-auto" loading="lazy" /></p>
+    <h2 class="reveal two-tone mt-3 text-[30px] font-semibold leading-tight tracking-tight text-white md:text-[34px]">{title[0]}<span>{title[1]}</span><br />{title[2]}<span>{title[3]}</span></h2>
+    <p class="mx-auto mt-4 max-w-[330px] text-[9px] leading-relaxed text-white/75">Simplifica procesos, unifica canales de venta, mejora la experiencia del cliente y recibe al instante el control de todos tus eventos en tu negocio.</p>
+    <a href="mailto:hola@siemprewave.es" class="mt-6 inline-block rounded-md bg-white px-4 py-2 text-[10px] font-semibold text-black transition hover:bg-white/85">Solicita tu reunión</a>
+  </div>
+</section>

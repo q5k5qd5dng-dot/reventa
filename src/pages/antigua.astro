@@ -1,0 +1,284 @@
+---
+import Base from "../layouts/Base.astro";
+import HeroDash from "../components/HeroDash.astro";
+import GreenDash from "../components/GreenDash.astro";
+import PreMock from "../components/PreMock.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import FinalCta from "../components/FinalCta.astro";
+import { sectorLinks } from "../data/site";
+
+const marks = [
+  ["noir", "font-['Bebas_Neue'] tracking-[0.2em] text-2xl"],
+  ["Bahía", "font-['Playfair_Display'] italic text-2xl"],
+  ["AURORA", "font-['Cinzel'] tracking-widest"],
+  ["Pulse", "font-['Pacifico'] text-xl"],
+  ["ÉTER", "font-['Syne'] tracking-wide"],
+  ["MISTRAL", "font-['Archivo_Black'] text-lg"],
+  ["Onda", "font-['Playfair_Display'] italic text-2xl"],
+  ["KRAKEN", "font-['Oswald'] tracking-[0.15em] text-2xl"],
+  ["Orbital", "font-['Pacifico'] text-xl"],
+  ["NEÓN", "font-['Bebas_Neue'] tracking-[0.25em] text-3xl"],
+  ["Sala 22", "font-['Syne']"],
+  ["BCN·ZGZ", "font-['Archivo_Black'] text-lg"],
+];
+const tags = [
+  ["Tienda online", "#818cf8"], ["Cobros de entrada", "#f87171"], ["Gestión RRPP", "#60a5fa"],
+  ["Tarjeta de socios", "#f87171"], ["Marketing", "#a78bfa"], ["Pases", "#facc15"], ["Venta de reservas", "#818cf8"],
+];
+const phases = [
+  ["pre", "Gestión pre-evento", "Un fiestón antes de abrir puertas", "Configura la venta desde una sola pantalla: entradas, precios, aforos, listas de RRPP y mesas. Publica tu evento, activa la tienda online y empieza a vender antes de abrir puertas."],
+  ["during", "Gestión durante el evento", "Control total con la sala llena", "Escanea accesos, vende en taquilla, cobra en barra y sigue el aforo en directo desde el móvil. Tu equipo trabaja con la misma información."],
+  ["post", "Gestión post-evento", "Cada noche te enseña algo", "Informes de ventas, rendimiento de RRPP y clientes nuevos al terminar. Fideliza con comunicaciones directas y vuelve a llenar la siguiente."],
+];
+const solution = [
+  ["Controla el aforo de tu local", "Centraliza y ten visibilidad de tus ventas online y en taquilla. Automatiza los reportes de cierre, aumenta el control con el acceso y conoce cuánta gente hay dentro en todo momento.", "Saber más sobre entradas"],
+  ["Gestiona reservas como nunca antes"],
+  ["Conoce al cliente con nuestro TPV"],
+  ["Descubre clientes en estimados, para tu estrategia"],
+  ["Escoge a los equipos de RRPPs"],
+];
+const industry = [
+  ["Discotecas", "Haz que tu operativa sea poderosa en cada detalle.", "Saber más sobre discotecas", "M12 3a9 9 0 100 18 9 9 0 000-18z"],
+  ["Promotores", "Controla ventas, listas y comisiones de tu equipo.", "Saber más sobre promotores", "M4 6h16M4 12h16M4 18h10"],
+  ["Beach Clubs", "Reservas y mesas para el día y la noche.", "Saber más sobre beach clubs", "M3 18c3-3 6-3 9 0s6 3 9 0M12 4v10"],
+  ["Festivales", "Aforos grandes, accesos ágiles y pagos seguros.", "Saber más sobre festivales", "M3 20l9-16 9 16z"],
+];
+const diff = [
+  ["Base de datos", "100% privada", "Eres dueño de los datos de tus clientes. Wave no los usa para otros fines ni los comparte con terceros.", "lock"],
+  ["Experiencia Marca", "Blanca y API", "El protagonista eres tú: tu marca, tu web y tu dominio. Conecta Wave con tus herramientas por API.", "arrows"],
+  ["Métodos de pago", "para todo clubber", "Todos los métodos de pago para que tus clientes compren a cualquier hora, desde cualquier sitio.", "grid"],
+];
+const faqs = [
+  ["¿Cómo puedo formar a mi equipo en el uso de la plataforma?", "Además de una guía rápida, creamos un equipo para formar a tus empleados desde las primeras semanas con nosotros. Y nos tienes a tu lado para resolver cualquier duda en el día del evento. ¡Cuenta con nosotros! 🚀"],
+  ["¿Puedo importar mi antigua base de datos a Wave?", "Sí. Importamos tus clientes y su historial para que no pierdas nada al cambiar."],
+  ["¿Pueden los clientes comprar entradas desde mi propia web?", "Sí. Con marca blanca y API vendes desde tu web con tu dominio."],
+  ["¿Puedo cancelar en cualquier momento?", "Sí. Trabajas a tu manera y sin permanencia."],
+];
+const check = ["Centraliza toda la información en tiempo real", "Ajusta las campañas de marketing a tu mercado", "Digitaliza y mejora la operativa de tus reservas", "Colabora con promotores externos de forma sencilla y controlada"];
+---
+<Base title="Wave · Tecnología all-in-one diseñada para tu evento" description="Entradas, taquilla, CRM, RRPP y comunidad para ocio nocturno. Wave, desde Zaragoza." bodyClass="bg-black text-white">
+  <Nav />
+
+  <main class="overflow-x-hidden">
+    <!-- HERO -->
+    <section class="relative overflow-hidden pb-6 pt-[120px] text-center">
+      <div class="hero-bg absolute inset-0"></div>
+      <div class="hero-dots absolute inset-0"></div>
+      <canvas id="hero-fx" class="absolute inset-0 h-full w-full" aria-hidden="true"></canvas>
+      <i class="stage-beam sway-a left-[4%]"></i><i class="stage-beam sway-b left-[58%]"></i><i class="stage-beam sway-c left-[30%] opacity-70"></i>
+      <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-b from-transparent to-black"></div>
+      <div class="relative mx-auto max-w-[820px] px-5">
+        <h1 class="text-[34px] font-semibold leading-[1.15] tracking-tight text-white/90 md:text-[42px]">Tecnología all-in-one<br />diseñada para tu <span class="text-indigo-300">evento</span></h1>
+        <p class="mx-auto mt-5 max-w-sm text-[11px] leading-relaxed text-white/60">Potencia y mejora cada detalle de tu evento: venta de entradas, accesos, reservas y comunidad. Todo en una sola plataforma pensada para la noche.</p>
+        <div class="mt-6 flex justify-center gap-2.5 text-xs font-semibold">
+          <a href="#cta" class="rounded-md bg-white px-4 py-2.5 text-black transition hover:bg-white/85">Solicitar información</a>
+          <a href="#cta" class="rounded-md bg-indigo-600 px-4 py-2.5 text-white transition hover:bg-indigo-500">Crear evento</a>
+        </div>
+        <div class="relative mt-14 h-2 rounded-[1px] bg-white"><i class="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400"></i></div>
+      </div>
+    </section>
+
+    <div class="relative">
+    <div class="cone"></div>
+    <!-- LOGOS -->
+    <section class="relative overflow-hidden py-9" aria-label="Nombres de ejemplo de locales">
+      <div class="marquee flex w-max items-center gap-14">
+        {[...marks, ...marks].map(([t, c]) => <span class={`wordmark ${c}`}>{t}</span>)}
+      </div>
+      <div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent"></div>
+      <div class="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black to-transparent"></div>
+      <p class="mt-4 text-center text-[8px] uppercase tracking-[0.2em] text-white/40">Nombres de ejemplo</p>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section class="relative">
+      <div class="relative mx-auto max-w-[820px] px-5 pt-14">
+        <div class="mx-auto w-full md:w-[82%]"><div class="reveal"><HeroDash /></div><p class="mt-3 text-center text-[8px] uppercase tracking-[0.2em] text-white/40">Panel de ejemplo · datos de ejemplo</p></div>
+        <div class="reveal draw"><svg viewBox="0 0 800 150" class="mx-auto -mt-px block h-28 w-full" fill="none" aria-hidden="true">
+          <defs><linearGradient id="ln" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient></defs>
+          {[120, 200, 270, 340, 460, 530, 600, 680].map((x) => <path d={`M${x} 0 C ${x} 80, ${400 + (x - 400) * 0.15} 70, ${400 + (x - 400) * 0.04} 150`} stroke="url(#ln)" stroke-width="1" pathLength="1" />)}
+        </svg></div>
+        <p class="text-center text-[8px] font-medium uppercase tracking-[0.25em] text-white/50">Software de gestión de <span class="text-indigo-300">eventos</span></p>
+        <h2 class="reveal two-tone mt-2 text-center text-[30px] font-semibold tracking-tight text-white/90 md:text-[34px]">Domina cada beat en tus eventos</h2>
+      </div>
+    </section>
+
+    </div>
+
+    <!-- PRE / DURANTE / POST -->
+    <section class="mx-auto mt-14 max-w-[820px] px-5">
+      <div data-tabs class="grid items-start gap-6 md:grid-cols-[0.9fr_1.1fr]">
+        <div class="rounded-lg border border-white/10 bg-black p-3">
+          {phases.map(([k], i) => <div data-pane={k} hidden={i !== 0}><PreMock variant={i} /></div>)}
+        </div>
+        <div class="divide-y-2 divide-white/10 border-b-2 border-white/10">
+          {phases.map(([k, label, title, text], i) => (
+            <div data-tab={k} data-on={i === 0 ? "" : undefined} class="group cursor-pointer">
+              <p class="py-3 text-[9px] font-semibold uppercase tracking-[0.18em] text-indigo-300 group-data-[on]:hidden">{label}</p>
+              <div class="tab-body hidden rounded-t-lg bg-gradient-to-br from-indigo-950 via-[#101126] to-black p-5 group-data-[on]:block">
+                <p class="text-[8px] font-semibold uppercase tracking-[0.18em] text-indigo-300">{label}</p>
+                <h3 class="mt-2 text-[22px] font-semibold leading-tight">{title}</h3>
+                <div class="mt-4 grid gap-4 sm:grid-cols-[1fr_1.1fr]">
+                  <p class="text-[9px] leading-relaxed text-white/60">{text}</p>
+                  <div class="flex flex-wrap content-start gap-1.5">
+                    {tags.map(([t, c]) => <span class="flex items-center gap-1 rounded border border-white/10 bg-white/[0.06] px-1.5 py-1 text-[8px] text-white/80"><i class="h-1.5 w-1.5 rounded-sm" style={`background:${c}`}></i>{t}</span>)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUCION INTEGRAL -->
+    <section class="mx-auto mt-28 max-w-[820px] px-5">
+      <p class="text-center text-[8px] font-medium uppercase tracking-[0.25em] text-white/50">All-in-one <span class="text-indigo-300">software</span></p>
+      <h2 class="reveal two-tone mt-3 text-center text-[30px] font-semibold leading-tight tracking-tight text-white/90 md:text-[34px]">Solución integral para una <br class="hidden md:block" /><span>gestión revolucionaria</span></h2>
+      <div class="mt-10 grid items-start gap-5 md:grid-cols-[0.95fr_1.05fr]">
+        <div class="min-w-0">
+          {solution.map(([t, d, link], i) => i === 0 ? (
+            <div class="rounded-lg border border-white/15 bg-white/[0.02] p-5">
+              <p class="flex items-center gap-2 text-[11px] font-semibold"><i class="h-2 w-2 rounded-sm bg-rose-500"></i>{t}</p>
+              <p class="mt-3 text-[10px] leading-relaxed text-white/60">{d}</p>
+              <a href="#" class="mt-4 inline-block text-[10px] font-semibold">{link} →</a>
+            </div>
+          ) : (
+            <p class="flex items-center gap-2 px-5 py-4 text-[11px] font-semibold"><i class="h-2 w-2 rounded-sm bg-indigo-400"></i>{t}</p>
+          ))}
+        </div>
+        <div class="reveal min-w-0 overflow-hidden"><GreenDash /></div>
+      </div>
+    </section>
+
+    <!-- INTEGRACIONES -->
+    <section id="integraciones" class="mx-auto mt-24 max-w-[820px] px-5">
+      <div class="reveal relative grid min-h-[260px] items-center overflow-hidden rounded-md bg-[#17171a] md:grid-cols-[1fr_1fr]">
+        <div class="relative z-10 p-7">
+          <span class="inline-block rounded-full border border-indigo-400/60 px-2.5 py-1 text-[8px] text-indigo-200">Ecosistema de integraciones</span>
+          <h3 class="mt-4 max-w-[280px] text-[19px] font-medium leading-snug">¿Listo para despegar? Conecta y controla más apps de ventas y aumenta el alcance de tus eventos.</h3>
+          <p class="mt-3 max-w-[280px] text-[9px] leading-relaxed text-white/50">Aprovecha el alcance de otras plataformas de ticketing manteniendo una gestión eficaz y centralizada, sin comprometer tu privacidad. Con un único panel y entrega de ventas en todos los sitios.</p>
+          <a href="#" class="mt-5 inline-block text-[9px] font-semibold underline underline-offset-4">Descubre más sobre Conecta en Wave →</a>
+        </div>
+        <div class="relative h-full min-h-[240px] bg-[radial-gradient(circle_at_60%_55%,rgba(99,102,241,0.55),rgba(30,27,75,0.5)_45%,transparent_72%)]">
+          <div class="star absolute inset-0"></div>
+          <div class="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10"></div>
+          <div class="absolute left-1/2 top-1/2 h-60 w-60 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5"></div>
+          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="perspective:600px">
+            <div class="iso grid h-24 w-24 place-items-center rounded-2xl bg-[#0d0d12]"></div>
+          </div>
+          <svg class="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-[55%]" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L5 13h6l-2 8 9-12h-6z"/></svg>
+          <i class="absolute left-[16%] top-[30%] grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-black"><b class="h-3.5 w-3.5 rounded-full bg-emerald-500"></b></i>
+          <i class="absolute right-[12%] top-[10%] grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-black"><b class="h-3.5 w-3.5 rounded-full bg-violet-500"></b></i>
+          <i class="absolute bottom-[14%] left-[24%] grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-black"><b class="h-3.5 w-3.5 rounded-full bg-yellow-400"></b></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- CREAMOS -->
+    <section id="creamos" class="mx-auto mt-28 max-w-[820px] px-5 text-center">
+      <p class="text-[8px] font-medium uppercase tracking-[0.25em] text-white/50">Hemos hecho realidad lo que tanto <span class="text-indigo-300">soñamos</span></p>
+      <h2 class="reveal two-tone mt-3 text-[30px] font-semibold leading-tight tracking-tight text-white/90 md:text-[34px]">Creamos lo que necesitábamos<br /><span>y ahora también es tuyo</span></h2>
+      <div class="h-24 md:h-28"></div>
+      <p class="mx-auto max-w-[280px] text-[9px] leading-relaxed text-white/60">Propietarios, promotores, directores de RRPP y DJs hemos creado una plataforma fácil, intuitiva y siempre <b class="text-white">diseñada para potenciar la operativa de tu negocio</b>. Hecha a medida para tus necesidades.</p>
+      <a href="#cta" class="mt-5 inline-block rounded-md bg-white px-4 py-2 text-[10px] font-semibold text-black transition hover:bg-white/85">Solicita tu reunión</a>
+    </section>
+
+    <!-- INDUSTRIA -->
+    <section class="mx-auto mt-28 max-w-[820px] px-5">
+      <p class="text-center text-[8px] font-medium uppercase tracking-[0.25em] text-white/50">Soluciones para cada <span class="text-indigo-300">negocio</span></p>
+      <h2 class="reveal two-tone mt-3 text-center text-[30px] font-semibold leading-tight tracking-tight text-white/90 md:text-[34px]">Tecnología hecha por y para<br /><span>nuestra industria</span></h2>
+      <div data-ind class="mt-9 flex flex-col gap-2.5 md:h-[272px] md:flex-row">
+        {industry.map(([t, d, link, icon], i) => (
+          <a href={sectorLinks[i][1]} data-on={i === 0 ? "" : undefined} class={`ind relative flex flex-col overflow-hidden rounded-lg border border-white/10 p-4 ${i === 0 ? "" : "bg-[#050505]"}`} style={i === 0 ? "background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.16),transparent 22%),radial-gradient(circle at 78% 20%,rgba(120,200,160,.18),transparent 25%),radial-gradient(circle at 60% 95%,rgba(245,158,11,.3),transparent 30%),radial-gradient(circle,rgba(255,255,255,.18) 1px,transparent 1.6px) 0 0/19px 17px,#0a0d0c" : undefined}>
+            <svg class="h-3.5 w-3.5 text-white/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d={icon}/></svg>
+            <p class="mt-3 text-[13px] font-semibold leading-tight">{t}</p>
+            <div class="ind-more mt-1">
+              <p class="max-w-[170px] text-[12px] font-semibold leading-snug">{d}</p>
+              <span class="mt-4 block text-[8px] font-semibold">{link} →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- BACKSTAGE -->
+    <section id="soporte" class="mx-auto mt-16 max-w-[820px] px-5">
+      <div class="reveal relative grid min-h-[240px] items-center overflow-hidden rounded-md bg-[#17171a] md:grid-cols-[1fr_1fr]">
+        <div class="relative z-10 p-7">
+          <span class="inline-block rounded-full border border-indigo-400/60 px-2.5 py-1 text-[8px] text-indigo-200">Acompañamiento al cliente</span>
+          <h3 class="mt-4 max-w-[230px] text-[17px] font-medium leading-snug">Más que soporte, somos el backstage del éxito</h3>
+          <p class="mt-3 max-w-[260px] text-[9px] leading-relaxed text-white/50">El nuestro es un equipo de expertos de la industria 24/7, para que cada noche en tu evento esté bajo control, siempre a un clic de distancia.</p>
+          <a href="#" class="mt-5 inline-block text-[9px] font-semibold underline underline-offset-4">Descubre más sobre nuestro acompañamiento →</a>
+        </div>
+        <div class="relative h-full min-h-[230px] bg-[radial-gradient(circle_at_55%_50%,rgba(99,102,241,0.6),rgba(30,27,75,0.4)_48%,transparent_75%)]" style="perspective:700px">
+          {[["M21 12a8 8 0 01-12 7l-5 1 1-4a8 8 0 1116-4z", "right-[8%] top-[4%]"], ["M3 6h18v12H3zM3 7l9 7 9-7", "right-[24%] top-[28%]"], ["M4 5h16v11H9l-5 4z", "right-[40%] top-[50%]"], ["M5 4h4l2 5-3 2a12 12 0 006 6l2-3 5 2v4a2 2 0 01-2 2A17 17 0 013 6a2 2 0 012-2z", "right-[56%] top-[72%]"]].map(([d, pos]) => (
+            <div class={`absolute ${pos}`}>
+              <div class="iso grid h-[76px] w-[76px] place-items-center rounded-2xl"></div>
+              <svg class="absolute left-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 text-white" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d={d} stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity=".9"/></svg>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- DIFERENCIA -->
+    <section id="diferencia" class="mx-auto mt-28 max-w-[820px] px-5">
+      <h2 class="reveal two-tone text-center text-[28px] font-semibold leading-tight tracking-tight text-white/90 md:text-[32px]">Marcamos la diferencia para<br /><span>que tú también lo hagas</span></h2>
+      <div class="mt-9 grid gap-2.5 md:grid-cols-3">
+        {diff.map(([a, b, d, ic]) => (
+          <div class="reveal flex min-h-[196px] flex-col justify-between rounded-lg border border-white/10 bg-gradient-to-b from-[#161618] to-[#0c0c0e] p-5">
+            <svg class="h-10 w-10" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <defs><linearGradient id={`g-${ic}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7d2fe"/><stop offset="1" stop-color="#6366f1"/></linearGradient></defs>
+              {ic === "lock" && <g fill={`url(#g-${ic})`}><rect x="7" y="17" width="26" height="19" rx="4"/><path d="M12 17v-5a8 8 0 0116 0v5" stroke={`url(#g-${ic})`} stroke-width="4" fill="none"/></g>}
+              {ic === "arrows" && <g stroke={`url(#g-${ic})`} stroke-width="3.5" stroke-linecap="round"><path d="M6 14V6h8M6 6l9 9M34 26v8h-8M34 34l-9-9M34 14V6h-8M34 6l-9 9M6 26v8h8M6 34l9-9"/></g>}
+              {ic === "grid" && <g fill={`url(#g-${ic})`}><rect x="4" y="4" width="14" height="14" rx="4"/><rect x="22" y="4" width="14" height="14" rx="4"/><rect x="4" y="22" width="14" height="14" rx="4"/><path d="M29 22v14M22 29h14" stroke={`url(#g-${ic})`} stroke-width="4" stroke-linecap="round"/></g>}
+            </svg>
+            <div>
+              <h3 class="mt-8 text-[13px] font-semibold leading-snug text-white/90">{a}<br /><span class="text-indigo-300">{b}</span></h3>
+              <p class="mt-3 text-[9px] leading-relaxed text-white/50">{d}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- CASO DE EXITO -->
+    <section id="casos" class="mx-auto mt-28 max-w-[820px] px-5">
+      <p class="text-center text-[8px] font-medium uppercase tracking-[0.25em] text-white/50">Las aplicaciones mejores para gestionar <span class="text-indigo-300">tus eventos</span></p>
+      <h2 class="reveal mt-2 text-center text-[13px] font-semibold text-white/90">Descubre el éxito de nuestros clientes</h2>
+      <div class="reveal mt-5 grid min-h-[260px] overflow-hidden rounded-md bg-[#18181b] md:grid-cols-[1.05fr_1fr]">
+        <div class="flex flex-col justify-between p-6">
+          <p class="font-['Playfair_Display'] text-[26px] font-semibold italic">Tu local</p>
+          <ul class="mt-8 space-y-3.5 text-[9px] text-white/65">
+            {check.map((c) => <li class="flex gap-3"><span class="grid h-4 w-4 shrink-0 place-items-center rounded bg-white/10 text-[8px]">✓</span><span>{c}</span></li>)}
+          </ul>
+        </div>
+        <button type="button" aria-label="Reproducir vídeo" class="group grid min-h-[180px] place-items-center bg-[#131316]">
+          <span class="grid h-11 w-11 place-items-center rounded-full bg-indigo-500/30 text-white ring-1 ring-white/10 transition group-hover:scale-110 group-hover:bg-indigo-500"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5l9 5.5-9 5.5z" fill="#fff"/></svg></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="mx-auto mt-28 grid max-w-[820px] gap-8 px-5 md:grid-cols-[1fr_1.2fr]">
+      <div>
+        <h2 class="text-[30px] font-bold tracking-tight">FAQs</h2>
+        <p class="mt-3 max-w-[200px] text-[10px] leading-relaxed text-white/70">Es probable que en este momento surjan muchas preguntas. Aquí tienes las más comunes, pero si tienes otras, nuestro equipo está listo para ayudarte. 😊</p>
+      </div>
+      <div class="space-y-1">
+        {faqs.map(([q, a], i) => (
+          <details open={i === 0} class="group rounded-md px-3.5 py-3 open:bg-[#1a1b3a]">
+            <summary class="flex cursor-pointer items-center justify-between gap-3 text-[10px] font-semibold"><span>{q}</span><svg class="faq-chev h-3 w-3 shrink-0 transition group-open:rotate-180" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5l3 3 3-3" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></summary>
+            <p class="mt-2.5 text-[9px] leading-relaxed text-white/70">{a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <FinalCta />
+  </main>
+
+  <Footer />
+</Base>

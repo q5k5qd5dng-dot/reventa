@@ -1,0 +1,51 @@
+---
+// Plano de sala con zonas, mesas y mapa de calor. Las mesas "wl-table" son interactivas en la demo de marca blanca.
+const tables = [[352, 112], [402, 112], [352, 160], [402, 160], [112, 238], [172, 238], [232, 238], [292, 238]];
+const sold = [[440, 136], [452, 196], [318, 196]];
+const { interactive = true } = Astro.props;
+---
+<svg viewBox="0 0 520 290" class="floorplan" role="group" aria-label="Plano de la sala" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fp-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0c3236" /><stop offset="1" stop-color="#07191c" /></linearGradient>
+    <radialGradient id="fp-h1"><stop offset="0" stop-color="#ff5a3c" stop-opacity=".75" /><stop offset="1" stop-color="#ff5a3c" stop-opacity="0" /></radialGradient>
+    <radialGradient id="fp-h2"><stop offset="0" stop-color="#ffb23c" stop-opacity=".5" /><stop offset="1" stop-color="#ffb23c" stop-opacity="0" /></radialGradient>
+    <radialGradient id="fp-h3"><stop offset="0" stop-color="currentColor" stop-opacity=".55" /><stop offset="1" stop-color="currentColor" stop-opacity="0" /></radialGradient>
+  </defs>
+  <rect width="520" height="290" rx="14" fill="url(#fp-bg)" />
+  <circle cx="378" cy="136" r="110" fill="url(#fp-h1)" />
+  <circle cx="210" cy="150" r="90" fill="url(#fp-h2)" />
+  <circle cx="210" cy="50" r="70" fill="url(#fp-h3)" style="color: var(--wl-accent, #21aec0)" />
+  <g fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.85)" stroke-width="1.4" stroke-linejoin="round">
+    <path d="M24 34 H300 V14 H388 V74 H470 L494 268 H24 Z" />
+  </g>
+  <g stroke="rgba(255,255,255,.55)" stroke-width="1" fill="none">
+    <path d="M330 74 V268" stroke-dasharray="3 3" /><path d="M24 96 H62 V150" /><path d="M24 214 H62" /><path d="M300 34 V74 H388" />
+  </g>
+  <!-- escenario y DJ -->
+  <rect x="140" y="38" width="130" height="30" rx="4" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.7)" />
+  <text x="205" y="57" class="fp-t">ESCENARIO</text>
+  <rect x="188" y="76" width="34" height="14" rx="3" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.7)" /><text x="205" y="86" class="fp-t">DJ</text>
+  <!-- pista -->
+  <rect x="104" y="108" width="190" height="84" rx="8" fill="none" stroke="rgba(255,255,255,.45)" stroke-dasharray="4 4" /><text x="199" y="154" class="fp-t">PISTA</text>
+  <!-- barra -->
+  <rect x="30" y="104" width="16" height="104" rx="3" fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.7)" />
+  <g fill="rgba(255,255,255,.5)">{[118, 134, 150, 166, 182, 198].map((y) => <circle cx="56" cy={y} r="3.5" />)}</g>
+  <text x="38" y="222" class="fp-t" transform="rotate(-90 38 222)" text-anchor="start">BARRA</text>
+  <!-- terraza -->
+  <rect x="312" y="22" width="68" height="46" rx="6" fill="rgba(120,200,140,.14)" stroke="rgba(255,255,255,.5)" /><text x="346" y="48" class="fp-t">TERRAZA</text>
+  <g fill="rgba(120,200,140,.65)">{[322, 336, 356, 370].map((x) => <circle cx={x} cy="30" r="3.4" />)}</g>
+  <!-- VIP -->
+  <rect x="332" y="86" width="132" height="120" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.4)" /><text x="398" y="98" class="fp-t">ZONA VIP</text>
+  <!-- accesos -->
+  <path d="M60 268 v14 m-7 -7 l7 7 l7 -7" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" /><text x="60" y="286" class="fp-t" style="font-size:8px">ENTRADA</text>
+  <rect x="440" y="230" width="38" height="26" rx="4" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.5)" /><text x="459" y="246" class="fp-t">WC</text>
+  <!-- mesas vendidas -->
+  {sold.map(([x, y]) => <g><circle cx={x} cy={y} r="11" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.3)" stroke-width="1.5" /><path d={`M${x - 4} ${y - 4} l8 8 m0 -8 l-8 8`} stroke="rgba(255,255,255,.45)" stroke-width="1.2" /></g>)}
+  <!-- mesas reservables -->
+  {tables.map(([x, y], i) => (
+    <>
+      <circle class="wl-table" data-n={i + 1} cx={x} cy={y} r="12.5" tabindex={interactive ? "0" : "-1"} role="button" aria-label={`Mesa ${i + 1}`} />
+      <text x={x} y={y + 3.5} class="fp-n">{i + 1}</text>
+    </>
+  ))}
+</svg>

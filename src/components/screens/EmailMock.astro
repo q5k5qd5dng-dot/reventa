@@ -1,0 +1,33 @@
+---
+import EventArt from "./EventArt.astro";
+import Qr from "../Qr.astro";
+---
+<div class="em-wrap">
+  <div class="emc">
+    <div class="em-bar"><i></i><i></i><i></i><span>Correo</span></div>
+    <div class="em-head">
+      <span class="em-av" data-initial>T</span>
+      <div><b><span data-brand>Tu Local</span> · entradas@tulocal.com</b><small>Para: tú · hoy 18:42</small></div>
+    </div>
+    <div class="em-subj"><b>Tus entradas para el sábado ✓</b></div>
+    <div class="em-body">
+      <div class="em-card">
+        <p class="em-date">Sábado 17 de junio</p>
+        <div class="em-art"><EventArt id="em" /></div>
+        <dl>
+          <dt>Unidades</dt><dd data-order-count>x1</dd>
+          <dt>Ubicación</dt><dd><span data-brand>Tu Local</span> · Zaragoza</dd>
+          <dt>Fecha del evento</dt><dd>17-06-24 · de 23:30 a 06:00</dd>
+        </dl>
+        <h5>Descarga el QR de acceso</h5>
+        <div class="em-btns"><span>Añadir a Apple Wallet</span><span>Añadir a Google Wallet</span></div>
+        <p class="em-note">El código QR de acceso también va adjunto en este correo en PDF.</p>
+        <h5>Desglose de tu compra</h5>
+        <p class="em-loc">Localizador: <b>WV7K2P9X4M</b></p>
+        <ul class="em-lines" data-order></ul>
+        <div class="em-tot"><span>Total</span><b data-total>8 €</b></div>
+        <p class="em-foot">Enviado por <span data-brand>Tu Local</span> con tecnología Wave</p>
+      </div>
+    </div>
+  </div>
+</div>

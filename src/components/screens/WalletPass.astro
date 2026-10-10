@@ -1,0 +1,34 @@
+---
+import EventArt from "./EventArt.astro";
+import Qr from "../Qr.astro";
+import PhoneFrame from "./PhoneFrame.astro";
+const { kind = "apple", id = "wp" } = Astro.props;
+---
+<PhoneFrame class="pf-wallet">
+  <div class={`wpass ${kind}`}>
+    {kind === "apple" ? (
+      <>
+        <p class="wp-label">Cartera</p>
+        <div class="wp-card">
+          <div class="wp-top"><b data-brand>Tu Local</b><span>ENTRADA</span></div>
+          <div class="wp-strip"><EventArt id={id} /></div>
+          <div class="wp-f"><div><small>Tipo de entrada</small><b data-ticket-type>Entrada normal</b></div></div>
+          <div class="wp-f two"><div><small>Personas</small><b data-people>1</b></div><div class="r"><small>Fecha</small><b>17/06/2024<br />23:30</b></div></div>
+          <div class="wp-qr"><Qr /><small>WV7K2P9X</small></div>
+        </div>
+      </>
+    ) : (
+      <>
+        <p class="wp-label">Google Wallet</p>
+        <div class="wp-card">
+          <div class="wp-top"><span class="wl-logo" data-initial>T</span><b data-brand>Tu Local</b></div>
+          <h6>Noche de sábado</h6>
+          <p class="wp-sub"><span data-brand>Tu Local</span> · Zaragoza</p>
+          <div class="wp-strip"><EventArt id={id} /></div>
+          <div class="wp-f two"><div><small>Fecha</small><b>17 jun · 23:30</b></div><div class="r"><small>Entrada</small><b data-ticket-type>Normal</b></div></div>
+          <div class="wp-qr"><Qr /></div>
+        </div>
+      </>
+    )}
+  </div>
+</PhoneFrame>

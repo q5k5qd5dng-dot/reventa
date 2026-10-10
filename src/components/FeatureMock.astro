@@ -1,0 +1,57 @@
+---
+import Qr from "./Qr.astro";
+import AppPhone from "./AppPhone.astro";
+const { kind } = Astro.props;
+const tableState = ["ok", "res", "res", "ok", "sold", "ok", "res", "sold", "ok", "ok", "res", "ok"];
+---
+<div class={`fm${kind === "tickets" ? " fm--app" : ""}`}>
+  {kind === "tickets" && (
+    <div class="fm-app">
+      <AppPhone screens={["entradas"]} sizes="(max-width: 700px) 46vw, 220px" label="Tienda de entradas real de un evento en la app" />
+      <p class="fm-app-cap mono">Tienda de entradas real, con el tema del organizador</p>
+    </div>
+  )}
+  {kind === "lists" && (
+    <div class="fm-col">
+      {[["Lista gratis hasta 00:30", "Marta", 74], ["Lista de pago", "Pablo", 41], ["Lista con código", "Irene", 18]].map(([n, r, w]) => (
+        <div class="fm-row"><div><b>{n}</b><small>RRPP · {r}</small></div><div class="fm-bar"><i style={`width:${w}%`}></i></div><span class="fm-tog"></span></div>
+      ))}
+    </div>
+  )}
+  {kind === "tables" && (
+    <div>
+      <div class="fm-tables">{tableState.map((s, i) => <span class={`fm-t ${s}`}>{i + 1}</span>)}</div>
+      <div class="fm-chips"><span class="mono"><i class="dot ok"></i>Libre</span><span class="mono"><i class="dot res"></i>Reservada</span><span class="mono"><i class="dot sold"></i>Vendida</span></div>
+    </div>
+  )}
+  {kind === "vip" && (
+    <div class="fm-vip"><div><span class="mono">Pase de temporada</span><b>Pase VIP</b><small>Tu nombre · Nº 0042</small></div><Qr class="fm-qr" /></div>
+  )}
+  {kind === "rrpp" && (
+    <div class="fm-col">
+      {[["Marta R.", 92, "212 ent."], ["Pablo S.", 74, "174 ent."], ["Irene L.", 58, "139 ent."], ["Dani P.", 31, "76 ent."]].map(([n, w, e]) => (
+        <div class="fm-row"><b>{n}</b><div class="fm-bar"><i style={`width:${w}%`}></i></div><span class="mono">{e}</span></div>
+      ))}
+    </div>
+  )}
+  {kind === "crm" && (
+    <div class="fm-crm">
+      <div class="fm-av"></div>
+      <div><b>Cliente de ejemplo</b><small>Desde hace 8 meses</small>
+        <div class="fm-chips"><span class="mono">12 visitas</span><span class="mono">340 € gastados</span><span class="mono">Cumple en 6 días</span></div></div>
+    </div>
+  )}
+  {kind === "pay" && (
+    <div class="fm-pay"><span class="mono">Pagar</span><b>18,00 €</b><div class="fm-touch"></div><div class="fm-chips"><span class="mono">Apple Pay</span><span class="mono">Google Pay</span><span class="mono">Tarjeta</span></div></div>
+  )}
+  {kind === "checkin" && (
+    <div class="fm-scan"><div class="fm-frame"><i class="line"></i></div><span class="ok mono">Acceso correcto · Entrada general</span></div>
+  )}
+  {kind === "stats" && (
+    <div>
+      <div class="fm-tiles">{[["Ventas", "18,4 k€"], ["Accesos", "86 %"], ["Nuevos", "312"]].map(([a, b]) => <div><small class="mono">{a}</small><b>{b}</b></div>)}</div>
+      <div class="fm-bars">{[30, 44, 38, 58, 50, 72, 64, 88].map((h) => <i style={`height:${h}%`}></i>)}</div>
+    </div>
+  )}
+  {kind !== "tickets" && <p class="fm-ex mono">Datos de ejemplo</p>}
+</div>

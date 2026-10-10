@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="es">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Inter Tight"; src: url("assets/fonts/inter-tight-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
+        #ph-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", system-ui, sans-serif; color: #fff; }
+        #ph-root * { box-sizing: border-box; }
+
+        /* ---------- camera / stage ---------- */
+        #ph-stage { position: absolute; inset: 0; }
+        #ph-cam { position: absolute; inset: 0; perspective: 2200px; perspective-origin: 960px 540px; }
+        #ph-phone { position: absolute; left: 745px; top: 100px; width: 430px; height: 880px; transform-style: preserve-3d; transform-origin: 215px 440px; }
+        .ph-edge { position: absolute; inset: 0; border-radius: 66px;
+          background: conic-gradient(from 20deg at 50% 50%, #aeb7c4, #4a525e 14%, #c9d1dc 28%, #2b313a 44%, #9aa3b1 58%, #3a414c 74%, #bcc5d1 88%, #aeb7c4); }
+        #ph-body { position: absolute; inset: 0; border-radius: 66px;
+          background: conic-gradient(from 20deg at 50% 50%, #c6cfdb, #5b6370 14%, #dce3ec 28%, #353c46 44%, #aab3c1 58%, #444c58 74%, #d1d9e3 88%, #c6cfdb);
+          box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.35); }
+        #ph-bezel { position: absolute; inset: 3px; border-radius: 63px; background: #05070a; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+        .ph-btn { position: absolute; background: linear-gradient(90deg,#6b7480,#b8c0cb 50%,#6b7480); }
+        #ph-screen { position: absolute; left: 12px; top: 12px; width: 406px; height: 856px; border-radius: 52px; overflow: hidden; background: #050d15; }
+        #ph-wall { position: absolute; left: 0; top: 0; width: 406px; height: 856px; display: block; }
+        #ph-dim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(3,9,14,.58), rgba(3,9,14,.30) 40%, rgba(3,9,14,.46)); opacity: 0; }
+        #ph-glare { z-index: 10; position: absolute; left: -120px; top: -40px; width: 260px; height: 960px; transform: rotate(18deg);
+          background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.10) 45%, rgba(255,255,255,.04) 70%, rgba(255,255,255,0)); pointer-events: none; }
+        #ph-island { position: absolute; left: 143px; top: 11px; width: 120px; height: 34px; border-radius: 17px; background: #000; z-index: 9; }
+        #ph-status { position: absolute; left: 0; top: 0; width: 406px; height: 56px; z-index: 5; }
+        #ph-stime { position: absolute; z-index: 8; left: 36px; top: 17px; font-size: 17px; font-weight: 600; letter-spacing: -.01em; line-height: 22px; }
+        #ph-sicons { position: absolute; z-index: 8; right: 30px; top: 21px; width: 64px; height: 14px; }
+        #ph-hbar { position: absolute; left: 136px; top: 836px; width: 134px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.92); z-index: 9; }
+
+        /* glass */
+        .ph-glass { background: linear-gradient(180deg, rgba(226,233,239,.26), rgba(206,216,224,.16)); border: 1px solid rgba(255,255,255,.18); box-shadow: 0 12px 28px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.18); }
+
+        /* ---------- lock ---------- */
+        #ph-lock { position: absolute; inset: 0; z-index: 4; }
+        #ph-date { position: absolute; left: 0; width: 406px; top: 78px; text-align: center; font-size: 22px; font-weight: 500; color: rgba(255,255,255,.88); letter-spacing: -.005em; line-height: 28px; }
+        #ph-time { position: absolute; left: 0; width: 406px; top: 104px; text-align: center; font-size: 128px; font-weight: 300; letter-spacing: -.045em; line-height: 132px; color: #fff; }
+        #ph-notif { position: absolute; left: 20px; top: 540px; width: 366px; height: 88px; border-radius: 26px; padding: 14px 16px; background: linear-gradient(180deg, rgba(40,58,68,.50), rgba(30,46,56,.38)); }
+        #ph-notif2 { position: absolute; left: 34px; top: 560px; width: 338px; height: 88px; border-radius: 26px; opacity: 0; }
+        #ph-nicon { position: absolute; left: 16px; top: 16px; width: 44px; height: 44px; }
+        #ph-nicon { width: 44px; height: 44.58px; background: url("assets/brand/wave-icon.png") 0 0 / 100% 100% no-repeat; filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
+        #ph-nt { position: absolute; left: 72px; top: 14px; font-size: 15px; font-weight: 700; letter-spacing: -.01em; line-height: 20px; }
+        #ph-nw { position: absolute; right: 16px; top: 15px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.66); line-height: 18px; }
+        #ph-nb { position: absolute; left: 72px; top: 36px; width: 282px; font-size: 15px; font-weight: 500; color: rgba(255,255,255,.94); line-height: 20px; letter-spacing: -.005em; }
+        .ph-qbtn { position: absolute; top: 758px; width: 54px; height: 54px; border-radius: 27px; display: flex; align-items: center; justify-content: center;
+          background: rgba(12,22,30,.46); border: 1px solid rgba(255,255,255,.16); }
+
+        /* ---------- home ---------- */
+        #ph-home { position: absolute; inset: 0; z-index: 2; transform-origin: 154.67px 518px; }
+        #ph-widget { position: absolute; left: 22px; top: 70px; width: 362px; height: 172px; border-radius: 28px; }
+        #ph-wloc { position: absolute; left: 18px; top: 14px; font-size: 16px; font-weight: 600; letter-spacing: -.01em; line-height: 20px; display: flex; align-items: center; gap: 5px; }
+        #ph-wtemp { position: absolute; left: 17px; top: 32px; font-size: 54px; font-weight: 300; letter-spacing: -.04em; line-height: 60px; }
+        #ph-wsun { position: absolute; right: 18px; top: 16px; width: 26px; height: 26px; }
+        #ph-wcond { position: absolute; right: 18px; top: 46px; font-size: 14px; font-weight: 600; line-height: 18px; text-align: right; }
+        #ph-wmm { position: absolute; right: 18px; top: 64px; font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,.78); line-height: 18px; text-align: right; }
+        #ph-whr { position: absolute; left: 14px; right: 14px; top: 104px; height: 56px; display: flex; justify-content: space-between; padding-top: 6px; border-top: 1px solid rgba(255,255,255,.16); }
+        .ph-hr { width: 56px; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; line-height: 14px; color: rgba(255,255,255,.82); }
+        .ph-hr b { font-size: 14px; font-weight: 600; color: #fff; }
+        .ph-hr svg { width: 18px; height: 18px; display: block; }
+
+        .ph-app { position: absolute; width: 72px; }
+        .ph-ic { width: 72px; height: 72px; border-radius: 17.5px; overflow: hidden; box-shadow: 0 6px 14px rgba(0,0,0,.30); }
+        .ph-ic svg { display: block; }
+        #ph-waveimg { width: 72px; height: auto; display: block; filter: drop-shadow(0 6px 10px rgba(0,0,0,.34)); }
+        .ph-ic-wave { overflow: visible; box-shadow: none; border-radius: 0; height: 72px; }
+        .ph-lbl { margin-top: 7px; width: 96px; margin-left: -12px; text-align: center; font-size: 12.5px; font-weight: 500; letter-spacing: -.005em; line-height: 15px; color: rgba(255,255,255,.95); text-shadow: 0 1px 4px rgba(0,0,0,.45); }
+        #ph-dock { position: absolute; left: 12px; top: 738px; width: 382px; height: 92px; border-radius: 34px; }
+        #ph-dots { position: absolute; left: 0; width: 406px; top: 706px; height: 8px; display: flex; justify-content: center; gap: 9px; }
+        #ph-dots i { display: block; width: 7px; height: 7px; border-radius: 4px; background: rgba(255,255,255,.4); }
+        #ph-dots i:first-child { background: rgba(255,255,255,.95); }
+
+        /* ---------- tap + press ---------- */
+        #ph-tap { position: absolute; z-index: 6; left: 128.67px; top: 492.47px; width: 52px; height: 52px; border-radius: 50%; opacity: 0; pointer-events: none;
+          background: radial-gradient(circle, rgba(255,255,255,.34) 0, rgba(255,255,255,.26) 62%, rgba(255,255,255,.18) 100%); border: 1.5px solid rgba(255,255,255,.5); box-shadow: 0 0 22px rgba(255,255,255,.22), inset 0 0 10px rgba(255,255,255,.18); }
+        .ph-shade { position: absolute; left: 0; top: 0; width: 72px; height: 72.94px; background: #fff; opacity: 0; pointer-events: none;
+          -webkit-mask: url("assets/brand/wave-icon.png") 0 0 / 100% 100% no-repeat; mask: url("assets/brand/wave-icon.png") 0 0 / 100% 100% no-repeat; }
+
+        /* ---------- app opening (real screenshot) ---------- */
+        #ph-open { position: absolute; z-index: 3; left: 0; top: 0; width: 406px; height: 856px; overflow: hidden; opacity: 0; clip-path: inset(var(--ct) var(--cr) var(--cb) var(--cl) round var(--rad)); --ct: 0px; --cr: 0px; --cb: 0px; --cl: 0px; --rad: 52px; }
+        #ph-open-in { position: absolute; left: 0; top: 0; width: 406px; height: 856px; background: #0A0B10; transform-origin: 0 0; opacity: 0; overflow: hidden; }
+        #ph-scroll { position: absolute; left: 0; top: 0; width: 406px; height: 856px; }
+        #ph-shot { position: absolute; left: 0; top: 62px; width: 406px; height: auto; display: block; }
+        #ph-pillcover { position: absolute; left: 33px; top: 720.5px; width: 340px; height: 66px; border-radius: 33px; background: #0B0C12; }
+        #ph-scrollfade { position: absolute; left: 0; top: 590px; width: 406px; height: 132px; opacity: 0; background: linear-gradient(180deg, rgba(10,11,16,0), rgba(10,11,16,.5) 38%, rgba(10,11,16,.92) 72%, #0A0B10 100%); }
+        #ph-safe { position: absolute; left: 0; top: 785px; width: 406px; height: 71px; background: #0A0B10; }
+        #ph-tabbar { position: absolute; left: 35.2px; top: 721.5px; width: 335.8px; height: 63.5px; border-radius: 31.8px; overflow: hidden; background: url("assets/app/ciudad.jpg") -35.2px -659.5px / 406px auto no-repeat; }
+        #ph-topscrim { position: absolute; left: 0; top: 0; width: 406px; height: 96px; opacity: 0; background: linear-gradient(180deg, #0A0B10 0, #0A0B10 46%, rgba(10,11,16,.55) 72%, rgba(10,11,16,0)); }
+        #ph-open-icw { position: absolute; left: 0; top: 0; width: 72px; height: 72.94px; transform-origin: 0 0; background: url("assets/brand/wave-icon.png") 0 0 / 100% 100% no-repeat; }
+
+        /* ---------- violet / white light entry (screen space) ---------- */
+        #ph-fx { position: absolute; inset: 0; opacity: 1; pointer-events: none; isolation: isolate; }
+        .ph-blob { position: absolute; left: 360px; top: -60px; width: 1200px; height: 1200px; border-radius: 50%; opacity: 0; will-change: transform, opacity; }
+        #ph-b-base { background: radial-gradient(circle closest-side, rgba(136,120,245,1.000) 0.0%, rgba(136,120,245,1.000) 8.3%, rgba(136,120,245,0.997) 16.7%, rgba(136,120,245,0.955) 25.0%, rgba(136,120,245,0.871) 33.3%, rgba(136,120,245,0.756) 41.7%, rgba(136,120,245,0.621) 50.0%, rgba(136,120,245,0.477) 58.3%, rgba(136,120,245,0.334) 66.7%, rgba(136,120,245,0.204) 75.0%, rgba(136,120,245,0.098) 83.3%, rgba(136,120,245,0.026) 91.7%, rgba(136,120,245,0.000) 100.0%); }
+        #ph-b-mg { background: radial-gradient(circle closest-side, rgba(217,70,239,0.550) 0.0%, rgba(217,70,239,0.537) 8.3%, rgba(217,70,239,0.501) 16.7%, rgba(217,70,239,0.449) 25.0%, rgba(217,70,239,0.384) 33.3%, rgba(217,70,239,0.312) 41.7%, rgba(217,70,239,0.239) 50.0%, rgba(217,70,239,0.170) 58.3%, rgba(217,70,239,0.109) 66.7%, rgba(217,70,239,0.059) 75.0%, rgba(217,70,239,0.024) 83.3%, rgba(217,70,239,0.005) 91.7%, rgba(217,70,239,0.000) 100.0%); mix-blend-mode: screen; }
+        #ph-b-lav { background: radial-gradient(circle closest-side, rgba(190,176,255,1.000) 0.0%, rgba(190,176,255,0.996) 8.3%, rgba(190,176,255,0.954) 16.7%, rgba(190,176,255,0.875) 25.0%, rgba(190,176,255,0.768) 33.3%, rgba(190,176,255,0.642) 41.7%, rgba(190,176,255,0.507) 50.0%, rgba(190,176,255,0.373) 58.3%, rgba(190,176,255,0.249) 66.7%, rgba(190,176,255,0.144) 75.0%, rgba(190,176,255,0.063) 83.3%, rgba(190,176,255,0.015) 91.7%, rgba(190,176,255,0.000) 100.0%); mix-blend-mode: screen; }
+        #ph-b-wh { background: radial-gradient(circle closest-side, rgba(255,255,255,1.000) 0.0%, rgba(255,255,255,0.971) 8.3%, rgba(255,255,255,0.891) 16.7%, rgba(255,255,255,0.775) 25.0%, rgba(255,255,255,0.638) 33.3%, rgba(255,255,255,0.493) 41.7%, rgba(255,255,255,0.354) 50.0%, rgba(255,255,255,0.231) 58.3%, rgba(255,255,255,0.132) 66.7%, rgba(255,255,255,0.062) 75.0%, rgba(255,255,255,0.020) 83.3%, rgba(255,255,255,0.003) 91.7%, rgba(255,255,255,0.000) 100.0%); mix-blend-mode: screen; }
+        #ph-ring { position: absolute; left: 360px; top: -60px; width: 1200px; height: 1200px; border-radius: 50%; opacity: 0;
+          background: radial-gradient(circle closest-side, rgba(255,255,255,0) 0, rgba(255,255,255,0) 58%, rgba(160,146,255,.22) 70%, rgba(235,230,255,.7) 77%, rgba(160,146,255,.3) 84%, rgba(136,120,245,0) 92%); mix-blend-mode: screen; }
+        #ph-streak { position: absolute; left: -200px; top: 530px; width: 2320px; height: 20px; opacity: 0; mix-blend-mode: screen; border-radius: 10px;
+          background: linear-gradient(90deg, rgba(136,120,245,0), rgba(136,120,245,.85) 22%, #fff 50%, rgba(136,120,245,.85) 78%, rgba(136,120,245,0)); box-shadow: 0 0 46px 12px rgba(150,132,255,.55); }
+        .ph-bar { position: absolute; left: -200px; width: 2320px; opacity: 0; mix-blend-mode: screen; }
+        #ph-flash { position: absolute; inset: 0; background: #d9d0ff; opacity: 0; mix-blend-mode: screen; }
+      </style>
+
+      <div id="ph-root" data-composition-id="scene-phone" data-width="1920" data-height="1080">
+        <div id="ph-stage" data-layout-allow-overflow>
+          <div id="ph-cam" data-layout-allow-overflow>
+            <div id="ph-phone" data-layout-allow-overflow>
+              <div class="ph-edge" style="transform:translateZ(-2px)"></div><div class="ph-edge" style="transform:translateZ(-4px)"></div><div class="ph-edge" style="transform:translateZ(-6px)"></div><div class="ph-edge" style="transform:translateZ(-8px)"></div><div class="ph-edge" style="transform:translateZ(-10px)"></div><div class="ph-edge" style="transform:translateZ(-12px)"></div><div class="ph-edge" style="transform:translateZ(-14px)"></div><div class="ph-edge" style="transform:translateZ(-16px)"></div><div class="ph-edge" style="transform:translateZ(-18px)"></div><div class="ph-edge" style="transform:translateZ(-20px)"></div><div class="ph-edge" style="transform:translateZ(-22px)"></div><div class="ph-edge" style="transform:translateZ(-24px)"></div><div class="ph-edge" style="transform:translateZ(-26px)"></div>
+              <div class="ph-btn" style="left:-4px;top:150px;width:5px;height:34px;border-radius:2px 0 0 2px;transform:translateZ(-9px)"></div>
+              <div class="ph-btn" style="left:-4px;top:220px;width:5px;height:64px;border-radius:2px 0 0 2px;transform:translateZ(-9px)"></div>
+              <div class="ph-btn" style="left:-4px;top:300px;width:5px;height:64px;border-radius:2px 0 0 2px;transform:translateZ(-9px)"></div>
+              <div class="ph-btn" style="right:-4px;top:250px;width:5px;height:96px;border-radius:0 2px 2px 0;transform:translateZ(-9px)"></div>
+              <div id="ph-body">
+                <div id="ph-bezel"></div>
+                <div id="ph-screen">
+                  
+<svg id="ph-wall" viewBox="0 0 406 856" width="406" height="856" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+ <defs>
+  <linearGradient id="ph-wg-bg" x1="0" y1="0" x2="0" y2="1">
+   <stop offset="0" stop-color="#050d15"/><stop offset=".45" stop-color="#08202e"/><stop offset="1" stop-color="#030a10"/>
+  </linearGradient>
+  <linearGradient id="ph-wg-rib" x1="0" y1="1" x2="1" y2="0">
+   <stop offset="0" stop-color="#0b6f80" stop-opacity=".95"/>
+   <stop offset=".5" stop-color="#21AEC0"/>
+   <stop offset="1" stop-color="#8ff6ff"/>
+  </linearGradient>
+  <linearGradient id="ph-wg-rib2" x1="0" y1="1" x2="1" y2="0">
+   <stop offset="0" stop-color="#073a47" stop-opacity=".0"/>
+   <stop offset=".6" stop-color="#1b94a6" stop-opacity=".75"/>
+   <stop offset="1" stop-color="#5CE8F6" stop-opacity=".95"/>
+  </linearGradient>
+  <radialGradient id="ph-wg-halo" cx=".62" cy=".62" r=".6">
+   <stop offset="0" stop-color="#5CE8F6" stop-opacity=".55"/>
+   <stop offset=".5" stop-color="#21AEC0" stop-opacity=".18"/>
+   <stop offset="1" stop-color="#21AEC0" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="ph-wg-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter>
+ </defs>
+ <rect width="406" height="856" fill="url(#ph-wg-bg)"/>
+ <rect width="406" height="856" fill="url(#ph-wg-halo)"/>
+ <path d="M-30 640 C 40 520, 120 700, 210 560 S 360 330, 450 300 L450 900 L-30 900Z" fill="#21AEC0" opacity=".55" filter="url(#ph-wg-blur)"/>
+ <path d="M-30 650 C 50 540, 130 710, 214 574 S 350 360, 450 330 C 380 470, 300 640, 190 700 S 20 760, -30 760Z" fill="url(#ph-wg-rib)"/>
+ <path d="M-30 560 C 60 470, 150 600, 232 500 S 360 300, 450 250 C 400 360, 330 500, 230 560 S 40 640, -30 640Z" fill="url(#ph-wg-rib2)" opacity=".9"/>
+ <path d="M-30 470 C 70 400, 160 500, 250 420 S 370 250, 450 190" fill="none" stroke="#8ff6ff" stroke-opacity=".5" stroke-width="2.4" stroke-linecap="round"/>
+ <path d="M-30 520 C 60 450, 150 560, 240 470 S 360 290, 450 230" fill="none" stroke="#bff9ff" stroke-opacity=".28" stroke-width="1.6" stroke-linecap="round"/>
+ <path d="M-30 800 C 80 700, 180 820, 280 720 S 400 640, 450 620" fill="none" stroke="#5CE8F6" stroke-opacity=".35" stroke-width="2" stroke-linecap="round"/>
+ <path d="M-30 830 C 90 740, 190 850, 290 760 S 410 690, 450 680" fill="none" stroke="#5CE8F6" stroke-opacity=".2" stroke-width="1.6" stroke-linecap="round"/>
+</svg>
+                  <div id="ph-dim"></div>
+
+                  <div id="ph-home" data-layout-allow-overlap>
+                    <div id="ph-widget" class="ph-glass" data-layout-allow-overlap>
+                      <div id="ph-wloc">Zaragoza<svg width="11" height="11" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M3 11.5 21 3l-8.500 18-1.800-7.700z"/></svg></div>
+                      <div id="ph-wtemp">21°</div>
+                      <div id="ph-wsun"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5" fill="#ffd54a"/><g stroke="#ffd54a" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></g></svg></div>
+                      <div id="ph-wcond">Despejado</div>
+                      <div id="ph-wmm">Máx 24° · Mín 14°</div>
+                      <div id="ph-whr"><div class="ph-hr"><span>Ahora</span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5" fill="#ffd54a"/><g stroke="#ffd54a" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></g></svg><b>21°</b></div><div class="ph-hr"><span>22</span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5" fill="#ffd54a"/><g stroke="#ffd54a" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></g></svg><b>20°</b></div><div class="ph-hr"><span>23</span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 14.5A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z" fill="#e8ecf4"/></svg><b>18°</b></div><div class="ph-hr"><span>0</span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 14.5A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z" fill="#e8ecf4"/></svg><b>17°</b></div><div class="ph-hr"><span>1</span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 14.5A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z" fill="#e8ecf4"/></svg><b>16°</b></div></div>
+                    </div>
+                    <div class="ph-app" style="left:22.00px;top:266px"><div class="ph-ic" style="background:linear-gradient(160deg,#5b626b,#1d2126)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <rect x="48" y="14" width="11" height="5" rx="2" fill="#aab3bd"/>
+  <circle cx="36" cy="38" r="21" fill="#101317" stroke="#a3acb7" stroke-width="3"/>
+  <circle cx="36" cy="38" r="12.5" fill="#1e2630" stroke="#46505c" stroke-width="2"/>
+  <circle cx="36" cy="38" r="5" fill="#0c3a66"/>
+  <circle cx="31" cy="33" r="3.2" fill="#fff" opacity=".4"/></svg></div><div class="ph-lbl">Cámara</div></div>
+                    <div class="ph-app" style="left:118.67px;top:266px"><div class="ph-ic" style="background:linear-gradient(160deg,#ffffff,#e4e9ef)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(36 36)" style="mix-blend-mode:multiply">
+   <ellipse cx="0" cy="-13" rx="9" ry="14" fill="#ff6a5f" opacity=".92"/>
+   <ellipse cx="0" cy="-13" rx="9" ry="14" fill="#ffb938" opacity=".92" transform="rotate(60)"/>
+   <ellipse cx="0" cy="-13" rx="9" ry="14" fill="#f3e04a" opacity=".92" transform="rotate(120)"/>
+   <ellipse cx="0" cy="-13" rx="9" ry="14" fill="#55d56e" opacity=".92" transform="rotate(180)"/>
+   <ellipse cx="0" cy="-13" rx="9" ry="14" fill="#3aa8e8" opacity=".92" transform="rotate(240)"/>
+   <ellipse cx="0" cy="-13" rx="9" ry="14" fill="#b567f0" opacity=".92" transform="rotate(300)"/>
+  </g></svg></div><div class="ph-lbl">Fotos</div></div>
+                    <div class="ph-app" style="left:215.34px;top:266px"><div class="ph-ic" style="background:linear-gradient(160deg,#e9f1dd,#cfe3c2)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 52 L30 40 L72 58 L72 72 L0 72Z" fill="#8fc0ea"/>
+  <path d="M-4 30 L76 14" stroke="#fff" stroke-width="9"/>
+  <path d="M40 -4 L30 76" stroke="#fff" stroke-width="7"/>
+  <path d="M-4 30 L76 14" stroke="#f6c453" stroke-width="3"/>
+  <path d="M36 14c-8 0-13 6-13 13 0 9 13 21 13 21s13-12 13-21c0-7-5-13-13-13z" fill="#ef4b4b"/>
+  <circle cx="36" cy="27" r="5" fill="#fff"/></svg></div><div class="ph-lbl">Mapas</div></div>
+                    <div class="ph-app" style="left:312.01px;top:266px"><div class="ph-ic" style="background:#0a0b0e"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="36" cy="36" r="28" fill="#fff"/>
+  <g stroke="#1a1c20" stroke-width="2.4" stroke-linecap="round"><path d="M36 11v5M36 56v5M11 36h5M56 36h5"/></g>
+  <path d="M36 36V21" stroke="#111" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M36 36l11 6" stroke="#111" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M36 40V14" stroke="#ff8a1f" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="36" cy="36" r="2.6" fill="#ff8a1f"/></svg></div><div class="ph-lbl">Reloj</div></div>
+                    <div class="ph-app" style="left:22.00px;top:374px"><div class="ph-ic" style="background:linear-gradient(180deg,#fff,#f4f1e6)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="72" height="20" fill="#ffd23f"/>
+  <g stroke="#d9d6cb" stroke-width="2"><path d="M10 33h52M10 44h52M10 55h52"/></g>
+  <path d="M10 33h30" stroke="#8d8a80" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="ph-lbl">Notas</div></div>
+                    <div class="ph-app" style="left:118.67px;top:374px"><div class="ph-ic" style="background:linear-gradient(160deg,#ff6b88,#e1215b)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <path d="M29 49V22l22-6v28" fill="none" stroke="#fff" stroke-width="4.4" stroke-linejoin="round"/>
+  <ellipse cx="24" cy="50" rx="7" ry="5.6" fill="#fff"/>
+  <ellipse cx="46" cy="45" rx="7" ry="5.6" fill="#fff"/></svg></div><div class="ph-lbl">Música</div></div>
+                    <div class="ph-app" style="left:215.34px;top:374px"><div class="ph-ic" style="background:linear-gradient(160deg,#63f07a,#0fb239)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <path d="M36 15c-14 0-25 8.2-25 18.5 0 6 3.8 11.2 9.8 14.6-.6 3.4-2.4 6.2-4.8 8.4 4.8-.2 9-1.9 11.6-4.4 2.6.6 5.5.9 8.4.9 14 0 25-8.2 25-19.5S50 15 36 15z" fill="#fff"/></svg></div><div class="ph-lbl">Mensajes</div></div>
+                    <div class="ph-app" style="left:312.01px;top:374px"><div class="ph-ic" style="background:linear-gradient(160deg,#a6acb4,#5c626a)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="36" cy="36" r="20.5" fill="none" stroke="#eceff2" stroke-width="7" stroke-dasharray="5.4 5.38" transform="rotate(-8 36 36)"/>
+  <circle cx="36" cy="36" r="16" fill="#eceff2"/>
+  <circle cx="36" cy="36" r="7.5" fill="#6b717a"/></svg></div><div class="ph-lbl">Ajustes</div></div>
+                    <div class="ph-app" style="left:22.00px;top:482px"><div class="ph-ic" style="background:linear-gradient(170deg,#2f78e4,#7fc6ff)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="26" cy="27" r="11" fill="#ffd54a"/>
+  <path d="M25 52c-7 0-12-4-12-9.4 0-5 4.2-9 9.6-9.4 1.6-5.4 6.8-9.2 13-9.2 7.4 0 13.4 5 14 11.6 4.4.8 7.4 4 7.4 7.8 0 4.4-4 8.6-9.6 8.6z" fill="#fff"/></svg></div><div class="ph-lbl">Tiempo</div></div>
+                    <div class="ph-app" id="ph-waveapp" style="left:118.67px;top:482px"><div class="ph-ic ph-ic-wave" id="ph-waveicon"><img id="ph-waveimg" src="assets/brand/wave-icon.png" alt="" /><i class="ph-shade" id="ph-waveshade"></i></div><div class="ph-lbl">Wave</div></div>
+                    <div class="ph-app" style="left:215.34px;top:482px"><div class="ph-ic" style="background:#0d0e11"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="17" width="52" height="14" rx="5" fill="#ff5a5a"/>
+  <rect x="10" y="26" width="52" height="14" rx="5" fill="#ffc83d"/>
+  <rect x="10" y="35" width="52" height="14" rx="5" fill="#3ec7ff"/>
+  <rect x="10" y="44" width="52" height="14" rx="5" fill="#2d3239"/></svg></div><div class="ph-lbl">Cartera</div></div>
+                    <div class="ph-app" style="left:312.01px;top:482px"><div class="ph-ic" style="background:linear-gradient(180deg,#fff,#f2f3f6)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <path d="M36 58C18 45 12 36.5 12 28c0-7 5-12 11.4-12 5 0 9 3 12.6 8 3.600-5 7.600-8 12.600-8C55 16 60 21 60 28c0 8.500-6 17-24 30z" fill="#ff3b6b"/></svg></div><div class="ph-lbl">Salud</div></div>
+                    <div class="ph-app" style="left:22.00px;top:590px"><div class="ph-ic" style="background:linear-gradient(180deg,#fff,#f3f4f6)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <text x="36" y="19" text-anchor="middle" font-family="Inter Tight" font-weight="700" font-size="10" fill="#ff3b30" letter-spacing=".6">SÁB</text>
+  <text x="36" y="55" text-anchor="middle" font-family="Inter Tight" font-weight="400" font-size="38" fill="#15171a" letter-spacing="-1">11</text></svg></div><div class="ph-lbl">Calendario</div></div>
+                    <div class="ph-app" style="left:118.67px;top:590px"><div class="ph-ic" style="background:linear-gradient(160deg,#58aaff,#1b66e0)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <path d="M13 24c0-2.800 2.200-5 5-5h11l5 6h20c2.800 0 5 2.200 5 5v22c0 2.800-2.200 5-5 5H18c-2.800 0-5-2.200-5-5z" fill="#fff"/>
+  <path d="M13 32h46" stroke="#b7d6ff" stroke-width="2.4"/></svg></div><div class="ph-lbl">Archivos</div></div>
+                    <div class="ph-app" style="left:215.34px;top:590px"><div class="ph-ic" style="background:linear-gradient(160deg,#3ec0ff,#2b5bff)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <path d="M17 26h38l3 28c.2 2-1.4 3.600-3.400 3.600H17.400c-2 0-3.600-1.600-3.400-3.600z" fill="#fff"/>
+  <path d="M26 31v-5a10 10 0 0 1 20 0v5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" transform="translate(0 -2)"/>
+  <path d="M27 38c1.500 6 16.500 6 18 0" fill="none" stroke="#2b5bff" stroke-width="3.400" stroke-linecap="round"/></svg></div><div class="ph-lbl">Tienda</div></div>
+                    <div class="ph-app" style="left:312.01px;top:590px"><div class="ph-ic" style="background:#1b1b1e"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="10" width="52" height="16" rx="5" fill="#2e2f33"/>
+  <circle cx="19" cy="40" r="6" fill="#5a5b60"/><circle cx="36" cy="40" r="6" fill="#5a5b60"/><circle cx="53" cy="40" r="6" fill="#ff9f0a"/>
+  <circle cx="19" cy="55" r="6" fill="#5a5b60"/><circle cx="36" cy="55" r="6" fill="#5a5b60"/><circle cx="53" cy="55" r="6" fill="#ff9f0a"/></svg></div><div class="ph-lbl">Calculadora</div></div>
+                    <div id="ph-dots"><i></i><i></i></div>
+                    <div id="ph-dock" class="ph-glass"></div>
+                    <div class="ph-app ph-dockapp" style="left:30.8px;top:748px"><div class="ph-ic" style="background:linear-gradient(160deg,#63f07a,#0fb239)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <path d="M25 15c-2-1-4.400-.2-5.600 1.600-3.600 5.600-2 14.400 5.600 23.400C33 48.400 43 54 51 52.400c2.200-.4 3.600-2.600 3.200-4.800l-.8-3.800c-.4-1.600-1.800-2.800-3.400-3l-5-.6c-1.200-.2-2.400.4-3.200 1.400l-2 2.600c-4.400-2-8.600-6-10.600-10.600l2.600-2c1-.8 1.600-2 1.400-3.200l-.6-5c-.2-1.600-1.400-3-3-3.400z" fill="#fff" transform="translate(-1 1)"/></svg></div></div>
+                    <div class="ph-app ph-dockapp" style="left:121.6px;top:748px"><div class="ph-ic" style="background:linear-gradient(160deg,#4cb4ff,#1f6bef)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <rect x="12" y="18" width="48" height="36" rx="6" fill="#fff"/>
+  <path d="M14 22l22 17 22-17" fill="none" stroke="#1f6bef" stroke-width="3.400" stroke-linejoin="round" stroke-linecap="round"/></svg></div></div>
+                    <div class="ph-app ph-dockapp" style="left:212.4px;top:748px"><div class="ph-ic" style="background:linear-gradient(160deg,#ffffff,#dfe8f5)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="36" cy="36" r="24" fill="none" stroke="#2f7be8" stroke-width="3"/>
+  <path d="M36 36l-6-14 14 6z" fill="#e5453a" transform="rotate(0 36 36)"/>
+  <path d="M36 36l6 14-14-6z" fill="#9aa6b6"/>
+  <circle cx="36" cy="36" r="2.400" fill="#fff"/></svg></div></div>
+                    <div class="ph-app ph-dockapp" style="left:303.2px;top:748px"><div class="ph-ic" style="background:linear-gradient(160deg,#c3c8cf,#848b94)"><svg viewBox="0 0 72 72" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="36" cy="28" r="10" fill="#fff"/>
+  <path d="M15 58c1-12 10-18 21-18s20 6 21 18z" fill="#fff"/></svg></div></div>
+                  </div>
+
+                  <div id="ph-open" data-layout-allow-overlap>
+                    <div id="ph-open-in" data-layout-allow-overlap>
+                      <div id="ph-scroll" data-layout-allow-overlap>
+                        <img id="ph-shot" src="assets/app/ciudad.jpg" alt="" />
+                        <div id="ph-pillcover"></div>
+                      </div>
+                      <div id="ph-scrollfade"></div>
+                      <div id="ph-safe"></div>
+                      <div id="ph-tabbar"></div>
+                      <div id="ph-topscrim"></div>
+                    </div>
+                    <div id="ph-open-icw"><i class="ph-shade" id="ph-open-shade"></i></div>
+                  </div>
+                  <div id="ph-tap"></div>
+
+                  <div id="ph-lock" data-layout-allow-overlap>
+                    <div id="ph-date" data-layout-allow-overlap>Sábado, 11 de octubre</div>
+                    <div id="ph-time" data-layout-allow-overlap>9:41</div>
+                    <div id="ph-notif2" class="ph-glass"></div>
+                    <div id="ph-notif" class="ph-glass">
+                      <div id="ph-nicon"></div>
+                      <div id="ph-nt">Wave</div>
+                      <div id="ph-nw">ahora</div>
+                      <div id="ph-nb">Match confirmado. Ya podéis hablar.</div>
+                    </div>
+                    <div class="ph-qbtn" style="left:38px" id="ph-q1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><path d="M8 3h8l-1.600 5H9.600z"/><path d="M9.600 8h4.800v4.500l-1 1.200V21h-2.800v-7.300l-1-1.200z" fill="#fff" fill-opacity=".9"/></svg></div>
+                    <div class="ph-qbtn" style="left:314px" id="ph-q2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><path d="M3.500 8.500c0-1.100.9-2 2-2h2l1.300-1.800h6.400l1.300 1.800h2c1.100 0 2 .9 2 2v9c0 1.100-.9 2-2 2h-13c-1.100 0-2-.9-2-2z"/><circle cx="12" cy="13" r="3.800"/></svg></div>
+                  </div>
+
+                  <div id="ph-stime" data-layout-allow-overlap>9:41</div>
+                  <div id="ph-sicons">
+<svg width="64" height="14" viewBox="0 0 64 14" xmlns="http://www.w3.org/2000/svg">
+ <g fill="#fff"><rect x="0" y="9" width="3.4" height="4.5" rx="1"/><rect x="5" y="6.5" width="3.4" height="7" rx="1"/><rect x="10" y="3.5" width="3.4" height="10" rx="1"/><rect x="15" y="0.5" width="3.4" height="13" rx="1"/></g>
+ <path d="M26 5.2c3.800-3.400 9-3.400 12.800 0M28.600 8c2.400-2 5.600-2 8 0" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="32.600" cy="11.400" r="1.500" fill="#fff"/>
+ <rect x="43.500" y=".7" width="19" height="12.600" rx="3.800" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2"/>
+ <rect x="45.300" y="2.500" width="15.400" height="9" rx="2.400" fill="#fff"/>
+</svg></div>
+                  <div id="ph-island"></div>
+                  <div id="ph-hbar"></div>
+                  <div id="ph-glare"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ph-fx" data-layout-allow-overflow data-layout-allow-overlap>
+          <div class="ph-blob" id="ph-b-base"></div>
+          <div class="ph-blob" id="ph-b-mg"></div>
+          <div class="ph-blob" id="ph-b-lav"></div>
+          <div id="ph-ring"></div>
+          <div class="ph-blob" id="ph-b-wh"></div>
+          <div id="ph-streak"></div>
+          <div class="ph-bar" id="ph-bar1" style="top:318px;height:30px;background:linear-gradient(90deg,rgba(136,120,245,0),#8878F5 22%,#fff 52%,#b4a8ff 80%,rgba(136,120,245,0))"></div>
+          <div class="ph-bar" id="ph-bar2" style="top:640px;height:16px;background:linear-gradient(90deg,rgba(255,255,255,0),#fff 28%,#8878F5 62%,rgba(136,120,245,0))"></div>
+          <div class="ph-bar" id="ph-bar3" style="top:452px;height:52px;background:linear-gradient(90deg,rgba(217,70,239,0),#c9a6ff 25%,#fff 55%,#8878F5 85%,rgba(136,120,245,0))"></div>
+          <div id="ph-flash"></div>
+        </div>
+      </div>
+
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        const P = "#ph-phone";
+
+        // ---------- 0.00 - 1.00  flight in (one object: z + rotations, no scale-only depth)
+        tl.fromTo(P, { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "none" }, 0);
+        tl.fromTo(P,
+          { x: 760, y: -470, z: -6800, scale: 0.62, rotationY: -62, rotationZ: 34 },
+          { x: 0, y: 0, z: 0, scale: 0.95, rotationY: 0, rotationZ: 0, duration: 1.05, ease: "power2.out" }, 0);
+        tl.fromTo(P, { rotationX: 74 }, { rotationX: 9, duration: 0.8, ease: "power2.out" }, 0);
+        tl.to(P, { rotationX: 16, duration: 0.2, ease: "sine.inOut" }, 0.8);
+        tl.fromTo("#ph-stage", { filter: "blur(9px)" }, { filter: "blur(0px)", duration: 0.7, ease: "power2.out" }, 0);
+
+        // specular sweep across the glass while it flies in / over the opened app
+        tl.fromTo("#ph-glare", { x: -140 }, { x: 560, duration: 1.0, ease: "power1.inOut" }, 0.05);
+        tl.fromTo("#ph-glare", { x: -140 }, { x: 560, duration: 0.8, ease: "power1.inOut", immediateRender: false }, 2.95);
+
+        // ---------- 1.00 - 1.95  breathe on the lock screen -> swipe-up -> home (unchanged look)
+        tl.to(P, { rotationX: 6, duration: 0.92, ease: "power2.inOut" }, 1.0);
+        tl.to(P, { scale: 1.12, duration: 0.55, ease: "power2.inOut" }, 1.0);
+        tl.to(P, { rotationY: -4, duration: 0.45, ease: "sine.inOut" }, 1.0);
+        tl.to(P, { rotationY: 0, duration: 0.5, ease: "sine.inOut" }, 1.45);
+        // settle: whole phone, centred, uncropped, slowly easing back for the home-screen rest
+        tl.to(P, { scale: 1.06, duration: 0.75, ease: "sine.out" }, 1.55);
+
+        // notification: drops from the top with a soft rebound
+        tl.fromTo("#ph-notif", { y: -600 }, { y: 0, duration: 0.62, ease: "back.out(1.35)" }, 1.0);
+        tl.fromTo("#ph-notif", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none", immediateRender: false }, 1.0);
+        tl.fromTo("#ph-notif2", { y: -26 }, { y: 0, duration: 0.3, ease: "power2.out" }, 1.22);
+        tl.fromTo("#ph-notif2", { opacity: 0 }, { opacity: 0.5, duration: 0.25, ease: "power1.out", immediateRender: false }, 1.22);
+
+        // lock layer swipes up and out
+        tl.to("#ph-lock", { y: -430, duration: 0.5, ease: "power2.in" }, 1.4);
+        tl.to("#ph-lock", { opacity: 0, duration: 0.1, ease: "power1.out" }, 1.4);
+        tl.fromTo("#ph-dim", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.inOut" }, 1.4);
+        tl.fromTo("#ph-stime", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 1.52);
+
+        // home: widget + icons enter with stagger
+        tl.fromTo("#ph-widget", { opacity: 0, scale: 0.9, y: 16 }, { opacity: 1, scale: 1, y: 0, duration: 0.42, ease: "power3.out" }, 1.46);
+        tl.fromTo(".ph-app:not(#ph-waveapp)", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out", stagger: 0.015 }, 1.5);
+        tl.fromTo("#ph-waveapp", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 1.52);
+        tl.fromTo("#ph-dock, #ph-dots", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 1.68);
+
+        // ---------- 1.95 - 2.30  home at rest: touch indicator on the real Wave icon + press
+        const PR = 0.92;                                   // pressed scale of the icon
+        const OW = 72 * PR, OH = 72.94 * PR;
+        const OL = 154.67 - OW / 2, OT = 518.47 - OH / 2;  // pressed icon rect (screen px)
+        tl.fromTo("#ph-tap", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power2.out" }, 1.97);
+        tl.fromTo("#ph-tap", { scale: 1 }, { scale: 0.86, duration: 0.1, ease: "power2.out", immediateRender: false }, 2.14);
+        tl.fromTo("#ph-waveicon", { scale: 1 }, { scale: PR, duration: 0.1, ease: "power2.out" }, 2.14);
+        tl.fromTo("#ph-waveshade", { opacity: 0 }, { opacity: 0.2, duration: 0.1, ease: "power2.out" }, 2.14);
+
+        // ---------- 2.30 - 2.95  iOS-style opening: the icon rect becomes the screen (spring), home recedes
+        const T0 = 2.3, OD = 0.62, SPRING = "back.out(0.8)";
+        tl.set("#ph-open", { opacity: 1 }, T0);
+        // reveal window: clip-path from the pressed icon rect to the whole screen, corner radius 16 -> 52
+        tl.fromTo("#ph-open",
+          { "--ct": OT + "px", "--cr": (406 - OL - OW) + "px", "--cl": OL + "px", "--cb": (856 - OT - OH) + "px", "--rad": "18px" },
+          { "--ct": "0px", "--cr": "0px", "--cl": "0px", "--cb": "0px", "--rad": "52px", immediateRender: false, duration: OD, ease: SPRING }, T0);
+        // the real screen grows with the window (anchored top-left; width = window width)
+        tl.fromTo("#ph-open-in", { x: OL, y: OT, scale: OW / 406 }, { x: 0, y: 0, scale: 1, immediateRender: false, duration: OD, ease: SPRING }, T0);
+        tl.set("#ph-open-in", { opacity: 1 }, T0);
+        // the icon layer rides the window centre and dissolves almost at once (no big ghost icon)
+        tl.fromTo("#ph-open-icw", { x: OL, y: OT, scale: PR }, { x: 203 - 54, y: 428 - 54.7, scale: 1.5, immediateRender: false, duration: OD, ease: "power3.out" }, T0);
+        tl.fromTo("#ph-open-icw", { opacity: 1 }, { opacity: 0, duration: 0.07, ease: "none", immediateRender: false }, T0);
+        // touch indicator releases, home screen recedes (iOS: it zooms toward the viewer, softens, fades)
+        tl.fromTo("#ph-tap", { opacity: 1 }, { opacity: 0, duration: 0.18, ease: "power1.out", immediateRender: false }, T0);
+        tl.fromTo("#ph-tap", { scale: 0.86 }, { scale: 1.4, duration: 0.2, ease: "power2.out", immediateRender: false }, T0);
+        tl.fromTo("#ph-home", { scale: 1, opacity: 1, filter: "blur(0px)" }, { scale: 1.14, opacity: 0, filter: "blur(5px)", duration: 0.5, ease: "power2.out", immediateRender: false }, T0 + 0.03);
+        tl.fromTo("#ph-waveshade", { opacity: 0.2 }, { opacity: 0, duration: 0.1, ease: "none", immediateRender: false }, T0);
+        tl.fromTo("#ph-open-shade", { opacity: 0.2 }, { opacity: 0, duration: 0.08, ease: "none", immediateRender: false }, T0);
+
+        // ---------- camera
+        // opening: gentle push toward the screen while it grows
+        tl.to(P, { scale: 1.12, rotationX: 4, rotationY: -3, duration: 0.67, ease: "power2.out" }, 2.28);
+        // app in view: slow dolly-in, still the whole phone (island and status bar stay clear)
+        tl.to(P, { scale: 1.17, y: 2, rotationX: 3, rotationY: -5, duration: 0.5, ease: "sine.inOut" }, 2.95);
+
+        // ---------- 2.92 - 3.55  the app lives: a small fling-scroll (tab bar stays fixed, content fades under it)
+        tl.fromTo("#ph-scroll", { y: 0 }, { y: -72, duration: 0.7, ease: "power2.out" }, 2.92);
+        tl.fromTo("#ph-topscrim", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 2.92);
+        tl.fromTo("#ph-scrollfade", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "power2.out" }, 2.92);
+
+        // ---------- 3.42 - 4.00  violet / white light entry: the camera passes through the screen
+        tl.to(P, { scale: 3.3, y: 40, rotationX: 0, rotationY: -1, duration: 0.4, ease: "power3.in" }, 3.42);
+        tl.to("#ph-stage", { filter: "blur(14px)", duration: 0.36, ease: "power2.in" }, 3.46);
+        tl.to(P, { opacity: 0, duration: 0.06, ease: "none" }, 3.74);
+
+        // short stepped jitter + RGB split on the screen (a few frames only)
+        tl.set("#ph-cam", { filter: "none" }, 0);
+        [[3.46, 12, -3], [3.49, -10, 2], [3.52, 7, -2], [3.55, 0, 0], [3.58, -14, 4], [3.61, 0, 0]]
+          .forEach(([t, x, sk]) => tl.set("#ph-cam", { x: x, skewX: sk }, t));
+        const split = (px) => "drop-shadow(" + px + "px 0 0 rgba(255,45,115,.6)) drop-shadow(" + (-px) + "px 0 0 rgba(0,225,255,.6))";
+        tl.set("#ph-cam", { filter: split(6) }, 3.46);
+        tl.set("#ph-cam", { filter: split(3) }, 3.52);
+        tl.set("#ph-cam", { filter: split(9) }, 3.58);
+        tl.set("#ph-cam", { filter: "none" }, 3.63);
+
+        // light born at the screen centre
+        const grow = (sel, t0, d, s0, s1, ease, o1) => {
+          tl.fromTo(sel, { scale: s0 }, { scale: s1, duration: d, ease: ease }, t0);
+          tl.fromTo(sel, { opacity: 0 }, { opacity: o1, duration: Math.min(0.12, d), ease: "power1.out", immediateRender: false }, t0);
+        };
+        grow("#ph-b-lav", 3.48, 0.30, 0.06, 2.4, "power2.in", 0.9);
+        grow("#ph-b-base", 3.50, 0.30, 0.05, 4.8, "power2.in", 0.96);
+        grow("#ph-b-mg", 3.52, 0.28, 0.05, 3.0, "power2.in", 0.75);
+        grow("#ph-b-wh", 3.54, 0.22, 0.05, 1.8, "power3.in", 0.6);
+        // shock ring
+        tl.fromTo("#ph-ring", { scale: 0.08 }, { scale: 2.4, duration: 0.34, ease: "power2.out" }, 3.50);
+        tl.fromTo("#ph-ring", { opacity: 0 }, { opacity: 0.8, duration: 0.06, ease: "none", immediateRender: false }, 3.50);
+        tl.to("#ph-ring", { opacity: 0, duration: 0.2, ease: "power1.in" }, 3.64);
+        // anamorphic light streak through the centre
+        tl.fromTo("#ph-streak", { scaleX: 0.05, scaleY: 1, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.14, ease: "power3.out", immediateRender: false }, 3.58);
+        tl.to("#ph-streak", { scaleY: 0.2, opacity: 0, duration: 0.2, ease: "power2.in" }, 3.72);
+
+        // three short glitch bars (a few frames each)
+        const bars = {
+          "#ph-bar1": [[3.47, -160, 14, 0.9], [3.51, 140, -16, 1], [3.56, -60, 8, 0.8], [3.61, 0, 0, 0]],
+          "#ph-bar2": [[3.49, 220, -10, 1], [3.54, -200, 12, 1], [3.59, 90, -6, 0.8], [3.64, 0, 0, 0]],
+          "#ph-bar3": [[3.52, -120, 10, 0.85], [3.57, 180, -14, 1], [3.62, -40, 4, 0.7], [3.67, 0, 0, 0]],
+        };
+        Object.keys(bars).forEach((sel) => bars[sel].forEach(([t, x, sk, o]) => tl.set(sel, { x: x, skewX: sk, opacity: o * 0.85 }, t)));
+        tl.set("#ph-flash", { opacity: 0.4 }, 3.47); tl.set("#ph-flash", { opacity: 0 }, 3.5);
+        tl.set("#ph-flash", { opacity: 0.3 }, 3.6); tl.set("#ph-flash", { opacity: 0 }, 3.63);
+
+        // peak ~3.72 (frame is bright lavender), then everything dissolves to transparent by 4.0
+        tl.to("#ph-fx", { opacity: 0, duration: 0.28, ease: "power2.inOut" }, 3.72);
+        tl.fromTo("#ph-fx", { filter: "blur(0px)" }, { filter: "blur(16px)", duration: 0.28, ease: "power1.in", immediateRender: false }, 3.72);
+
+        window.__timelines["scene-phone"] = tl;
+
+      </script>
+    </template>
+  </body>
+</html>

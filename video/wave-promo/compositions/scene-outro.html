@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="es">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Inter Tight"; src: url("assets/fonts/inter-tight-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
+
+        #ou-root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          font-family: "Inter Tight", system-ui, sans-serif;
+          color: #fff;
+        }
+
+        /* Halo del orbe: estacionario en (960, 540), recoge el glow del fondo */
+        #ou-halo {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 640px;
+          height: 640px;
+          margin: -320px 0 0 -320px;
+          border-radius: 50%;
+          background: radial-gradient(
+            closest-side,
+            rgba(190, 252, 255, 0.7800) 0.0%,
+            rgba(180, 247, 251, 0.7719) 4.5%,
+            rgba(170, 242, 247, 0.7482) 9.1%,
+            rgba(159, 237, 243, 0.7103) 13.6%,
+            rgba(149, 232, 239, 0.6604) 18.2%,
+            rgba(139, 227, 235, 0.6013) 22.7%,
+            rgba(129, 222, 230, 0.5361) 27.3%,
+            rgba(119, 217, 226, 0.4681) 31.8%,
+            rgba(108, 211, 222, 0.4001) 36.4%,
+            rgba(98, 206, 218, 0.3348) 40.9%,
+            rgba(88, 201, 214, 0.2742) 45.5%,
+            rgba(78, 196, 210, 0.2197) 50.0%,
+            rgba(68, 191, 206, 0.1721) 54.5%,
+            rgba(57, 186, 202, 0.1317) 59.1%,
+            rgba(47, 181, 198, 0.0984) 63.6%,
+            rgba(37, 176, 194, 0.0715) 68.2%,
+            rgba(33, 174, 192, 0.0505) 72.7%,
+            rgba(33, 174, 192, 0.0344) 77.3%,
+            rgba(33, 174, 192, 0.0223) 81.8%,
+            rgba(33, 174, 192, 0.0136) 86.4%,
+            rgba(33, 174, 192, 0.0073) 90.9%,
+            rgba(33, 174, 192, 0.0030) 95.5%,
+            rgba(33, 174, 192, 0.0000) 100.0%
+          );
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+
+        /* Lockup REAL: mismo bloque que #lg-lockup (904x234 en 508,423 = escala .729 de wave-lockup.png) */
+        #ou-lockup {
+          position: absolute;
+          left: 508px;
+          top: 423px;
+          width: 904px;
+          height: 234px;
+        }
+        #ou-lockup > div,
+        #ou-shadowbox > div {
+          position: absolute;
+          inset: 0;
+        }
+        /* misma sombra que en la escena 1 sobre el conjunto icono + wordmark */
+        #ou-shadowbox {
+          position: absolute;
+          inset: 0;
+          filter: drop-shadow(0 10px 26px rgba(1, 26, 38, 0.5)) drop-shadow(0 2px 5px rgba(1, 26, 38, 0.35));
+        }
+        .ou-img {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 904px;
+          height: 234px;
+          display: block;
+        }
+        /* mismo PNG real en dos capas, recortadas en la franja transparente entre icono y wordmark (356/1240) */
+        #ou-icon-img { clip-path: inset(0 71.29% 0 0); }
+        #ou-word-img { clip-path: inset(0 0 0 28.71%); }
+
+        /* mascara del wordmark: su borde izquierdo sigue el borde derecho del icono (sale "desde detras") */
+        #ou-wmask { clip-path: inset(-120px -120px -120px 560px); }
+        #ou-wslide, #ou-wblur { position: absolute; inset: 0; will-change: transform, filter; }
+        #ou-wblur { opacity: 0; }
+        /* el icono se recorta con la misma forma que el orbe (circulo -> cuadrado redondeado) y se descubre con un iris suave */
+        #ou-iw {
+          position: absolute;
+          inset: 0;
+          transform-origin: 117px 117px;
+          clip-path: inset(0px 670px 0px 0px round 117px);
+          will-change: transform;
+        }
+        #ou-reveal {
+          position: absolute;
+          inset: 0;
+          --ra: 0;
+          --rb: 0;
+          -webkit-mask-image: radial-gradient(circle at 117px 117px, #000 calc(var(--ra) * 1px), transparent calc(var(--rb) * 1px));
+          mask-image: radial-gradient(circle at 117px 117px, #000 calc(var(--ra) * 1px), transparent calc(var(--rb) * 1px));
+        }
+
+        /* ---- orbe (centro del icono en 117,117 dentro del bloque; 110 px) ---- */
+        #ou-orbwrap {
+          position: absolute;
+          left: 62px;
+          top: 62px;
+          width: 110px;
+          height: 110px;
+          opacity: 0;
+          will-change: transform, filter, opacity;
+        }
+        #ou-orb {
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          background: radial-gradient(circle at 50% 42%, #ffffff 0%, #dcfdff 20%, #8cf1fc 50%, #43d3e4 80%, #21AEC0 100%);
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35), 0 0 34px 4px rgba(150, 247, 255, 0.75), 0 0 90px 18px rgba(33, 174, 192, 0.5);
+        }
+        #ou-flash {
+          position: absolute;
+          left: -63px;
+          top: -63px;
+          width: 360px;
+          height: 360px;
+          border-radius: 50%;
+          background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95) 0%, rgba(214, 253, 255, 0.62) 28%, rgba(127, 243, 255, 0.24) 60%, rgba(127, 243, 255, 0) 100%);
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+        #ou-ring {
+          position: absolute;
+          left: 3px;
+          top: 3px;
+          width: 228px;
+          height: 228px;
+          border-radius: 24%;
+          border: 2px solid rgba(206, 253, 255, 0.8);
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+
+        /* ---- URL + linea ---- */
+        #ou-url {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 706px;
+          height: 40px;
+          text-align: center;
+          font-size: 34px;
+          line-height: 40px;
+          font-weight: 500;
+          letter-spacing: 0.08em;
+          padding-left: 0.08em;
+          color: rgba(255, 255, 255, 0.9);
+          text-shadow: 0 2px 16px rgba(1, 26, 38, 0.6);
+          opacity: 0;
+          will-change: transform, filter, opacity;
+        }
+        #ou-line {
+          position: absolute;
+          left: 960px;
+          top: 766px;
+          width: 220px;
+          height: 2px;
+          margin-left: -110px;
+          border-radius: 2px;
+          background: linear-gradient(90deg, rgba(127, 243, 255, 0) 0%, #7ff3ff 30%, #7ff3ff 70%, rgba(127, 243, 255, 0) 100%);
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+      </style>
+
+      <div id="ou-root" data-composition-id="scene-outro" data-width="1920" data-height="1080">
+        <div id="ou-halo"></div>
+        <div id="ou-lockup">
+          <div id="ou-orb-pos">
+            <div id="ou-flash"></div>
+            <div id="ou-orbwrap"><div id="ou-orb"></div></div>
+          </div>
+          <div id="ou-shadowbox">
+            <div id="ou-wmask">
+              <div id="ou-wslide"><div id="ou-wblur"><img class="ou-img" id="ou-word-img" src="./assets/brand/wave-lockup.png" alt="Wave" /></div></div>
+            </div>
+            <div id="ou-icon-pos">
+              <div id="ou-iw"><div id="ou-reveal"><img class="ou-img" id="ou-icon-img" src="assets/brand/wave-lockup.png" alt="" /></div></div>
+            </div>
+          </div>
+          <div id="ou-top-pos">
+            <div id="ou-ring"></div>
+          </div>
+        </div>
+        <div id="ou-url">siemprewave.es</div>
+        <div id="ou-line"></div>
+      </div>
+
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        // el orbe nace en el centro de la pantalla (960, 540); el icono del lockup final esta 335 px a la izquierda
+        const DX = 335;
+        const POS = "#ou-orb-pos, #ou-icon-pos, #ou-top-pos";
+
+        // ---- 0.06-0.46: el glow del fondo se recoge y se condensa en un orbe nitido en el centro
+        tl.fromTo("#ou-orbwrap", { scale: 0.3, filter: "blur(14px)" }, { scale: 1, filter: "blur(0px)", duration: 0.4, ease: "power2.out" }, 0.06);
+        tl.fromTo("#ou-orbwrap", { opacity: 0 }, { opacity: 1, duration: 0.26, ease: "power1.out", immediateRender: false }, 0.06);
+        tl.fromTo("#ou-halo", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }, 0.06);
+
+        // ---- 0.46-0.68: late (1 -> 1.2 -> .94)
+        tl.to("#ou-orbwrap", { scale: 1.2, duration: 0.118, ease: "power2.out" }, 0.46);
+        tl.to("#ou-orbwrap", { scale: 0.94, duration: 0.1, ease: "power2.inOut" }, 0.58);
+        tl.to("#ou-halo", { scale: 1.25, duration: 0.118, ease: "power2.out" }, 0.46);
+        tl.to("#ou-halo", { scale: 0.96, duration: 0.1, ease: "power2.inOut" }, 0.58);
+
+        // ---- 0.68-1.26: el orbe se abre en el icono REAL (mismo diametro que el icono, 103 -> 229 px)
+        const S_ORB_END = 229 / 110;
+        const GROW = { duration: 0.58, ease: "back.out(1.2)" };
+        tl.fromTo("#ou-orbwrap", { scale: 0.94 }, { scale: S_ORB_END, ...GROW, immediateRender: false }, 0.68);
+        tl.fromTo("#ou-iw", { scale: 103.4 / 229 }, { scale: 1, ...GROW }, 0.68);
+        // la forma pasa de circulo a cuadrado redondeado (orbe y recorte del icono, mismo radio y mismo ritmo)
+        tl.fromTo("#ou-orb", { borderRadius: "50%" }, { borderRadius: "22%", duration: 0.34, ease: "power2.out" }, 0.68);
+        tl.fromTo("#ou-iw", { clipPath: "inset(0px 670px 0px 0px round 117px)" }, { clipPath: "inset(0px 670px 0px 0px round 50px)", duration: 0.34, ease: "power2.out", immediateRender: false }, 0.68);
+        tl.set("#ou-iw", { clipPath: "none" }, 1.08);
+        // el glifo real aparece con un iris suave que se abre desde el centro del orbe (--ra: radio opaco, --rb: radio transparente)
+        tl.fromTo("#ou-reveal", { "--ra": 0, "--rb": 0 }, { "--ra": 200, "--rb": 232, duration: 0.42, ease: "power2.out" }, 0.72);
+        // destello breve + anillo al asentarse
+        tl.fromTo("#ou-flash", { opacity: 0, scale: 0.5 }, { opacity: 0.85, scale: 0.95, duration: 0.135, ease: "power2.out" }, 0.68);
+        tl.fromTo("#ou-flash", { opacity: 0.85, scale: 0.95 }, { opacity: 0, scale: 1.5, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.82);
+        tl.fromTo("#ou-ring", { opacity: 0.8, scale: 1 }, { opacity: 0, scale: 1.7, duration: 0.55, ease: "power2.out", immediateRender: false }, 0.98);
+        // el orbe cede el relevo cuando el icono ya lo cubre del todo; el halo se disipa
+        tl.fromTo("#ou-orbwrap", { opacity: 1 }, { opacity: 0, duration: 0.08, ease: "none", immediateRender: false }, 1.16);
+        tl.fromTo("#ou-halo", { opacity: 1 }, { opacity: 0, duration: 0.55, ease: "power2.out", immediateRender: false }, 0.92);
+
+        // ---- 1.05-1.67: el icono se desplaza a la izquierda y el wordmark sale por detras de el (mascara + x)
+        const S0 = 1.05;
+        const SLIDE = { duration: 0.62, ease: "power3.inOut" };
+        tl.fromTo(POS, { x: DX }, { x: 0, ...SLIDE }, S0);
+        tl.fromTo("#ou-wslide", { x: -(DX + 10) }, { x: 0, ...SLIDE }, S0);
+        // el borde izquierdo de la mascara sigue al borde derecho del icono (225 px = borde del icono - 6; +335 al inicio)
+        tl.fromTo("#ou-wmask", { clipPath: "inset(-120px -120px -120px 560px)" }, { clipPath: "inset(-120px -120px -120px 225px)", ...SLIDE, immediateRender: false }, S0);
+        tl.fromTo("#ou-wblur", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.5, ease: "power2.out" }, S0);
+        tl.fromTo("#ou-wblur", { opacity: 0 }, { opacity: 1, duration: 0.08, ease: "none", immediateRender: false }, S0);
+        // en reposo no queda ningun filtro/recorte activo sobre el lockup: es el PNG real
+        tl.set("#ou-wblur", { filter: "none" }, S0 + 0.55);
+        tl.set("#ou-wmask", { clipPath: "none" }, S0 + 0.63);
+
+        // ---- 1.42-2.0: siemprewave.es + linea turquesa fina
+        tl.fromTo("#ou-url",
+          { opacity: 0, y: 14, filter: "blur(8px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, 1.42);
+        tl.fromTo("#ou-line",
+          { opacity: 0, scaleX: 0 },
+          { opacity: 1, scaleX: 1, duration: 0.55, ease: "power3.out" }, 1.48);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines["scene-outro"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

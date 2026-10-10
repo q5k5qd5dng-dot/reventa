@@ -1,0 +1,105 @@
+---
+import Fx from "../layouts/Fx.astro";
+import FxChrome from "../components/FxChrome.astro";
+import FxFooter from "../components/FxFooter.astro";
+import FxDemo from "../components/FxDemo.astro";
+import HeroUI from "../components/HeroUI.astro";
+import FeatureMock from "../components/FeatureMock.astro";
+import { sectors, sectorLinks } from "../data/site";
+
+export function getStaticPaths() {
+  return sectors.map((s) => ({ params: { sector: s.slug }, props: { s } }));
+}
+const { s } = Astro.props;
+const others = sectorLinks.filter(([, h]) => h !== "/" + s.slug);
+const mockKind: Record<string, string> = { discotecas: "tables", promotores: "rrpp", "beach-clubs": "tables", festivales: "checkin" };
+const icons = ["M5 12l4 4 10-10", "M4 7h16M4 12h16M4 17h10", "M12 3v18M3 12h18", "M4 18l5-6 4 3 7-9", "M12 3a9 9 0 100 18 9 9 0 000-18z", "M5 5h14v14H5z"];
+---
+<Fx title={`Wave para ${s.name.toLowerCase()} · Software para locales de ocio nocturno`} description={s.lead}>
+  <FxChrome />
+  <main>
+    <section class="hx hx--sector" data-nav="dark">
+      <div class="wrap hx-grid">
+        <div>
+          <span class="hx-eyebrow mono" data-hero-in><u></u>{s.eyebrow}</span>
+          <h1 class="display" data-split="lines" data-delay="0.05">{s.h1[0]}<br />{s.h1[1]}</h1>
+          <p class="hx-lead" data-hero-in>{s.lead}</p>
+          <div class="hx-cta" data-hero-in data-hero-cta>
+            <a href="#demo" class="btn btn-dark" data-magnetic><span>Solicita una demo</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></a>
+            <a href="#herramientas" class="hx-link">Ver qué incluye <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></a>
+          </div>
+        </div>
+        <HeroUI />
+      </div>
+    </section>
+
+    <section class="sect" id="herramientas" data-nav="light" style="background:var(--d)">
+      <div class="wrap">
+        <div class="sec-head">
+          <h2 data-split="lines" data-scroll="true">Todo lo que necesita tu <em>{s.name.toLowerCase().replace(/s$/, "")}</em></h2>
+          <p data-split="lines" data-scroll="true" data-delay="0.15" style="color:#bdbdb8">Seis herramientas en un único panel, pensadas para cómo trabajas.</p>
+        </div>
+        <div class="cards3">
+          {s.features.map(([t, d], i) => (
+            <article class="card" data-reveal>
+              <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d={icons[i % icons.length]}/></svg></span>
+              <h3>{t}</h3>
+              <p>{d}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="sect paper" data-nav="dark" style="background:var(--w);color:var(--d)">
+      <div class="wrap">
+        <div class="sec-head">
+          <h2 data-split="lines" data-scroll="true">Cómo funciona, <em>en tres pasos</em></h2>
+        </div>
+        <ol class="steps" style="list-style:none">
+          {s.steps.map(([t, d], i) => (
+            <li class="step" data-reveal><span class="n">{String(i + 1).padStart(2, "0")}</span><h3>{t}</h3><p>{d}</p></li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="sect" data-nav="light" style="background:var(--d)">
+      <div class="wrap sup-grid" style="align-items:center">
+        <div>
+          <h2 style="font-size:clamp(2.2rem,4.4vw,4rem)" data-split="lines" data-scroll="true">Pensado para tu <em>día a día</em></h2>
+          <ul class="checks" style="list-style:none;margin-top:2rem;display:grid;gap:1rem">
+            {s.checks.map((c) => <li data-reveal style="display:flex;gap:.8rem;line-height:1.4;color:#d8d8d3"><span style="color:var(--l)" aria-hidden="true">✓</span>{c}</li>)}
+          </ul>
+        </div>
+        <div data-reveal><FeatureMock kind={mockKind[s.slug]} /></div>
+      </div>
+    </section>
+
+    <section class="faq" id="faq" data-nav="light">
+      <div class="wrap faq-grid">
+        <h2 data-split="lines" data-scroll="true">Preguntas <em>frecuentes</em></h2>
+        <div class="faq-list">
+          {s.faqs.map(([q, a], i) => (
+            <div class={`faq-item${i === 0 ? " is-open" : ""}`}>
+              <button type="button" class="faq-q" aria-expanded={i === 0 ? "true" : "false"}><span>{q}</span><span class="svc-plus" aria-hidden="true"></span></button>
+              <div class="faq-a"><div><p>{a}</p></div></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="sect" data-nav="light" style="background:var(--d);padding-block:clamp(3rem,6vw,5rem)">
+      <div class="wrap">
+        <p class="mono" style="color:#8d8d95;margin-bottom:1.2rem">Wave para otros sectores</p>
+        <div class="cards3">
+          {others.map(([t, h]) => <a class="card" href={h} data-reveal style="display:flex;justify-content:space-between;align-items:center"><h3>{t}</h3><span style="color:var(--l)" aria-hidden="true">→</span></a>)}
+        </div>
+      </div>
+    </section>
+
+    <FxDemo />
+  </main>
+  <FxFooter />
+</Fx>

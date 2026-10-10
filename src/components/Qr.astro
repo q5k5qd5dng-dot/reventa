@@ -1,0 +1,26 @@
+---
+// QR real (escaneable) generado en la compilación. Vectorial: se adapta a cualquier tamaño.
+import QRCode from "qrcode";
+const { value = "https://siemprewave.es", class: cls = "", label = "Código QR de ejemplo" } = Astro.props;
+const qr = QRCode.create(value, { errorCorrectionLevel: "M" });
+const n = qr.modules.size;
+const data = qr.modules.data as unknown as ArrayLike<number>;
+const Q = 2; // margen de silencio en módulos
+let d = "";
+for (let y = 0; y < n; y++) {
+  let x = 0;
+  while (x < n) {
+    if (data[y * n + x]) {
+      let len = 1;
+      while (x + len < n && data[y * n + x + len]) len++;
+      d += `M${x + Q} ${y + Q}h${len}v1h-${len}z`;
+      x += len;
+    } else x++;
+  }
+}
+const size = n + Q * 2;
+---
+<svg class={`qrsvg ${cls}`} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={label} shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+  <rect width={size} height={size} fill="#fff" />
+  <path d={d} fill="#0a0a0a" />
+</svg>

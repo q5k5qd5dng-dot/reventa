@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #lg-root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+        }
+
+        /* Lockup REAL (wave-lockup.png 1240x321) a 904x234 = escala .729, centrado en (960, 540).
+           Mismo bloque (#ou-pos / #ou-wmask) y mismas medidas en la escena de cierre. */
+        #lg-lockup {
+          position: absolute;
+          left: 508px;
+          top: 423px;
+          width: 904px;
+          height: 234px;
+          transform-origin: 50% 50%;
+          will-change: transform, filter, opacity;
+        }
+        /* sombra oscura sutil (no toca los pixeles del logo; solo da profundidad/contraste) */
+        #lg-shadowbox {
+          position: absolute;
+          inset: 0;
+          filter: drop-shadow(0 10px 26px rgba(1, 26, 38, 0.5)) drop-shadow(0 2px 5px rgba(1, 26, 38, 0.35));
+        }
+        .lg-layer {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          will-change: transform, filter, opacity;
+        }
+        /* mismo PNG real en dos capas, recortadas en la franja transparente entre icono (x<322) y
+           wordmark (x>391): 356 / 1240 = 28.71 %. La suma de ambas = el lockup original, pixel a pixel. */
+        .lg-img {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 904px;
+          height: 234px;
+          display: block;
+        }
+        #lg-icon-img { clip-path: inset(0 71.29% 0 0); }
+        #lg-word-img { clip-path: inset(0 0 0 28.71%); }
+        /* origen de transformacion: centro del icono / centro del wordmark (px dentro del lockup) */
+        #lg-icon-layer { transform-origin: 117px 117px; }
+        #lg-word-layer { transform-origin: 594px 117px; }
+      </style>
+
+      <div id="lg-root" data-composition-id="scene-logo" data-width="1920" data-height="1080">
+        <div id="lg-lockup">
+          <div id="lg-shadowbox">
+            <div class="lg-layer" id="lg-icon-layer"><img class="lg-img" id="lg-icon-img" src="assets/brand/wave-lockup.png" alt="" /></div>
+            <div class="lg-layer" id="lg-word-layer"><img class="lg-img" id="lg-word-img" src="./assets/brand/wave-lockup.png" alt="Wave" /></div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const tl = gsap.timeline({ paused: true });
+
+        // ---- entrada (0.25 -> 1.1): el icono primero, la palabra ~0.1 s despues saliendo desde el icono
+        tl.fromTo("#lg-icon-layer",
+          { y: 30, scale: 0.9, filter: "blur(24px)" },
+          { y: 0, scale: 1, filter: "blur(0px)", duration: 0.75, ease: "power3.out" }, 0.25);
+        tl.fromTo("#lg-icon-layer", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, 0.25);
+
+        tl.fromTo("#lg-word-layer",
+          { x: -40, y: 30, scale: 0.94, filter: "blur(24px)" },
+          { x: 0, y: 0, scale: 1, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }, 0.36);
+        tl.fromTo("#lg-word-layer", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, 0.36);
+
+        // en reposo los filtros desaparecen del todo (la capa queda tal cual el PNG)
+        tl.set("#lg-icon-layer", { filter: "none" }, 1.0);
+        tl.set("#lg-word-layer", { filter: "none" }, 1.16);
+
+        // ---- hold: leve empuje continuo (nunca estatico)
+        tl.fromTo("#lg-lockup", { scale: 1 }, { scale: 1.03, duration: 0.42, ease: "sine.inOut" }, 0.9);
+
+        // ---- salida (1.32 -> 1.97): se encoge, se desenfoca y sube mientras llega el movil (escena 2 arranca en 1.2).
+        // Empieza ~0.13 s antes que el guion (1.45) para que el logo ya este casi disuelto cuando el movil pasa por delante.
+        tl.fromTo("#lg-lockup",
+          { scale: 1.03, y: 0, filter: "blur(0px)" },
+          { scale: 0.55, y: -40, filter: "blur(18px)", duration: 0.65, ease: "power2.in", immediateRender: false }, 1.32);
+        tl.fromTo("#lg-lockup", { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "power1.inOut", immediateRender: false }, 1.4);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines["scene-logo"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
